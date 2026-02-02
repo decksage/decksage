@@ -1,0 +1,33 @@
+# Dependências
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Build
+/.next/
+/out/
+
+# Ambiente
+/.env*.local
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache
+/.eslintcache
+/.cache
+.cache
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Testes
+/coverage
+
+# Vercel
+/.vercel

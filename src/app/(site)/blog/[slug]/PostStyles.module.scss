@@ -1,0 +1,90 @@
+/* src/app/(site)/blog/[slug]/PostStyles.module.scss */
+
+/*
+  Este contêiner utiliza :global(.prose) para estilizar o HTML puro
+  injetado pelo editor de texto, garantindo que as classes não sofram hash.
+*/
+.articleContent {
+  :global(.prose) {
+    /* Estilos Gerais do Corpo do Texto */
+    color: #d4d4d8; // neutral-300
+
+    p {
+      line-height: 1.8;
+      margin: 1.25em 0;
+    }
+
+    /* Estilos para Títulos */
+    h2, h3, h4 {
+      color: #f59e0b; // amber-500
+      font-weight: 700;
+      margin-top: 1.5em;
+      margin-bottom: 0.75em;
+    }
+
+    /* Estilos para Links */
+    a {
+      color: #fbbf24; // amber-400
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s ease-in-out;
+
+      &:hover {
+        color: #fcd34d; // amber-300
+        text-decoration: underline;
+      }
+    }
+    
+    /* Estilos para Imagens */
+    img {
+      width: 100%;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      border-radius: 0.75rem;
+      border: 1px solid #262626; // neutral-800
+    }
+
+    /* Estilos para Listas */
+    ul, ol {
+      margin: 1.25em 0;
+      padding-left: 1.5em;
+    }
+
+    /* Estilo específico para listas checklist */
+    ul.checklist {
+        list-style-type: none;
+        padding-left: 0;
+    }
+
+    /* Estilos para Tabelas */
+    table {
+      width: 100%;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background-color: #262626; // neutral-800
+      border-bottom: 2px solid #404040; // neutral-700
+    }
+
+    th {
+      color: #ffffff;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    td {
+        padding: 0.75rem;
+    }
+
+    tr {
+        border-bottom: 1px solid #262626; // neutral-800
+    }
+
+    tbody tr:last-child {
+        border-bottom: none;
+    }
+  }
+}
