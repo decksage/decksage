@@ -10,17 +10,25 @@ type AdConfig = {
   custom_image_url?: string | null;
   custom_link_url?: string | null;
   custom_alt_text?: string | null;
+  slot_name?: string | null; // Adicionado para debug
 }
 
-export default function DynamicAdSlot({ 
-  adConfig, 
+export default function DynamicAdSlot({
+  adConfig,
   className,
   style
-}: { 
-  adConfig: AdConfig | null; 
+}: {
+  adConfig: AdConfig | null;
   className?: string;
-  style?: React.CSSProperties; 
+  style?: React.CSSProperties;
 }) {
+  // Debug log
+  if (adConfig) {
+    console.log('DynamicAdSlot rendering:', adConfig.slot_name || 'unknown slot', adConfig);
+  } else {
+    console.log('DynamicAdSlot: No adConfig provided');
+  }
+
   // Se não houver configuração ou estiver inativo, não renderiza nada
   if (!adConfig) {
     return null;

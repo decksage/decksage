@@ -32,6 +32,8 @@ export default async function SiteLayout({
     .eq('is_active', true)
     .maybeSingle();
 
+  console.log('Layout Server: banner_sticky_footer result:', adConfig ? 'Found' : 'NULL', adConfig);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

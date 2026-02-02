@@ -22,9 +22,12 @@ export default function AdSenseBanner({
   useEffect(() => {
     try {
       // Esta linha "empurra" o anúncio para o slot após a página carregar
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      if (typeof window !== 'undefined') {
+        console.log('AdSenseBanner: pushing adsbygoogle for slot', dataAdSlot);
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      }
     } catch (err) {
-      console.error(err);
+      console.error('AdSenseBanner Error:', err);
     }
   }, [dataAdSlot]); // Roda o efeito sempre que o slot do anúncio mudar
 
