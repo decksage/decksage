@@ -5,6 +5,7 @@ import Header from '@/app/(site)/components/Header';
 import Footer from '@/app/(site)/components/Footer';
 import { createClient } from '@/app/utils/supabase/server';
 import FloatingFeedback from './components/FloatingFeedback';
+import StickyFooterAd from '@/app/(site)/components/ads/StickyFooterAd';
 
 export default async function SiteLayout({
   children,
@@ -24,6 +25,13 @@ export default async function SiteLayout({
     profile = profileData;
   }
 
+  const { data: adConfig } = await supabase
+    .from('ad_slots')
+    .select('*')
+    .eq('slot_name', 'banner_sticky_footer')
+    .eq('is_active', true)
+    .maybeSingle();
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -32,6 +40,7 @@ export default async function SiteLayout({
       </main>
       <Footer />
       <FloatingFeedback user={user} />
+      <StickyFooterAd adConfig={adConfig} />
     </div>
   );
 }
