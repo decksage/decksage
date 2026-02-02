@@ -1,8 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
-import AdSenseBanner from './AdSenseBanner'; // Reutilizamos o componente que já criamos
+import AdSenseBanner from './AdSenseBanner';
 
-// Tipagem para os dados de configuração que vêm do banco de dados
 type AdConfig = {
   ad_type: 'adsense' | 'custom';
   adsense_client_id?: string | null;
@@ -10,7 +11,7 @@ type AdConfig = {
   custom_image_url?: string | null;
   custom_link_url?: string | null;
   custom_alt_text?: string | null;
-  slot_name?: string | null; // Adicionado para debug
+  slot_name?: string | null;
 }
 
 export default function DynamicAdSlot({
@@ -22,13 +23,6 @@ export default function DynamicAdSlot({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  // Debug log
-  if (adConfig) {
-    console.log('DynamicAdSlot rendering:', adConfig.slot_name || 'unknown slot', adConfig);
-  } else {
-    console.log('DynamicAdSlot: No adConfig provided');
-  }
-
   // Se não houver configuração ou estiver inativo, não renderiza nada
   if (!adConfig) {
     return null;
@@ -41,7 +35,7 @@ export default function DynamicAdSlot({
         dataAdClient={adConfig.adsense_client_id}
         dataAdSlot={adConfig.adsense_slot_id}
         className={className}
-        style={style || { display: 'block' }}
+        style={style || { display: 'block', width: '100%' }}
       />
     );
   }
@@ -49,19 +43,18 @@ export default function DynamicAdSlot({
   // Renderiza o anúncio particular (custom)
   if (adConfig.ad_type === 'custom' && adConfig.custom_image_url && adConfig.custom_link_url) {
     return (
-      <Link href={adConfig.custom_link_url} target="_blank" rel="noopener noreferrer">
+      <Link href={adConfig.custom_link_url} target="_blank" rel="noopener noreferrer" className={`block w-full ${className || ''}`} style={style}>
         <Image
           src={adConfig.custom_image_url}
           alt={adConfig.custom_alt_text || 'Anúncio'}
           width={970}
           height={90}
           unoptimized
-          className="rounded-lg object-cover"
+          className="rounded-lg object-cover w-full h-auto"
         />
       </Link>
     );
   }
 
-  // Se a configuração estiver incompleta, não renderiza nada
   return null;
 }
