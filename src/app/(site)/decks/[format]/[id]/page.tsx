@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { createClient } from '@/app/utils/supabase/server';
 import { fetchCardsByNames } from '@/app/lib/scryfall';
+import DynamicAdSlot from '@/app/(site)/components/ads/DynamicAdSlot';
 
 // Definindo interfaces claras para os dados
 interface DeckCard {
@@ -43,13 +44,24 @@ export default async function DeckPage({ params }: DeckPageProps) {
   // Cria uma instância do cliente Supabase para esta requisição no servidor
   const supabase = createClient();
 
-  // Buscar o deck no Supabase
-  const { data: deck, error } = await supabase
-    .from('daily_decks')
-    .select<"*", DeckFromDB>("*")
-    .eq('deck_id', id)
-    .eq('format', format)
-    .single();
+  // Buscar o deck e a config de anúncios em paralelo
+  const [
+    { data: deck, error },
+    { data: adConfig, error: adError }
+  ] = await Promise.all([
+    supabase
+      .from('daily_decks')
+      .select<"*", DeckFromDB>("*")
+      .eq('deck_id', id)
+      .eq('format', format)
+      .single(),
+    supabase
+      .from('ad_slots')
+      .select('*')
+      .eq('slot_name', 'banner_deck') // Nome do slot para decks
+      .eq('is_active', true)
+      .maybeSingle()
+  ]);
 
   if (error || !deck) {
     console.error(`Erro ao buscar deck (ID: ${id}, Formato: ${format}):`, error);
@@ -82,6 +94,10 @@ export default async function DeckPage({ params }: DeckPageProps) {
           <p className="text-sm text-neutral-500">
             Criado em: {new Date(deck.created_at).toLocaleDateString('pt-BR')}
           </p>
+        </div>
+
+        <div className="mb-8 flex justify-center">
+          <DynamicAdSlot adConfig={adConfig} />
         </div>
 
         {/* Carta Representativa e Estratégia */}

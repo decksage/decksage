@@ -12,8 +12,8 @@ interface AdSenseBannerProps {
   style?: React.CSSProperties;
 }
 
-export default function AdSenseBanner({ 
-  dataAdClient, 
+export default function AdSenseBanner({
+  dataAdClient,
   dataAdSlot,
   className,
   style = { display: 'block' } // Estilo padrão do AdSense
@@ -43,7 +43,7 @@ export default function AdSenseBanner({
         Os dados vêm das props que passamos para o componente.
       */}
       <ins
-        className="adsbygoogle"
+        className={`adsbygoogle ${className || ''}`}
         style={style}
         data-ad-client={dataAdClient}
         data-ad-slot={dataAdSlot}

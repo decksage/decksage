@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 import SearchClientContent from './components/SearchClientContent'; // Ajuste o caminho se necessário
 import { Skeleton } from '@/components/ui/skeleton'; // Para o fallback
 import { Card, CardContent } from '@/components/ui/card'; // Para o fallback
+import DynamicAdSlot from '@/app/(site)/components/ads/DynamicAdSlot';
+import { createClient } from '@/app/utils/supabase/server';
 
 // Componente de fallback para o Suspense
 function LoadingSearchResults() {
@@ -31,14 +33,28 @@ function LoadingSearchResults() {
   );
 }
 
-export default function SearchPageContainer() {
+export default async function SearchPageContainer() {
+  const supabase = createClient();
+
+  const { data: adConfig } = await supabase
+    .from('ad_slots')
+    .select('*')
+    .eq('slot_name', 'banner_search')
+    .eq('is_active', true)
+    .maybeSingle();
+
   // Esta página agora é um Server Component.
   // Ela não usa 'useSearchParams' diretamente.
   // A lógica do cliente foi movida para SearchClientContent.
 
   return (
-    <Suspense fallback={<LoadingSearchResults />}>
-      <SearchClientContent />
-    </Suspense>
+    <div className="flex flex-col min-h-screen">
+      <div className="container mx-auto pt-8 px-6">
+        <DynamicAdSlot adConfig={adConfig} className="mb-6 mx-auto flex justify-center" />
+      </div>
+      <Suspense fallback={<LoadingSearchResults />}>
+        <SearchClientContent />
+      </Suspense>
+    </div>
   );
 }

@@ -12,7 +12,15 @@ type AdConfig = {
   custom_alt_text?: string | null;
 }
 
-export default function DynamicAdSlot({ adConfig }: { adConfig: AdConfig | null }) {
+export default function DynamicAdSlot({ 
+  adConfig, 
+  className,
+  style
+}: { 
+  adConfig: AdConfig | null; 
+  className?: string;
+  style?: React.CSSProperties; 
+}) {
   // Se não houver configuração ou estiver inativo, não renderiza nada
   if (!adConfig) {
     return null;
@@ -24,7 +32,8 @@ export default function DynamicAdSlot({ adConfig }: { adConfig: AdConfig | null 
       <AdSenseBanner
         dataAdClient={adConfig.adsense_client_id}
         dataAdSlot={adConfig.adsense_slot_id}
-        style={{ display: 'inline-block', width: '970px', height: '90px' }}
+        className={className}
+        style={style || { display: 'block' }}
       />
     );
   }

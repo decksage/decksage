@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import DeckCardItem from './componentes/DeckCardItem'
 import DeckCardItemShared from './componentes/DeckCardItemShared'
+import DynamicAdSlot from '@/app/(site)/components/ads/DynamicAdSlot'
 // AJUSTE: Importar componentes do Card para o nosso novo botão
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -46,6 +47,7 @@ export default function MyDecksPage() {
   const [myDecks, setMyDecks] = useState<OwnDeck[]>([])
   const [savedDecks, setSavedDecks] = useState<SavedDeck[]>([])
   const [loading, setLoading] = useState(true)
+  const [adConfig, setAdConfig] = useState<any>(null)
   const fetchMyDecks = useCallback(async (userId: string) => {
     const { data, error } = await supabase
       .from('decks')
@@ -128,7 +130,14 @@ export default function MyDecksPage() {
         setUser(user);
         await Promise.all([
           fetchMyDecks(user.id),
-          fetchSavedDecks(user.id)
+          fetchSavedDecks(user.id),
+          supabase
+            .from('ad_slots')
+            .select('*')
+            .eq('slot_name', 'banner_dashboard')
+            .eq('is_active', true)
+            .maybeSingle()
+            .then(({ data }) => setAdConfig(data))
         ]);
       } else {
         router.push('/login');
@@ -166,6 +175,10 @@ export default function MyDecksPage() {
             </Button>
           </Link>
         </header>
+
+        <div className="mb-8 flex justify-center">
+          <DynamicAdSlot adConfig={adConfig} />
+        </div>
 
         <h2 className="text-3xl font-bold text-primary mb-6 border-b border-neutral-700 pb-2 flex items-center gap-2">
           <Swords /> Seus Decks
