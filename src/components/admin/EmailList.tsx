@@ -13,10 +13,11 @@ import { ptBR } from 'date-fns/locale';
 interface EmailListProps {
     broadcasts: any[];
     onEdit: (broadcast: any) => void;
+    onSend: (broadcast: any) => void;
     onRefresh: () => void;
 }
 
-export default function EmailList({ broadcasts, onEdit, onRefresh }: EmailListProps) {
+export default function EmailList({ broadcasts, onEdit, onSend, onRefresh }: EmailListProps) {
     const [deletingId, setDeletingId] = useState<string | null>(null);
 
     const handleDelete = async (id: string) => {
@@ -70,9 +71,14 @@ export default function EmailList({ broadcasts, onEdit, onRefresh }: EmailListPr
                                 </TableCell>
                                 <TableCell className="text-right flex justify-end gap-2">
                                     {email.status === 'draft' && (
-                                        <Button size="icon" variant="ghost" className="h-8 w-8 text-amber-500 hover:text-amber-400 hover:bg-amber-950" onClick={() => onEdit(email)} title="Editar Rascunho">
-                                            <FileEdit className="h-4 w-4" />
-                                        </Button>
+                                        <>
+                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-amber-500 hover:text-amber-400 hover:bg-amber-950" onClick={() => onEdit(email)} title="Editar Rascunho">
+                                                <FileEdit className="h-4 w-4" />
+                                            </Button>
+                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-green-500 hover:text-green-400 hover:bg-green-950" onClick={() => onSend(email)} title="Enviar Agora">
+                                                <Send className="h-4 w-4" />
+                                            </Button>
+                                        </>
                                     )}
                                     {email.status === 'sent' && (
                                         <Button size="icon" variant="ghost" className="h-8 w-8 text-blue-500 hover:text-blue-400 hover:bg-blue-950" onClick={() => onEdit(email)} title="Reutilizar como base">

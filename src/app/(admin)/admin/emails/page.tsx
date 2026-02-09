@@ -14,6 +14,17 @@ import { toast } from 'sonner';
 import { Loader2, Send, Plus, ArrowLeft, Save } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 const EmailEditor = dynamic(() => import('@/components/admin/EmailEditor'), { ssr: false });
 
 export default function EmailBroadcastPage() {
@@ -26,6 +37,10 @@ export default function EmailBroadcastPage() {
     const [blocks, setBlocks] = useState('');
     const [isTest, setIsTest] = useState(true);
     const [testEmail, setTestEmail] = useState('');
+
+    // Confirmation State
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [pendingSend, setPendingSend] = useState<{ id?: string, subject?: string, content?: string, blocks?: string, is_test?: boolean, test_email?: string } | null>(null);
 
     // Data State
     const [broadcasts, setBroadcasts] = useState<any[]>([]);
@@ -54,8 +69,6 @@ export default function EmailBroadcastPage() {
     };
 
     const handleEdit = (email: any) => {
-        // If it's sent, we copy the content but create a new draft (no ID), unless we want to edit a sent email record (unlikely)
-        // If it's draft, we set ID to update it.
         if (email.status === 'sent') {
             setId(null); // Copy mode
             setSubject(`[Cópia] ${email.subject}`);
@@ -98,31 +111,75 @@ export default function EmailBroadcastPage() {
         });
     };
 
-    const handleSend = async () => {
-        if (!subject || !content) {
+    // Called by the "Send" button in Editor or "Send" icon in List
+    const initiateSend = (emailData?: any) => {
+        // If emailData is passed (from List), use it. Otherwise use Editor state.
+        const data = emailData || { id, subject, content, blocks };
+
+        if (!data.subject || !data.content) {
             toast.error("Assunto e conteúdo do email são obrigatórios.");
             return;
         }
 
-        if (isTest && !testEmail) {
-            toast.error("Para teste, informe o email de destino.");
-            return;
+        if (isTest && !testEmail && !emailData) { // If editor is test mode (list mode is always production/send now, or we should clarify)
+            // Actually, list "Send" implies sending to everyone from draft.
+            // Let's assume list "Send" is always Production Send.
         }
 
+        // We only show confirmation if it is NOT a test, OR if we want to confirm tests too.
+        // User asked for "Publish and Send" with confirmation. Usually implies Production.
+
+        // If we are in Editor and IS TEST, just send immediately (or maybe confirm too? let's confirm for safety if requested).
+        // User said: "create a button to publish and send to user base. With confirmation modal"
+
+        // Strategy:
+        // 1. If Editor -> check `isTest`. If `isTest`, validation for test email. If valid, maybe skip modal or show simple one?
+        //    Actually user said "publish and send to user base", which implies Production.
+        //    So let's make the modal specifically for the "Production Send".
+
+        // If coming from List: It's a draft. We want to send to ALL users.
+        // If coming from Editor: We check `isTest` toggle.
+
+        if (emailData) {
+            // Coming from List. Always "Production" send.
+            setPendingSend({ ...emailData, is_test: false });
+            setIsConfirmOpen(true);
+        } else {
+            // Coming from Editor.
+            if (isTest) {
+                if (!testEmail) {
+                    toast.error("Para teste, informe o email de destino.");
+                    return;
+                }
+                // Test send - maybe direct?
+                executeSend({ subject, content, blocks, is_test: true, test_email: testEmail });
+            } else {
+                // Production Send
+                setPendingSend({ id, subject, content, blocks, is_test: false });
+                setIsConfirmOpen(true);
+            }
+        }
+    };
+
+    const executeSend = async (data: any) => {
         startTransition(async () => {
             const formData = new FormData();
-            formData.append('subject', subject);
-            formData.append('content', content);
-            formData.append('blocks', blocks);
-            formData.append('is_test', String(isTest));
-            if (isTest) formData.append('test_email', testEmail);
+            if (data.id) formData.append('id', data.id); // Update existing draft to sent status
+            formData.append('subject', data.subject);
+            formData.append('content', data.content);
+            if (data.blocks) formData.append('blocks', typeof data.blocks === 'string' ? data.blocks : JSON.stringify(data.blocks));
+            formData.append('is_test', String(data.is_test));
+            if (data.test_email) formData.append('test_email', data.test_email);
 
             const result = await sendBroadcastEmail(null, formData);
             if (result.success) {
                 toast.success(result.message);
-                if (!isTest) {
+                if (!data.is_test) {
                     setView('list');
                     loadBroadcasts();
+                    // Close modal
+                    setIsConfirmOpen(false);
+                    setPendingSend(null);
                 }
             } else {
                 toast.error(result.message);
@@ -153,7 +210,12 @@ export default function EmailBroadcastPage() {
                 isLoadingList ? (
                     <div className="flex justify-center py-12"><Loader2 className="h-8 w-8 animate-spin text-amber-500" /></div>
                 ) : (
-                    <EmailList broadcasts={broadcasts} onEdit={handleEdit} onRefresh={loadBroadcasts} />
+                    <EmailList
+                        broadcasts={broadcasts}
+                        onEdit={handleEdit}
+                        onSend={(email) => initiateSend(email)}
+                        onRefresh={loadBroadcasts}
+                    />
                 )
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -233,14 +295,14 @@ export default function EmailBroadcastPage() {
                                         Salvar Rascunho
                                     </Button>
                                     <Button
-                                        onClick={handleSend}
+                                        onClick={() => initiateSend()}
                                         disabled={isPending}
                                         className={`flex-1 ${isTest ? 'bg-blue-600 hover:bg-blue-700' : 'bg-red-600 hover:bg-red-700'}`}
                                     >
                                         {isPending ? (
                                             <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> ...</>
                                         ) : (
-                                            <><Send className="mr-2 h-4 w-4" /> {isTest ? 'Enviar Teste' : 'ENVIAR'}</>
+                                            <><Send className="mr-2 h-4 w-4" /> {isTest ? 'Enviar Teste' : 'PUBLICAR E ENVIAR'}</>
                                         )}
                                     </Button>
                                 </div>
@@ -276,6 +338,32 @@ export default function EmailBroadcastPage() {
                     </div>
                 </div>
             )}
+
+            <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
+                <AlertDialogContent className="bg-neutral-900 border-neutral-800 text-neutral-200">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-red-500 text-xl flex items-center gap-2">
+                            ⚠️ Confirmar Envio em Massa
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-neutral-400 text-base">
+                            Você está prestes a enviar o email <strong>"{pendingSend?.subject}"</strong> para <strong>TODOS</strong> os usuários da base.
+                            <br /><br />
+                            Esta ação não pode ser desfeita. Tem certeza que deseja continuar?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-neutral-800 border-neutral-700 hover:bg-neutral-700 text-neutral-300">
+                            Cancelar
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={() => pendingSend && executeSend(pendingSend)}
+                            className="bg-red-600 hover:bg-red-700 text-white border-none"
+                        >
+                            {isPending ? <Loader2 className="animate-spin h-4 w-4" /> : "Sim, Enviar Agora"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }

@@ -40,7 +40,12 @@ export default async function AdminFeedbackPage(props: {
     page_offset: offset
   });
 
-  if (error) console.error("Erro ao buscar feedbacks:", error);
+  if (error) {
+    console.error("Erro ao buscar feedbacks FULL:", JSON.stringify(error, null, 2));
+    console.error("Erro message:", error.message);
+    console.error("Erro details:", error.details);
+    console.error("Erro hint:", error.hint);
+  }
 
   const totalItems = feedbacks?.[0]?.total_count || 0;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
