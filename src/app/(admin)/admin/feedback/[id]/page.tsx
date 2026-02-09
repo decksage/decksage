@@ -28,7 +28,7 @@ const statusStyles: Record<string, string> = {
 
 // AJUSTE: Recebemos as props como 'any' e as convertemos para o tipo correto
 export default async function FeedbackDetailPage(props: any) {
-  const { params } = props as PageProps;
+  const params = await props.params;
 
   const isAdmin = await checkUserRole('admin');
   if (!isAdmin) notFound();

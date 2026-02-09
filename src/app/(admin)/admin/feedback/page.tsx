@@ -15,15 +15,16 @@ import { Eye } from 'lucide-react';
 import PaginationControls from '@/app/(admin)/admin/components/PaginationControls';
 
 const statusStyles: Record<string, string> = {
-    'new': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-    'in_analysis': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    'completed': 'bg-green-500/20 text-green-300 border-green-500/30',
-    'unnecessary': 'bg-neutral-700/20 text-neutral-400 border-neutral-700/30',
+  'new': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  'in_analysis': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  'completed': 'bg-green-500/20 text-green-300 border-green-500/30',
+  'unnecessary': 'bg-neutral-700/20 text-neutral-400 border-neutral-700/30',
 }
 
-export default async function AdminFeedbackPage({ searchParams }: {
-  searchParams?: { query?: string; page?: string; }
+export default async function AdminFeedbackPage(props: {
+  searchParams?: Promise<{ query?: string; page?: string; }>
 }) {
+  const searchParams = await props.searchParams;
   const isAdmin = await checkUserRole('admin');
   if (!isAdmin) notFound();
 
@@ -84,9 +85,9 @@ export default async function AdminFeedbackPage({ searchParams }: {
                   </TableCell>
                   <TableCell className="text-right">
                     <Link href={`/admin/feedback/${fb.id}`}>
-                        <Button variant="outline" size="sm">
-                            <Eye className="mr-2 h-4 w-4" /> Ver
-                        </Button>
+                      <Button variant="outline" size="sm">
+                        <Eye className="mr-2 h-4 w-4" /> Ver
+                      </Button>
                     </Link>
                   </TableCell>
                 </TableRow>
@@ -97,7 +98,7 @@ export default async function AdminFeedbackPage({ searchParams }: {
           </TableBody>
         </Table>
       </div>
-      
+
       <div className="mt-6">
         <PaginationControls totalPages={totalPages} currentPage={currentPage} basePath="/admin/feedback" />
       </div>

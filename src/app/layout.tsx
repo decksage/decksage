@@ -22,16 +22,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className="dark">
+      <head>
+        {/* Injeta o Script do GTM */}
+        <GTM gtmId={GTM_ID} />
+        <meta name="google-adsense-account" content="ca-pub-9935800504955016"></meta>
+      </head>
       <body className="bg-neutral-950 text-neutral-100 antialiased">
-        <head>
-          {/* Injeta o Script do GTM */}
-          <GTM gtmId={GTM_ID} />
-          <meta name="google-adsense-account" content="ca-pub-9935800504955016"></meta>
-        </head>
         {/* ESTA LINHA É A MAIS IMPORTANTE! */}
         {/* Se ela estiver faltando, sua página ficará em branco. */}
         {children}
-        
+
         <Toaster richColors />
       </body>
     </html>

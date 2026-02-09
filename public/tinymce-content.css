@@ -1,0 +1,23 @@
+/* TinyMCE Content CSS */
+body {
+  font-family: 'Inter', sans-serif;
+  color: #e5e5e5;
+  background-color: #171717; /* neutral-900 */
+  padding: 1rem;
+}
+
+a {
+  color: #fbbf24; /* amber-400 */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #f59e0b; /* amber-500 */
+}
+
+blockquote {
+  border-left: 3px solid #fbbf24;
+  margin-left: 0;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #a3a3a3;
+}

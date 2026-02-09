@@ -5,12 +5,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  FileText, 
-  MessageSquare, 
-  Trophy, 
-  PanelLeftClose, 
+import {
+  Users,
+  FileText,
+  MessageSquare,
+  Trophy,
+  PanelLeftClose,
   PanelLeftOpen,
   LayoutDashboard,
   Megaphone,
@@ -38,6 +38,7 @@ export default function AdminSidebar() {
     { href: '/admin/blog', label: 'Posts', icon: MessageSquare },
     { href: '/admin/meta', label: 'Decks Meta', icon: Trophy },
     { href: '/admin/ai-generator', label: 'Gerador de Conteúdo', icon: Wand2 },
+    { href: '/admin/emails', label: 'Emails', icon: Megaphone },
   ];
 
   return (
@@ -47,7 +48,7 @@ export default function AdminSidebar() {
     )}>
       <div className="p-4 border-b border-neutral-800 flex items-center justify-center">
         <Link href="/admin">
-          <h1 className={cn( "font-bold text-xl text-amber-500 transition-opacity whitespace-nowrap", isCollapsed ? "opacity-0 w-0" : "opacity-100" )}>
+          <h1 className={cn("font-bold text-xl text-amber-500 transition-opacity whitespace-nowrap", isCollapsed ? "opacity-0 w-0" : "opacity-100")}>
             Admin
           </h1>
           <LayoutDashboard className={cn("h-6 w-6 text-amber-500", !isCollapsed && "hidden")} />
@@ -68,7 +69,7 @@ export default function AdminSidebar() {
                 )}
               >
                 <item.icon className={cn("h-5 w-5 flex-shrink-0", isActive && "text-amber-400")} />
-                <span className={cn( "transition-opacity duration-200", isCollapsed ? "opacity-0 w-0" : "opacity-100" )}>
+                <span className={cn("transition-opacity duration-200", isCollapsed ? "opacity-0 w-0" : "opacity-100")}>
                   {item.label}
                 </span>
               </div>
@@ -79,16 +80,16 @@ export default function AdminSidebar() {
 
       <div className="p-4 border-t border-neutral-800 space-y-2">
         <Link href="/" title="Voltar ao Site">
-          <div className={cn( "flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium text-neutral-300 hover:bg-neutral-800 hover:text-amber-400", isCollapsed && "justify-center" )}>
+          <div className={cn("flex items-center gap-3 px-4 py-2 rounded-md text-sm font-medium text-neutral-300 hover:bg-neutral-800 hover:text-amber-400", isCollapsed && "justify-center")}>
             <Home className="h-5 w-5 flex-shrink-0" />
             <span className={cn("transition-opacity duration-200", isCollapsed ? "opacity-0" : "opacity-100")}>
               Voltar ao Site
             </span>
           </div>
         </Link>
-        <Button 
-          variant="outline" 
-          className="w-full justify-center" 
+        <Button
+          variant="outline"
+          className="w-full justify-center"
           onClick={() => setIsCollapsed(!isCollapsed)}
         >
           <span className="sr-only">Recolher/Expandir Menu</span>
