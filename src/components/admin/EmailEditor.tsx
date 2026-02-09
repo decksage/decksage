@@ -47,6 +47,7 @@ export default function EmailEditor({ initialValue, initialBlocks, onChange }: E
                 theme="dark"
                 sideMenu={false}
                 formattingToolbar={false}
+                linkToolbar={false}
                 className="min-h-[300px]"
             />
         </div>

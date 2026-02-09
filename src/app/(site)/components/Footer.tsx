@@ -22,7 +22,7 @@ export default function Footer() {
               {/* <li><Link href="/about" className="hover:text-amber-500 transition">Sobre o MTG Translate</Link></li> */}
               <li><a href="https://magic.wizards.com" target="_blank" rel="noopener noreferrer" className="hover:text-amber-500 transition">Site Oficial do Magic</a></li>
               <li><a href="https://scryfall.com" target="_blank" rel="noopener noreferrer" className="hover:text-amber-500 transition">Scryfall</a></li>
-              {/* Adicione aqui: Termos de Uso, Política de Privacidade se necessário */}
+              <li><Link href="/feedback" className="hover:text-amber-500 transition">Enviar Feedback</Link></li>
             </ul>
           </div>
           <div>
@@ -34,7 +34,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        
+
         <div className="border-t border-neutral-700 pt-8">
           <p>&copy; {currentYear} MTG Translate. Todos os direitos reservados.</p>
           <p className="text-sm mt-1">
