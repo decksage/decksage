@@ -1,5 +1,5 @@
 // app/components/deck/SaveDeckButton.tsx
-'use client'
+'use client';
 
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -25,16 +25,16 @@ export default function SaveDeckButton({ deckId, initialIsSaved }: SaveDeckButto
         setIsSaved(result.success);
         toast.success(result.message);
       } catch (error: any) {
-        toast.error(error.message || "Ocorreu um erro.");
+        toast.error(error.message || 'Ocorreu um erro.');
       }
     });
   };
 
   return (
-    <Button 
-      onClick={handleToggleSave} 
+    <Button
+      onClick={handleToggleSave}
       disabled={isPending}
-      variant={isSaved ? "secondary" : "default"}
+      variant={isSaved ? 'secondary' : 'default'}
       className="bg-amber-500 align-center text-black hover:bg-amber-600"
     >
       {isPending ? (

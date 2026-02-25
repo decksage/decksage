@@ -27,7 +27,8 @@ export async function POST(req: Request) {
         Termo:
         ${text}
       `;
-    } else if (type === 'keyword_en_to_pt') { // NOVO TIPO ADICIONADO
+    } else if (type === 'keyword_en_to_pt') {
+      // NOVO TIPO ADICIONADO
       prompt = `
         Você é um tradutor especializado em Magic: The Gathering. Traduza a seguinte palavra-chave ou termo de regra do Magic do Inglês para seu equivalente mais comum e reconhecido em Português do Brasil usado pela comunidade de jogadores. 
         Se for um termo que geralmente é mantido em inglês pela comunidade brasileira (ex: "Scry", "Phyrexian Mana"), retorne o termo em inglês mesmo.
@@ -37,7 +38,8 @@ export async function POST(req: Request) {
         ${text}
       `;
       // model = 'gpt-3.5-turbo'; // Considere um modelo mais rápido/barato se disponível e adequado
-    } else { // (type === 'text' - seu default para tradução de textos de carta)
+    } else {
+      // (type === 'text' - seu default para tradução de textos de carta)
       prompt = `
         Você é um tradutor especializado em cartas de Magic: The Gathering. Traduza o texto para o português brasileiro, mantendo termos técnicos do jogo (ex: "Channel", "Tap", "Discard", "Creature", "Instant") em inglês e preservando a formatação de símbolos de mana (ex: {1}{G}). Não modifique os símbolos de mana. Se a tradução for incerta, mantenha o termo original.
 
@@ -65,7 +67,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Erro interno ao traduzir o texto' }, { status: 500 });
   }
 }
-
 
 // Função para analisar decks usando OpenAI
 // export async function analyzeDeck(decklist: string[], format: string) {

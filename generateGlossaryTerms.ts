@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-  /* eslint-disable no-undef */
+/* eslint-disable no-undef */
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
@@ -9,11 +9,17 @@ interface ScryfallCatalog {
 
 console.log(`Executando com Node.js v${process.version}`);
 
-async function fetchMtgTerms(catalogType: 'keyword-abilities' | 'ability-words'): Promise<string[]> {
+async function fetchMtgTerms(
+  catalogType: 'keyword-abilities' | 'ability-words',
+): Promise<string[]> {
   try {
-    const response = await fetch(`https://api.scryfall.com/catalog/${encodeURIComponent(catalogType)}`);
+    const response = await fetch(
+      `https://api.scryfall.com/catalog/${encodeURIComponent(catalogType)}`,
+    );
     if (!response.ok) {
-      console.error(`Erro ao buscar ${catalogType}: ${response.statusText} (Status: ${response.status})`);
+      console.error(
+        `Erro ao buscar ${catalogType}: ${response.statusText} (Status: ${response.status})`,
+      );
       return [];
     }
     const catalog: ScryfallCatalog = await response.json();
@@ -24,7 +30,10 @@ async function fetchMtgTerms(catalogType: 'keyword-abilities' | 'ability-words')
   }
 }
 
-async function translateText(text: string, type: 'keyword_en_to_pt' | 'definition_en_to_pt'): Promise<string> {
+async function translateText(
+  text: string,
+  type: 'keyword_en_to_pt' | 'definition_en_to_pt',
+): Promise<string> {
   try {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     console.log(`Chamando API: ${apiUrl}/api/translate para ${type}`); // Debug log
@@ -82,7 +91,7 @@ async function generateGlossary() {
           translated: translatedTerm,
           definition: translatedDefinition,
         };
-      })
+      }),
     );
 
     const output = { terms: translatedTerms };

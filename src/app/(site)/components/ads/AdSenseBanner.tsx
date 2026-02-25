@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use client'
+'use client';
 
 import { useEffect } from 'react';
 import Script from 'next/script';
@@ -16,9 +16,8 @@ export default function AdSenseBanner({
   dataAdClient,
   dataAdSlot,
   className,
-  style = { display: 'block' } // Estilo padrão do AdSense
+  style = { display: 'block' }, // Estilo padrão do AdSense
 }: AdSenseBannerProps) {
-
   useEffect(() => {
     try {
       // Esta linha "empurra" o anúncio para o slot após a página carregar

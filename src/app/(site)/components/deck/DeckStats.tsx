@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // app/components/deck/DeckStats.tsx
-'use client'
+'use client';
 
 import { useMemo } from 'react';
-import type { ScryfallCard } from '@/app/lib/types'; 
+import type { ScryfallCard } from '@/app/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Droplets } from 'lucide-react';
 import ManaCost from '@/components/ui/ManaCost';
@@ -20,7 +20,15 @@ interface DeckStatsProps {
 export default function DeckStats({ cards }: DeckStatsProps) {
   // --- Calcula a Curva de Mana e a Distribuição de Cores ---
   const { manaCurve, colorDistribution, averageCMC } = useMemo(() => {
-    const curve: Record<string, number> = { '0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6+': 0 };
+    const curve: Record<string, number> = {
+      '0': 0,
+      '1': 0,
+      '2': 0,
+      '3': 0,
+      '4': 0,
+      '5': 0,
+      '6+': 0,
+    };
     const colors: Record<string, number> = { W: 0, U: 0, B: 0, R: 0, G: 0, C: 0 };
     let totalCMC = 0;
     let totalNonLandCards = 0;
@@ -38,11 +46,11 @@ export default function DeckStats({ cards }: DeckStatsProps) {
           curve[cmc.toString()] = (curve[cmc.toString()] || 0) + count;
         }
       }
-      
+
       // Conta os símbolos de mana para a distribuição de cores
       if (cardData?.mana_cost) {
         const manaSymbols = cardData.mana_cost.match(/{[^}]+}/g) || [];
-        manaSymbols.forEach(symbolWithBraces => {
+        manaSymbols.forEach((symbolWithBraces) => {
           // ✨ CORREÇÃO: Garante que a variável é tratada como string ✨
           const symbol = String(symbolWithBraces).replace(/[{}]/g, '');
           if (Object.prototype.hasOwnProperty.call(colors, symbol)) {
@@ -69,11 +77,17 @@ export default function DeckStats({ cards }: DeckStatsProps) {
       <CardContent className="space-y-6">
         {/* Gráfico da Curva de Mana */}
         <div>
-          <h4 className="text-sm font-semibold text-neutral-300 mb-2">Curva de Mana (CMC Médio: {averageCMC})</h4>
+          <h4 className="text-sm font-semibold text-neutral-300 mb-2">
+            Curva de Mana (CMC Médio: {averageCMC})
+          </h4>
           <div className="flex items-end justify-between gap-2 h-24">
             {Object.entries(manaCurve).map(([cmc, count]) => (
-              <div key={cmc} className="flex flex-col items-center flex-1" title={`${count} carta(s) com custo ${cmc}`}>
-                <div 
+              <div
+                key={cmc}
+                className="flex flex-col items-center flex-1"
+                title={`${count} carta(s) com custo ${cmc}`}
+              >
+                <div
                   className="w-full bg-amber-500/20 rounded-t-sm hover:bg-amber-500/40 transition-colors"
                   style={{ height: `${(count / maxCurveCount) * 100}%` }}
                 />
@@ -95,7 +109,7 @@ export default function DeckStats({ cards }: DeckStatsProps) {
                   <ManaCost cost={`{${color}}`} />
                   <span className="text-sm font-medium text-neutral-200">{count}</span>
                 </div>
-              )
+              );
             })}
           </div>
         </div>

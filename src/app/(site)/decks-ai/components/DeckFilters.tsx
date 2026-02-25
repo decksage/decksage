@@ -1,8 +1,7 @@
-'use client'
+'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-
 
 const FORMATS = ['Commander', 'Standard', 'Pioneer', 'Modern', 'Pauper'];
 
@@ -27,14 +26,14 @@ export default function DeckFilters() {
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-        <Button 
-            onClick={() => handleFilter(null)}
-            variant={!activeFormat ? 'default' : 'outline'}
-            className="rounded-full"
-        >
-            Todos
-        </Button>
-      {FORMATS.map(format => (
+      <Button
+        onClick={() => handleFilter(null)}
+        variant={!activeFormat ? 'default' : 'outline'}
+        className="rounded-full"
+      >
+        Todos
+      </Button>
+      {FORMATS.map((format) => (
         <Button
           key={format}
           onClick={() => handleFilter(format)}

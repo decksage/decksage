@@ -45,13 +45,10 @@ export default async function DeckPage({ params }: DeckPageProps) {
   const supabase = createClient();
 
   // Buscar o deck e a config de anúncios em paralelo
-  const [
-    { data: deck, error },
-    { data: adConfig, error: adError }
-  ] = await Promise.all([
+  const [{ data: deck, error }, { data: adConfig, error: adError }] = await Promise.all([
     supabase
       .from('daily_decks')
-      .select<"*", DeckFromDB>("*")
+      .select<'*', DeckFromDB>('*')
       .eq('deck_id', id)
       .eq('format', format)
       .single(),
@@ -60,7 +57,7 @@ export default async function DeckPage({ params }: DeckPageProps) {
       .select('*')
       .eq('slot_name', 'banner_deck') // Nome do slot para decks
       .eq('is_active', true)
-      .maybeSingle()
+      .maybeSingle(),
   ]);
 
   if (error || !deck) {
@@ -78,7 +75,11 @@ export default async function DeckPage({ params }: DeckPageProps) {
   const cardsData = await fetchCardsByNames(cardNames);
   const cardImageMap = cardsData.reduce((map, card) => {
     if (card && card.name) {
-      map.set(card.name, card.image_uris?.normal || `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`);
+      map.set(
+        card.name,
+        card.image_uris?.normal ||
+          `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`,
+      );
     }
     return map;
   }, new Map<string, string>());
@@ -135,7 +136,10 @@ export default async function DeckPage({ params }: DeckPageProps) {
               <div key={`${card.name}-${index}`} className="relative group">
                 <div className="relative w-full aspect-[5/7] rounded-lg overflow-hidden">
                   <Image
-                    src={cardImageMap.get(card.name) || `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`}
+                    src={
+                      cardImageMap.get(card.name) ||
+                      `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`
+                    }
                     alt={card.name}
                     fill
                     unoptimized
@@ -156,14 +160,18 @@ export default async function DeckPage({ params }: DeckPageProps) {
         {deck.decklist.sideboard && deck.decklist.sideboard.length > 0 && (
           <div className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">
-              Sideboard ({deck.decklist.sideboard.reduce((sum, card) => sum + card.count, 0)} cartas)
+              Sideboard ({deck.decklist.sideboard.reduce((sum, card) => sum + card.count, 0)}{' '}
+              cartas)
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {deck.decklist.sideboard.map((card, index) => (
                 <div key={`${card.name}-${index}`} className="relative group">
                   <div className="relative w-full aspect-[5/7] rounded-lg overflow-hidden">
                     <Image
-                      src={cardImageMap.get(card.name) || `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`}
+                      src={
+                        cardImageMap.get(card.name) ||
+                        `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`
+                      }
                       alt={card.name}
                       fill
                       unoptimized

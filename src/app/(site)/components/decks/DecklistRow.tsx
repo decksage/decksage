@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-'use client'
+'use client';
 
-import ManaCost from "@/components/ui/ManaCost";
-import type { ScryfallCard } from "@/app/lib/types";
+import ManaCost from '@/components/ui/ManaCost';
+import type { ScryfallCard } from '@/app/lib/types';
 
 interface DecklistRowProps {
   count: number;
@@ -12,7 +12,7 @@ interface DecklistRowProps {
 
 export default function DecklistRow({ count, card, onHover }: DecklistRowProps) {
   return (
-    <li 
+    <li
       className="flex justify-between items-center text-sm p-1.5 rounded-md hover:bg-neutral-800/70"
       onMouseEnter={() => onHover(card)}
       onMouseLeave={() => onHover(null)}

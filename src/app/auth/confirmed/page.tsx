@@ -20,25 +20,17 @@ export default function AuthConfirmedPage() {
         </div>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-green-400">
-            Conta Confirmada!
-          </h1>
-          <p className="text-neutral-300 mt-3 text-lg">
-            O seu e-mail foi verificado com sucesso.
-          </p>
+          <h1 className="text-4xl font-extrabold text-green-400">Conta Confirmada!</h1>
+          <p className="text-neutral-300 mt-3 text-lg">O seu e-mail foi verificado com sucesso.</p>
         </header>
-        
+
         <div className="text-neutral-400 mb-8">
-          <p>
-            Agora já pode fazer login e começar a explorar todas as funcionalidades.
-          </p>
+          <p>Agora já pode fazer login e começar a explorar todas as funcionalidades.</p>
         </div>
 
         <div className="mt-8">
           <Link href="/login">
-            <Button
-              className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600 px-10 py-6 text-base"
-            >
+            <Button className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600 px-10 py-6 text-base">
               Ir para o Login
             </Button>
           </Link>

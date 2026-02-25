@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-'use client' // Precisa ser client component para usar o hook
+'use client'; // Precisa ser client component para usar o hook
 
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -23,11 +23,13 @@ export default function GameZone({ zoneId, title, count, Icon, children }: GameZ
   return (
     // 'ref={setNodeRef}' designa esta div como uma área "soltável"
     <div ref={setNodeRef}>
-      <Card className={cn(
-        "bg-neutral-800/50 border-neutral-700 text-center transition-all duration-200",
-        // Adiciona um brilho quando uma carta está sobre a zona
-        isOver && "border-amber-400 shadow-lg shadow-amber-500/20"
-      )}>
+      <Card
+        className={cn(
+          'bg-neutral-800/50 border-neutral-700 text-center transition-all duration-200',
+          // Adiciona um brilho quando uma carta está sobre a zona
+          isOver && 'border-amber-400 shadow-lg shadow-amber-500/20',
+        )}
+      >
         <CardHeader className="p-2">
           <CardTitle className="text-sm font-medium text-amber-400 flex items-center justify-center gap-2">
             <Icon size={16} />

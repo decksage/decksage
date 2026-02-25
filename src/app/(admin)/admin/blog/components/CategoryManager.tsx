@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useTransition } from 'react';
 import { createCategory } from '@/app/actions/categoryActions';
@@ -18,7 +18,10 @@ interface CategoryManagerProps {
   selectedCategoryIds: Set<string>;
 }
 
-export default function CategoryManager({ allCategories, selectedCategoryIds }: CategoryManagerProps) {
+export default function CategoryManager({
+  allCategories,
+  selectedCategoryIds,
+}: CategoryManagerProps) {
   // AJUSTE: Usaremos useTransition para o estado de loading do botão de adicionar
   const [isPending, startTransition] = useTransition();
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -53,22 +56,31 @@ export default function CategoryManager({ allCategories, selectedCategoryIds }: 
           disabled={isPending}
         />
         {/* AJUSTE: O botão agora é do tipo "button" e usa onClick */}
-        <Button 
-          type="button" 
-          size="sm" 
-          className="bg-amber-600 hover:bg-amber-700" 
+        <Button
+          type="button"
+          size="sm"
+          className="bg-amber-600 hover:bg-amber-700"
           disabled={isPending || !newCategoryName.trim()}
           onClick={handleCreateCategory}
         >
-          {isPending ? <Loader2 size={16} className="animate-spin" /> : <><Plus size={16} className="mr-1" /> Adicionar</>}
+          {isPending ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <>
+              <Plus size={16} className="mr-1" /> Adicionar
+            </>
+          )}
         </Button>
       </div>
 
       {/* A lista de checkboxes continua a mesma */}
       <div className="space-y-2 max-h-60 overflow-y-auto p-1 border border-neutral-700 rounded-md">
         {allCategories.length > 0 ? (
-          allCategories.map(category => (
-            <div key={category.id} className="flex items-center gap-2 p-2 rounded hover:bg-neutral-800">
+          allCategories.map((category) => (
+            <div
+              key={category.id}
+              className="flex items-center gap-2 p-2 rounded hover:bg-neutral-800"
+            >
               <input
                 type="checkbox"
                 id={`category-${category.id}`}
@@ -77,7 +89,10 @@ export default function CategoryManager({ allCategories, selectedCategoryIds }: 
                 defaultChecked={selectedCategoryIds.has(category.id)}
                 className="h-4 w-4 rounded border-gray-300 text-amber-600 focus:ring-amber-500 bg-neutral-900"
               />
-              <Label htmlFor={`category-${category.id}`} className="text-sm font-medium text-neutral-300 cursor-pointer">
+              <Label
+                htmlFor={`category-${category.id}`}
+                className="text-sm font-medium text-neutral-300 cursor-pointer"
+              >
                 {category.name}
               </Label>
             </div>

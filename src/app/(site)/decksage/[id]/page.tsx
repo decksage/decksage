@@ -24,7 +24,9 @@ export default async function SiteDeckPage(props: PageProps) {
   const { id } = params;
 
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: deckData, error: deckError } = await supabase
     .from('decks')
@@ -33,7 +35,7 @@ export default async function SiteDeckPage(props: PageProps) {
     .single();
 
   if (deckError || !deckData) {
-    console.error("Erro ao buscar deck:", deckError);
+    console.error('Erro ao buscar deck:', deckError);
     notFound();
   }
 
@@ -59,7 +61,7 @@ export default async function SiteDeckPage(props: PageProps) {
   const allCardNames = [
     ...(deck.decklist.commander || []),
     ...deck.decklist.mainboard,
-    ...(deck.decklist.sideboard || [])
+    ...(deck.decklist.sideboard || []),
   ].map((c: any) => c.name);
 
   const scryfallCards = await fetchCardsByNames([...new Set(allCardNames)]);
@@ -94,10 +96,7 @@ export default async function SiteDeckPage(props: PageProps) {
         {/* Conteúdo da página */}
         <main className="space-y-12">
           <section id="decklist">
-            <DecklistVisualizer
-              decklist={deck.decklist}
-              cardDataMap={cardDataMap}
-            />
+            <DecklistVisualizer decklist={deck.decklist} cardDataMap={cardDataMap} />
           </section>
 
           <section id="analysis">

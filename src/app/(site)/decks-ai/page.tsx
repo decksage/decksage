@@ -7,13 +7,14 @@ import PaginationControls from './components/PaginationControls';
 
 export const metadata = {
   title: 'Biblioteca de Decks | MTG Deck Builder',
-  description: 'Explore decks de Magic: The Gathering para diversos formatos, criados e analisados pela nossa comunidade e equipe.',
+  description:
+    'Explore decks de Magic: The Gathering para diversos formatos, criados e analisados pela nossa comunidade e equipe.',
 };
 
 export const dynamic = 'force-dynamic';
 
 interface PageProps {
-  searchParams?: { format?: string; page?: string; }
+  searchParams?: { format?: string; page?: string };
 }
 
 export default async function DecksPage(props: any) {
@@ -28,11 +29,11 @@ export default async function DecksPage(props: any) {
   const { data: decks, error } = await supabase.rpc('search_public_site_decks', {
     format_filter: formatFilter,
     page_size: ITEMS_PER_PAGE,
-    page_offset: offset
+    page_offset: offset,
   });
 
   if (error) {
-    console.error("Erro ao buscar decks do site:", error);
+    console.error('Erro ao buscar decks do site:', error);
   }
 
   // Busca decks da comunidade (públicos e com perfil do usuário)
@@ -43,7 +44,8 @@ export default async function DecksPage(props: any) {
 
   let query = supabase
     .from('decks')
-    .select(`
+    .select(
+      `
       id,
       name,
       format,
@@ -53,7 +55,8 @@ export default async function DecksPage(props: any) {
         username,
         avatar_url
       )
-    `)
+    `,
+    )
     .eq('is_public', true)
     .order('created_at', { ascending: false })
     .limit(ITEMS_PER_PAGE); // Por enquanto limitamos a home
@@ -65,7 +68,7 @@ export default async function DecksPage(props: any) {
   const { data: communityDecks, error: communityError } = await query;
 
   if (communityError) {
-    console.error("Erro ao buscar decks da comunidade:", communityError);
+    console.error('Erro ao buscar decks da comunidade:', communityError);
   }
 
   const totalItems = decks?.[0]?.total_count || 0;
@@ -75,9 +78,12 @@ export default async function DecksPage(props: any) {
     <div className="min-h-screen bg-neutral-950 text-white">
       <div className="container mx-auto px-6 py-12">
         <header className="text-center mb-10">
-          <h1 className="text-5xl font-extrabold text-amber-500 tracking-tight">Biblioteca de Decks</h1>
+          <h1 className="text-5xl font-extrabold text-amber-500 tracking-tight">
+            Biblioteca de Decks
+          </h1>
           <p className="text-lg text-neutral-400 mt-2 max-w-2xl mx-auto">
-            Explore dezenas de decks para todos os formatos, criados pela nossa IA e pela comunidade.
+            Explore dezenas de decks para todos os formatos, criados pela nossa IA e pela
+            comunidade.
           </p>
         </header>
 
@@ -116,17 +122,16 @@ export default async function DecksPage(props: any) {
               </div>
             ) : (
               <div className="text-center py-12 px-6 bg-neutral-900/50 rounded-lg border border-neutral-800">
-                <p className="text-neutral-400">Nenhum deck da comunidade encontrado ainda. Seja o primeiro a publicar!</p>
+                <p className="text-neutral-400">
+                  Nenhum deck da comunidade encontrado ainda. Seja o primeiro a publicar!
+                </p>
               </div>
             )}
           </section>
         </div>
 
         <div className="mt-12">
-          <PaginationControls
-            totalPages={totalPages}
-            currentPage={currentPage}
-          />
+          <PaginationControls totalPages={totalPages} currentPage={currentPage} />
         </div>
       </div>
     </div>

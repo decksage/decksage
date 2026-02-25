@@ -17,17 +17,18 @@ export default function LatestPostsSection({ posts }: { posts: any[] }) {
             Últimas do Nosso Blog
           </h2>
           <p className="mt-2 text-lg text-neutral-400 max-w-2xl mx-auto">
-            Análises, guias de estratégia e as últimas novidades do universo de Magic: The Gathering.
+            Análises, guias de estratégia e as últimas novidades do universo de Magic: The
+            Gathering.
           </p>
         </div>
 
         {/* Grid de Posts */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map(post => (
+          {posts.map((post) => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
-        
+
         {/* Botão de Call-to-Action (CTA) */}
         <div className="mt-12 text-center">
           <Link href="/blog">

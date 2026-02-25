@@ -1,30 +1,30 @@
-'use client'
+'use client';
 
 import { generateEmailHTML } from '@/lib/email-template'; // We need a client-safe version or just replicate logic
 import { useEffect, useRef } from 'react';
 
 interface EmailPreviewProps {
-    content: string;
+  content: string;
 }
 
 // Replicating basic structure for client-side preview without importing server-only code if needed
-// Or ensuring generateEmailHTML is shared/safe. 
+// Or ensuring generateEmailHTML is shared/safe.
 // Assuming it is safe as it just returns a string.
 
 export default function EmailPreview({ content }: EmailPreviewProps) {
-    const iframeRef = useRef<HTMLIFrameElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    useEffect(() => {
-        if (iframeRef.current) {
-            // We use the helper function but mocked because we are on client. 
-            // Actually, let's just inline a simple preview wrapper or fetch the real template if possible.
-            // Ideally, we import verify standard template structure.
+  useEffect(() => {
+    if (iframeRef.current) {
+      // We use the helper function but mocked because we are on client.
+      // Actually, let's just inline a simple preview wrapper or fetch the real template if possible.
+      // Ideally, we import verify standard template structure.
 
-            // Simplified Client Preview Template matching the server one.
-            const currentYear = new Date().getFullYear();
-            const logoUrl = '/decksage.png'; // Local path for preview
+      // Simplified Client Preview Template matching the server one.
+      const currentYear = new Date().getFullYear();
+      const logoUrl = '/decksage.png'; // Local path for preview
 
-            const html = `
+      const html = `
             <!DOCTYPE html>
             <html lang="pt-BR">
             <head>
@@ -53,22 +53,18 @@ export default function EmailPreview({ content }: EmailPreviewProps) {
             </html>
         `;
 
-            const doc = iframeRef.current.contentDocument;
-            if (doc) {
-                doc.open();
-                doc.write(html);
-                doc.close();
-            }
-        }
-    }, [content]);
+      const doc = iframeRef.current.contentDocument;
+      if (doc) {
+        doc.open();
+        doc.write(html);
+        doc.close();
+      }
+    }
+  }, [content]);
 
-    return (
-        <div className="border border-neutral-700 rounded-lg overflow-hidden bg-white h-[500px]">
-            <iframe
-                ref={iframeRef}
-                title="Email Preview"
-                className="w-full h-full border-0"
-            />
-        </div>
-    );
+  return (
+    <div className="border border-neutral-700 rounded-lg overflow-hidden bg-white h-[500px]">
+      <iframe ref={iframeRef} title="Email Preview" className="w-full h-full border-0" />
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 // app/components/deck/CardKanbanView.tsx
-'use client'
+'use client';
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,22 +25,25 @@ type ColumnKey = '0' | '1' | '2' | '3' | '4' | '5' | '6+' | 'Terrenos';
 
 export default function CardKanbanView({ cards }: CardKanbanViewProps) {
   // Agrupa as cartas por custo de mana (CMC)
-  const groupedCards = cards.reduce((acc, card) => {
-    const isLand = card.type_line.toLowerCase().includes('land');
-    let key: ColumnKey = '6+'; // Chave padrão para CMC alto
+  const groupedCards = cards.reduce(
+    (acc, card) => {
+      const isLand = card.type_line.toLowerCase().includes('land');
+      let key: ColumnKey = '6+'; // Chave padrão para CMC alto
 
-    if (isLand) {
-      key = 'Terrenos';
-    } else if (card.cmc <= 5) {
-      key = card.cmc.toString() as ColumnKey;
-    }
-    
-    if (!acc[key]) {
-      acc[key] = [];
-    }
-    acc[key].push(card);
-    return acc;
-  }, {} as Record<ColumnKey, KanbanCardData[]>);
+      if (isLand) {
+        key = 'Terrenos';
+      } else if (card.cmc <= 5) {
+        key = card.cmc.toString() as ColumnKey;
+      }
+
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(card);
+      return acc;
+    },
+    {} as Record<ColumnKey, KanbanCardData[]>,
+  );
 
   // Define a ordem das colunas
   const columns: ColumnKey[] = ['0', '1', '2', '3', '4', '5', '6+', 'Terrenos'];
@@ -54,7 +57,9 @@ export default function CardKanbanView({ cards }: CardKanbanViewProps) {
               <h3 className="text-lg font-semibold text-amber-500 mb-3 text-center border-b border-neutral-700 pb-1">
                 {columnKey === 'Terrenos' ? 'Terrenos' : `CMC ${columnKey}`}
               </h3>
-              <div className="relative min-h-[400px] space-y-[-120px]"> {/* Empilhamento negativo */}
+              <div className="relative min-h-[400px] space-y-[-120px]">
+                {' '}
+                {/* Empilhamento negativo */}
                 {groupedCards[columnKey] && groupedCards[columnKey].length > 0 ? (
                   groupedCards[columnKey]
                     .sort((a, b) => a.name.localeCompare(b.name))
@@ -65,20 +70,21 @@ export default function CardKanbanView({ cards }: CardKanbanViewProps) {
                       >
                         <div className="relative">
                           {card.count > 1 && (
-                            <Badge
-                              className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-20 flex items-center justify-center p-0"
-                            >
+                            <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-20 flex items-center justify-center p-0">
                               {card.count}
                             </Badge>
                           )}
-                           <Image
-                              src={card.image_uris?.normal || `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`}
-                              alt={card.name}
-                              width={265}
-                              height={370}
-                              unoptimized
-                              className="w-full object-contain aspect-[5/7] rounded-md shadow-lg"
-                            />
+                          <Image
+                            src={
+                              card.image_uris?.normal ||
+                              `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`
+                            }
+                            alt={card.name}
+                            width={265}
+                            height={370}
+                            unoptimized
+                            className="w-full object-contain aspect-[5/7] rounded-md shadow-lg"
+                          />
                         </div>
                       </div>
                     ))

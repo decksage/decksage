@@ -83,12 +83,8 @@ export default function LoginPage() {
     >
       <div className="w-full max-w-md p-8 space-y-8 bg-neutral-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-neutral-700/60">
         <header className="text-center">
-          <h1 className="text-4xl font-extrabold text-amber-500">
-            Bem-vindo de volta!
-          </h1>
-          <p className="text-neutral-300 mt-2">
-            Faça login para continuar a sua jornada.
-          </p>
+          <h1 className="text-4xl font-extrabold text-amber-500">Bem-vindo de volta!</h1>
+          <p className="text-neutral-300 mt-2">Faça login para continuar a sua jornada.</p>
         </header>
 
         <Button
@@ -108,7 +104,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleSignIn} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-neutral-400">Email</Label>
+            <Label htmlFor="email" className="text-neutral-400">
+              Email
+            </Label>
             <Input
               id="email"
               type="email"
@@ -121,7 +119,9 @@ export default function LoginPage() {
           </div>
           <div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-neutral-400">Senha</Label>
+              <Label htmlFor="password" className="text-neutral-400">
+                Senha
+              </Label>
               <Link
                 href="/forgot-password"
                 className="text-xs font-medium text-amber-500 hover:underline"

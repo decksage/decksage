@@ -12,12 +12,12 @@ type AdConfig = {
   custom_link_url?: string | null;
   custom_alt_text?: string | null;
   slot_name?: string | null;
-}
+};
 
 export default function DynamicAdSlot({
   adConfig,
   className,
-  style
+  style,
 }: {
   adConfig: AdConfig | null;
   className?: string;
@@ -43,7 +43,13 @@ export default function DynamicAdSlot({
   // Renderiza o anúncio particular (custom)
   if (adConfig.ad_type === 'custom' && adConfig.custom_image_url && adConfig.custom_link_url) {
     return (
-      <Link href={adConfig.custom_link_url} target="_blank" rel="noopener noreferrer" className={`block w-full ${className || ''}`} style={style}>
+      <Link
+        href={adConfig.custom_link_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`block w-full ${className || ''}`}
+        style={style}
+      >
         <Image
           src={adConfig.custom_image_url}
           alt={adConfig.custom_alt_text || 'Anúncio'}

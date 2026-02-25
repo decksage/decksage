@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useActionState, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -12,7 +12,11 @@ function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending}>
-      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <MessageSquare className="mr-2 h-4 w-4" />}
+      {pending ? (
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      ) : (
+        <MessageSquare className="mr-2 h-4 w-4" />
+      )}
       Adicionar Comentário
     </Button>
   );
@@ -29,12 +33,12 @@ export default function AddCommentForm({ feedbackId }: { feedbackId: string }) {
   // O efeito agora verifica o estado de sucesso para limpar o formulário e mostrar um toast
   useEffect(() => {
     if (state?.message) {
-        if (state.success) {
-            toast.success(state.message);
-            formRef.current?.reset();
-        } else {
-            toast.error(state.message);
-        }
+      if (state.success) {
+        toast.success(state.message);
+        formRef.current?.reset();
+      } else {
+        toast.error(state.message);
+      }
     }
   }, [state]);
 

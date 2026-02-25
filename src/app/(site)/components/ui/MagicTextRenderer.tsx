@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import ManaCost from "@/components/ui/ManaCost";
+import ManaCost from '@/components/ui/ManaCost';
 
 interface MagicTextRendererProps {
   text: string | null | undefined;
@@ -15,7 +15,7 @@ export default function MagicTextRenderer({ text }: MagicTextRendererProps) {
     <div className="space-y-3 font-serif text-lg leading-relaxed text-neutral-300">
       {paragraphs.map((paragraph, pIndex) => {
         const parts = paragraph.split(/(\{[^}]+\})/g);
-        
+
         return (
           <p key={pIndex}>
             {parts.map((part, partIndex) => {

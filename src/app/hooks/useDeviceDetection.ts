@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 

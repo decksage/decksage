@@ -22,7 +22,7 @@ export default [
       sourceType: 'module',
       globals: {
         process: 'readonly', // ✅ Permite uso de process.env
-        fetch: 'readonly',    // ✅ Permite uso de fetch no server e client
+        fetch: 'readonly', // ✅ Permite uso de fetch no server e client
         Request: 'readonly',
         Response: 'readonly',
       },

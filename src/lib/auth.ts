@@ -11,7 +11,9 @@ import { cache } from 'react';
  */
 export const checkUserRole = cache(async (role: string): Promise<boolean> => {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return false; // Usuário não está logado

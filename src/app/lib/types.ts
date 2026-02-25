@@ -13,7 +13,6 @@ export interface DeckCard {
 
 // Em: src/app/lib/scryfall.ts (Exemplo)
 
-
 // A definição completa e única para uma carta do Scryfall
 export interface ScryfallCard {
   card_faces?: {
@@ -135,7 +134,7 @@ export interface DeckFromDB {
     strengths: string[];
     weaknesses: string[];
     suggestions: string[];
-  }
+  };
 }
 
 // Tipo para os dados do perfil do criador
@@ -156,7 +155,6 @@ export interface DeckDetailViewProps {
   isInitiallySaved: boolean;
   userPhysicalCollection: Map<string, number>; // ADICIONAR ESTA LINHA
 }
-
 
 export interface User {
   id: string;

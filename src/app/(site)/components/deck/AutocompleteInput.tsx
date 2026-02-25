@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 // app/components/deck/AutocompleteInput.tsx
-'use client'
+'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
@@ -20,7 +20,11 @@ interface AutocompleteInputProps {
   onClear?: () => void;
 }
 
-export default function AutocompleteInput({ onSelect, placeholder, onClear }: AutocompleteInputProps) {
+export default function AutocompleteInput({
+  onSelect,
+  placeholder,
+  onClear,
+}: AutocompleteInputProps) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +43,7 @@ export default function AutocompleteInput({ onSelect, placeholder, onClear }: Au
         const translateResponse = await fetch('/api/translate-search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: query, type: 'query' })
+          body: JSON.stringify({ text: query, type: 'query' }),
         });
 
         if (translateResponse.ok) {
@@ -49,19 +53,20 @@ export default function AutocompleteInput({ onSelect, placeholder, onClear }: Au
           }
         }
       } catch (e) {
-        console.error("Falha ao contatar a API de tradução. A usar o termo original.", e);
+        console.error('Falha ao contatar a API de tradução. A usar o termo original.', e);
       }
 
       const finalScryfallQuery = `name:"${searchTerm}"`;
       const results = await searchScryfallCards(finalScryfallQuery);
 
-      const uniqueSuggestions = Array.from(new Map(results.map(card => [card.id, card])).values());
+      const uniqueSuggestions = Array.from(
+        new Map(results.map((card) => [card.id, card])).values(),
+      );
 
       setSuggestions(uniqueSuggestions);
       setShowSuggestions(true);
-
     } catch (error) {
-      console.error("Erro geral na busca do Autocomplete:", error);
+      console.error('Erro geral na busca do Autocomplete:', error);
       setSuggestions([]);
     } finally {
       setIsLoading(false);
@@ -74,8 +79,8 @@ export default function AutocompleteInput({ onSelect, placeholder, onClear }: Au
         setShowSuggestions(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleSelectSuggestion = (card: ScryfallCard) => {
@@ -119,7 +124,11 @@ export default function AutocompleteInput({ onSelect, placeholder, onClear }: Au
           onClick={handleSearch}
           disabled={isLoading}
         >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+          {isLoading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Search className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
@@ -146,7 +155,9 @@ export default function AutocompleteInput({ onSelect, placeholder, onClear }: Au
               </li>
             ))
           ) : (
-            <li className="px-3 py-2 text-sm text-neutral-400 text-center">Nenhuma carta encontrada.</li>
+            <li className="px-3 py-2 text-sm text-neutral-400 text-center">
+              Nenhuma carta encontrada.
+            </li>
           )}
         </ul>
       )}

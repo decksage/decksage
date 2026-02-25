@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
-'use client'
+'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import { BrainCircuit, BookCopy, Dices, Hourglass, Swords, Gem, Sparkles } from "lucide-react";
+} from '@/components/ui/accordion';
+import { BrainCircuit, BookCopy, Dices, Hourglass, Swords, Gem, Sparkles } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 interface HowToPlayGuideProps {
@@ -16,29 +16,31 @@ interface HowToPlayGuideProps {
 }
 
 const sectionIcons: Record<string, React.ReactElement> = {
-  "Visão Geral da Estratégia": <BookCopy className="h-5 w-5 text-amber-400" />,
-  "Postura de Mulligan": <Dices className="h-5 w-5 text-amber-400" />,
-  "Jogo Inicial (Turnos 1-3)": <Hourglass className="h-5 w-5 text-amber-400" />,
-  "Meio de Jogo (Turnos 4-6)": <Swords className="h-5 w-5 text-amber-400" />,
-  "Fim de Jogo (Turnos 7+)": <Gem className="h-5 w-5 text-amber-400" />,
-  "Dicas e Sinergias": <Sparkles className="h-5 w-5 text-amber-400" />,
+  'Visão Geral da Estratégia': <BookCopy className="h-5 w-5 text-amber-400" />,
+  'Postura de Mulligan': <Dices className="h-5 w-5 text-amber-400" />,
+  'Jogo Inicial (Turnos 1-3)': <Hourglass className="h-5 w-5 text-amber-400" />,
+  'Meio de Jogo (Turnos 4-6)': <Swords className="h-5 w-5 text-amber-400" />,
+  'Fim de Jogo (Turnos 7+)': <Gem className="h-5 w-5 text-amber-400" />,
+  'Dicas e Sinergias': <Sparkles className="h-5 w-5 text-amber-400" />,
 };
 
 const parseGuide = (text: string): { title: string; content: string }[] => {
   if (!text) return [];
   const sections = text.trim().split(/\n(?=###\s)/);
-  return sections.map(section => {
-    const cleanSection = section.replace(/^###\s/, '').trim();
-    const lines = cleanSection.split('\n');
-    const title = lines.shift() || 'Seção';
-    const content = lines.join('\n').trim();
-    return { title, content };
-  }).filter(section => section.title && section.content);
+  return sections
+    .map((section) => {
+      const cleanSection = section.replace(/^###\s/, '').trim();
+      const lines = cleanSection.split('\n');
+      const title = lines.shift() || 'Seção';
+      const content = lines.join('\n').trim();
+      return { title, content };
+    })
+    .filter((section) => section.title && section.content);
 };
 
 export default function HowToPlayGuide({ guideText }: HowToPlayGuideProps) {
   if (!guideText) return null;
-  
+
   const guideSections = parseGuide(guideText);
   const defaultValue = guideSections.length > 0 ? [guideSections[0].title] : [];
 
@@ -46,7 +48,7 @@ export default function HowToPlayGuide({ guideText }: HowToPlayGuideProps) {
     <Card className="bg-neutral-900 border-neutral-800">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-xl">
-          <BrainCircuit size={20}/> Guia de Como Jogar
+          <BrainCircuit size={20} /> Guia de Como Jogar
         </CardTitle>
       </CardHeader>
       <CardContent>

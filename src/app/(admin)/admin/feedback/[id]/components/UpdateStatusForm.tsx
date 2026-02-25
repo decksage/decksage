@@ -1,8 +1,14 @@
-'use client'
+'use client';
 
 import { useTransition } from 'react';
 // import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { updateFeedbackStatus } from '@/app/actions/feedbackActions';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
@@ -19,7 +25,7 @@ export default function UpdateStatusForm({ feedbackId, currentStatus }: UpdateSt
     startTransition(async () => {
       try {
         await updateFeedbackStatus(feedbackId, newStatus as any);
-        toast.success("Status do feedback atualizado!");
+        toast.success('Status do feedback atualizado!');
       } catch (error: any) {
         toast.error(error.message);
       }

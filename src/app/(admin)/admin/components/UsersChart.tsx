@@ -34,7 +34,11 @@ export default function UsersChart({ data }: { data: ChartData[] }) {
             />
             <Tooltip
               cursor={{ fill: '#404040', radius: 4 }}
-              contentStyle={{ backgroundColor: '#171717', border: '1px solid #262626', color: '#f5f5f5' }}
+              contentStyle={{
+                backgroundColor: '#171717',
+                border: '1px solid #262626',
+                color: '#f5f5f5',
+              }}
             />
             <Bar dataKey="total" fill="#f59e0b" radius={[4, 4, 0, 0]} />
           </BarChart>

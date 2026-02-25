@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-'use client'
+'use client';
 
 import { useState } from 'react';
 import { createClient } from '@/app/utils/supabase/client';
@@ -30,26 +30,30 @@ export default function CoverImageEditor({ deckId, initialImageUrl }: CoverImage
     toast.promise(updateSiteDeckCoverImage(deckId, newUrl), {
       loading: 'Atualizando imagem de capa...',
       success: 'Imagem de capa atualizada!',
-      error: 'Falha ao atualizar a imagem.'
+      error: 'Falha ao atualizar a imagem.',
     });
   };
 
   const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     if (!user || !event.target.files || event.target.files.length === 0) return;
-    
+
     const file = event.target.files[0];
     const filePath = `covers/${user.id}/${deckId}-${Date.now()}`;
-    
+
     setIsUploading(true);
     try {
       await supabase.storage.from('covers').upload(filePath, file, { upsert: true });
-      const { data: { publicUrl } } = supabase.storage.from('covers').getPublicUrl(filePath);
-      if (!publicUrl) throw new Error("URL pública não encontrada.");
-      
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('covers').getPublicUrl(filePath);
+      if (!publicUrl) throw new Error('URL pública não encontrada.');
+
       await updateSiteDeckCoverImage(deckId, publicUrl);
       setCoverImageUrl(publicUrl);
-      toast.success("Upload da imagem de capa concluído!");
+      toast.success('Upload da imagem de capa concluído!');
     } catch (error: any) {
       toast.error(`Erro no upload: ${error.message}`);
     } finally {
@@ -69,23 +73,37 @@ export default function CoverImageEditor({ deckId, initialImageUrl }: CoverImage
             <Image src={coverImageUrl} alt="Imagem de capa atual" fill className="object-cover" />
           ) : (
             <div className="w-full h-full flex flex-col items-center justify-center text-neutral-500">
-                <ImageIcon size={32}/>
-                <p className="text-sm mt-2">Sem imagem de capa</p>
+              <ImageIcon size={32} />
+              <p className="text-sm mt-2">Sem imagem de capa</p>
             </div>
           )}
         </div>
         <div>
           <Label>Escolher arte de uma carta</Label>
-          <AutocompleteInput onSelect={handleSelectCard} placeholder="Buscar por nome de carta..." />
+          <AutocompleteInput
+            onSelect={handleSelectCard}
+            placeholder="Buscar por nome de carta..."
+          />
         </div>
         <div className="text-center text-xs text-neutral-500">OU</div>
         <div>
           <Label htmlFor="cover-upload" className="w-full">
             <Button asChild variant="outline" className="w-full cursor-pointer">
               <div>
-                {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                {isUploading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Upload className="mr-2 h-4 w-4" />
+                )}
                 <span>Fazer Upload de Imagem</span>
-                <input id="cover-upload" type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isUploading} />
+                <input
+                  id="cover-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleUpload}
+                  disabled={isUploading}
+                />
               </div>
             </Button>
           </Label>

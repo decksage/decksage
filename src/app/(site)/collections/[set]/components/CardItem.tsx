@@ -12,16 +12,24 @@ export function CardItem({ card }: CardItemProps) {
   const [isFlipped, setIsFlipped] = useState(false);
 
   // Check if double-faced
-  const isDoubleFaced = card.card_faces && card.card_faces.length > 1 && card.card_faces[0].image_uris && card.card_faces[1].image_uris;
+  const isDoubleFaced =
+    card.card_faces &&
+    card.card_faces.length > 1 &&
+    card.card_faces[0].image_uris &&
+    card.card_faces[1].image_uris;
 
   // Get images
-  const frontImage = isDoubleFaced ? card.card_faces[0].image_uris?.normal : card.image_uris?.normal;
+  const frontImage = isDoubleFaced
+    ? card.card_faces[0].image_uris?.normal
+    : card.image_uris?.normal;
   const backImage = isDoubleFaced ? card.card_faces[1].image_uris?.normal : null;
 
   // Handling cases where single faced card might be missing image (e.g. text-only promo, placeholder)
   const imageToDisplay = isDoubleFaced
-    ? (isFlipped ? backImage : frontImage)
-    : (card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal);
+    ? isFlipped
+      ? backImage
+      : frontImage
+    : card.image_uris?.normal || card.card_faces?.[0]?.image_uris?.normal;
 
   const handleFlip = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent link Click
@@ -33,7 +41,6 @@ export function CardItem({ card }: CardItemProps) {
     <div className="relative group perspective-1000">
       <div className="bg-neutral-900 rounded-xl p-2 transition-all duration-300 shadow-sm hover:shadow-md border border-neutral-800 hover:border-amber-500/30">
         <div className="relative aspect-[63/88] w-full">
-
           {isDoubleFaced && (
             <Button
               size="icon"
@@ -47,7 +54,12 @@ export function CardItem({ card }: CardItemProps) {
           )}
 
           <Link href={`/card/cardId/${card.id}`}>
-            <div className={cn("w-full h-full transition-all duration-500 preserve-3d", isFlipped && isDoubleFaced ? "rotate-y-180" : "")}>
+            <div
+              className={cn(
+                'w-full h-full transition-all duration-500 preserve-3d',
+                isFlipped && isDoubleFaced ? 'rotate-y-180' : '',
+              )}
+            >
               {imageToDisplay ? (
                 <div className="relative w-full h-full">
                   {/* Image with Fade effect for flip */}
@@ -55,8 +67,8 @@ export function CardItem({ card }: CardItemProps) {
                     src={imageToDisplay}
                     alt={card.name}
                     className={cn(
-                      "rounded-lg w-full h-full object-cover shadow-md transition-opacity duration-300",
-                      isFlipped && isDoubleFaced ? "rotate-y-180" : ""
+                      'rounded-lg w-full h-full object-cover shadow-md transition-opacity duration-300',
+                      isFlipped && isDoubleFaced ? 'rotate-y-180' : '',
                     )}
                     loading="lazy"
                   />

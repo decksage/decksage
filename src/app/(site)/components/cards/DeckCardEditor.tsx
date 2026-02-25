@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
 
 interface DeckCardEditorProps {
   card: {
@@ -15,12 +15,7 @@ interface DeckCardEditorProps {
   onRemove: () => void;
 }
 
-export default function DeckCardEditor({
-  card,
-  count,
-  onChange,
-  onRemove,
-}: DeckCardEditorProps) {
+export default function DeckCardEditor({ card, count, onChange, onRemove }: DeckCardEditorProps) {
   return (
     <div className="flex items-center gap-2">
       {card.image_url && (

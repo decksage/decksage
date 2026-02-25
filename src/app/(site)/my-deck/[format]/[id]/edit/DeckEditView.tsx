@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // app/my-deck/[format]/[id]/edit/DeckEditView.tsx
-'use client'
+'use client';
 
 import { useActionState, useState, useEffect, useMemo, useCallback } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -44,20 +44,26 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
   const [name, setName] = useState(initialDeck.name);
   const [description, setDescription] = useState(initialDeck.description || '');
   const [isPublic, setIsPublic] = useState(initialDeck.is_public);
-  const [coverImageUrl, setCoverImageUrl] = useState(initialDeck.representative_card_image_url || '');
+  const [coverImageUrl, setCoverImageUrl] = useState(
+    initialDeck.representative_card_image_url || '',
+  );
 
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   /* AJUSTE: hoveredCard agora suporta string ou array de strings para cartas dupla-face */
-  const [hoveredCard, setHoveredCard] = useState<{ imageUrl: string | string[]; x: number; y: number } | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<{
+    imageUrl: string | string[];
+    x: number;
+    y: number;
+  } | null>(null);
 
   const [collection, setCollection] = useState<Map<string, number>>(new Map());
 
   const [cards, setCards] = useState<EditableCard[]>(() => {
-    const scryfallMap = new Map(initialScryfallCards.map(c => [c.name, c]));
+    const scryfallMap = new Map(initialScryfallCards.map((c) => [c.name, c]));
 
     const allDeckCards = [
-      ...initialDeck.decklist.mainboard.map(card => ({ ...card, is_sideboard: false })),
-      ...(initialDeck.decklist.sideboard || []).map(card => ({ ...card, is_sideboard: true })),
+      ...initialDeck.decklist.mainboard.map((card) => ({ ...card, is_sideboard: false })),
+      ...(initialDeck.decklist.sideboard || []).map((card) => ({ ...card, is_sideboard: true })),
     ];
 
     return allDeckCards.reduce<EditableCard[]>((acc, deckCard) => {
@@ -76,14 +82,14 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
   const [commanderName, setCommanderName] = useState(() =>
     initialDeck.format === 'commander' && initialDeck.decklist.mainboard.length > 0
       ? initialDeck.decklist.mainboard[0].name
-      : ''
+      : '',
   );
 
   // AJUSTE CRÍTICO: A lógica das 'cartasFaltantes' foi corrigida para incluir
   // todos os dados necessários para a exportação da imagem (ID e URLs da imagem).
   const missingCards = useMemo(() => {
     return cards
-      .map(cardInDeck => {
+      .map((cardInDeck) => {
         const ownedCount = collection.get(cardInDeck.id) || 0;
         const neededCount = cardInDeck.count;
         const missingCount = Math.max(0, neededCount - ownedCount);
@@ -95,7 +101,7 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
           image_uris: cardInDeck.image_uris, // URL da imagem para o componente de exportação
         };
       })
-      .filter(card => card.missing > 0);
+      .filter((card) => card.missing > 0);
   }, [cards, collection]);
 
   useEffect(() => {
@@ -105,12 +111,12 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
         .select('card_scryfall_id, quantity');
 
       if (error) {
-        console.error("Erro ao buscar coleção do usuário:", error);
-        toast.error("Não foi possível carregar sua coleção.");
+        console.error('Erro ao buscar coleção do usuário:', error);
+        toast.error('Não foi possível carregar sua coleção.');
         return;
       }
       if (data) {
-        const collectionMap = new Map(data.map(item => [item.card_scryfall_id, item.quantity]));
+        const collectionMap = new Map(data.map((item) => [item.card_scryfall_id, item.quantity]));
         setCollection(collectionMap);
       }
     }
@@ -124,7 +130,7 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
   }, [state]);
 
   const handleCollectionChange = useCallback((cardId: string, newQuantity: number) => {
-    setCollection(prevCollection => {
+    setCollection((prevCollection) => {
       const newCollection = new Map(prevCollection);
       if (newQuantity > 0) {
         newCollection.set(cardId, newQuantity);
@@ -137,16 +143,14 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
 
   const addCard = (card: ScryfallCard, isSideboard = false) => {
     if (typeof card === 'string' || !card.id) {
-      toast.error("Erro: A carta selecionada é inválida.");
+      toast.error('Erro: A carta selecionada é inválida.');
       return;
     }
 
-    setCards(prev => {
-      const existingCard = prev.find(c => c.id === card.id);
+    setCards((prev) => {
+      const existingCard = prev.find((c) => c.id === card.id);
       if (existingCard) {
-        return prev.map(c =>
-          c.id === card.id ? { ...c, count: c.count + 1 } : c
-        );
+        return prev.map((c) => (c.id === card.id ? { ...c, count: c.count + 1 } : c));
       }
       const newCard: EditableCard = {
         ...card,
@@ -160,9 +164,13 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
   /* AJUSTE: A função changeCardCount precisa receber o objeto da carta ou ID+Sideboard */
   const changeCardCount = (cardId: string, isSideboard: boolean, newCount: number) => {
     if (newCount <= 0) {
-      setCards(prev => prev.filter(c => !(c.id === cardId && c.is_sideboard === isSideboard)));
+      setCards((prev) => prev.filter((c) => !(c.id === cardId && c.is_sideboard === isSideboard)));
     } else {
-      setCards(prev => prev.map(c => (c.id === cardId && c.is_sideboard === isSideboard) ? { ...c, count: newCount } : c));
+      setCards((prev) =>
+        prev.map((c) =>
+          c.id === cardId && c.is_sideboard === isSideboard ? { ...c, count: newCount } : c,
+        ),
+      );
     }
   };
 
@@ -188,10 +196,12 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
   };
 
   const handleCoverImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user || !event.target.files || event.target.files.length === 0) {
-      toast.error("É preciso estar logado para carregar imagens.");
+      toast.error('É preciso estar logado para carregar imagens.');
       return;
     }
 
@@ -208,15 +218,20 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
         upsert: true,
       });
 
-      if (uploadError) { throw uploadError; }
+      if (uploadError) {
+        throw uploadError;
+      }
 
-      const { data: { publicUrl } } = supabase.storage.from(bucket).getPublicUrl(filePath);
-      if (!publicUrl) { throw new Error("Não foi possível obter o URL público da imagem."); }
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from(bucket).getPublicUrl(filePath);
+      if (!publicUrl) {
+        throw new Error('Não foi possível obter o URL público da imagem.');
+      }
 
       await updateDeckCoverImage(initialDeck.id, publicUrl);
       setCoverImageUrl(publicUrl);
-      toast.success("Imagem de capa carregada com sucesso!");
-
+      toast.success('Imagem de capa carregada com sucesso!');
     } catch (error: any) {
       toast.error(`Erro no upload: ${error.message}`);
     } finally {
@@ -234,16 +249,37 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
         >
           {Array.isArray(hoveredCard.imageUrl) ? (
             hoveredCard.imageUrl.map((url, index) => (
-              <Image key={index} src={url} alt={`Pré-visualização da face ${index + 1}`} unoptimized width={240} height={335} className="rounded-lg shadow-2xl" />
+              <Image
+                key={index}
+                src={url}
+                alt={`Pré-visualização da face ${index + 1}`}
+                unoptimized
+                width={240}
+                height={335}
+                className="rounded-lg shadow-2xl"
+              />
             ))
           ) : (
-            <Image src={hoveredCard.imageUrl} alt="Pré-visualização da carta" unoptimized width={240} height={335} className="rounded-lg shadow-2xl" />
+            <Image
+              src={hoveredCard.imageUrl}
+              alt="Pré-visualização da carta"
+              unoptimized
+              width={240}
+              height={335}
+              className="rounded-lg shadow-2xl"
+            />
           )}
         </div>
       )}
 
       <form action={formAction} className="space-y-8">
-        <input type="hidden" name="cards" value={JSON.stringify(cards.map(({ name, count, is_sideboard }) => ({ name, count, is_sideboard })))} />
+        <input
+          type="hidden"
+          name="cards"
+          value={JSON.stringify(
+            cards.map(({ name, count, is_sideboard }) => ({ name, count, is_sideboard })),
+          )}
+        />
         <input type="hidden" name="name" value={name} />
         <input type="hidden" name="description" value={description} />
         <input type="hidden" name="is_public" value={isPublic.toString()} />
@@ -254,9 +290,12 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
             <DeckInfoForm
-              description={description} onDescriptionChange={setDescription}
-              isPublic={isPublic} onIsPublicChange={setIsPublic}
-              coverImageUrl={coverImageUrl} onCoverImageSelect={handleCoverImageSelect}
+              description={description}
+              onDescriptionChange={setDescription}
+              isPublic={isPublic}
+              onIsPublicChange={setIsPublic}
+              coverImageUrl={coverImageUrl}
+              onCoverImageSelect={handleCoverImageSelect}
               onCoverImageUpload={handleCoverImageUpload}
               isUploading={isUploadingCover}
             />
@@ -272,8 +311,14 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
                 </p>
               </CardHeader>
               <CardContent className="space-y-3">
-                <CardAdder onAddCard={(card) => addCard(card, false)} placeholder="Adicionar ao Mainboard..." />
-                <CardAdder onAddCard={(card) => addCard(card, true)} placeholder="Adicionar ao Sideboard..." />
+                <CardAdder
+                  onAddCard={(card) => addCard(card, false)}
+                  placeholder="Adicionar ao Mainboard..."
+                />
+                <CardAdder
+                  onAddCard={(card) => addCard(card, true)}
+                  placeholder="Adicionar ao Sideboard..."
+                />
               </CardContent>
             </Card>
           </aside>

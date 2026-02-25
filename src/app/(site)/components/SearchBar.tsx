@@ -6,7 +6,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Search, Camera } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -130,7 +137,9 @@ export default function SearchBar({ onCameraClick, showCameraButton }: SearchBar
               </CommandGroup>
             )}
             {suggestions.length === 0 && debouncedQuery.length > 1 && !isLoading && (
-              <CommandEmpty>Nenhuma carta encontrada para &quot;{debouncedQuery}&quot;</CommandEmpty>
+              <CommandEmpty>
+                Nenhuma carta encontrada para &quot;{debouncedQuery}&quot;
+              </CommandEmpty>
             )}
           </CommandList>
         )}

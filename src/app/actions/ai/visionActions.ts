@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use server'
+'use server';
 
 import { createClient } from '@/app/utils/supabase/server';
 import OpenAI from 'openai';
@@ -20,31 +20,34 @@ interface RecognitionResult {
  */
 export async function recognizeCardFromImage(imageBase64: string): Promise<RecognitionResult> {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: 'Você precisa estar logado para usar esta função.' };
   }
-  
+
   if (!imageBase64) {
     return { error: 'Nenhuma imagem recebida.' };
   }
 
-  const prompt = "Você é um especialista em identificar cartas de Magic: The Gathering. Analise a imagem fornecida e retorne APENAS o nome exato da carta em inglês, sem nenhum texto adicional. Se não tiver 100% de certeza, forneça seu melhor palpite com base na arte e no layout. Se for claramente outra coisa que não uma carta de Magic (ex: uma caneta, uma carta de Pokémon), responda com 'Error: Not a Magic card'.";
+  const prompt =
+    "Você é um especialista em identificar cartas de Magic: The Gathering. Analise a imagem fornecida e retorne APENAS o nome exato da carta em inglês, sem nenhum texto adicional. Se não tiver 100% de certeza, forneça seu melhor palpite com base na arte e no layout. Se for claramente outra coisa que não uma carta de Magic (ex: uma caneta, uma carta de Pokémon), responda com 'Error: Not a Magic card'.";
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: 'gpt-4o',
       messages: [
         {
-          role: "user",
+          role: 'user',
           content: [
-            { type: "text", text: prompt },
+            { type: 'text', text: prompt },
             {
-              type: "image_url",
+              type: 'image_url',
               image_url: {
-                "url": imageBase64,
-                "detail": "low" // Usamos 'low' para uma análise mais rápida e barata
+                url: imageBase64,
+                detail: 'low', // Usamos 'low' para uma análise mais rápida e barata
               },
             },
           ],
@@ -57,10 +60,9 @@ export async function recognizeCardFromImage(imageBase64: string): Promise<Recog
 
     // --- LOG PARA DEPURAÇÃO ---
     // Este log nos mostrará a resposta exata da IA no terminal do servidor.
-    console.log("--- RESPOSTA CRUA DA IA (VISÃO) ---");
+    console.log('--- RESPOSTA CRUA DA IA (VISÃO) ---');
     console.log(cardName);
-    console.log("-----------------------------------");
-
+    console.log('-----------------------------------');
 
     if (!cardName || cardName.startsWith('Error:') || cardName.length > 50) {
       // Adicionamos um check de tamanho para evitar respostas muito longas e incorretas
@@ -68,9 +70,8 @@ export async function recognizeCardFromImage(imageBase64: string): Promise<Recog
     }
 
     return { cardName };
-
   } catch (error) {
-    console.error("Erro na API de Visão da OpenAI:", error);
+    console.error('Erro na API de Visão da OpenAI:', error);
     return { error: 'Ocorreu um erro ao analisar a imagem.' };
   }
 }

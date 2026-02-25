@@ -15,7 +15,9 @@
     }
 
     /* Estilos para Títulos */
-    h2, h3, h4 {
+    h2,
+    h3,
+    h4 {
       color: #f59e0b; // amber-500
       font-weight: 700;
       margin-top: 1.5em;
@@ -34,7 +36,7 @@
         text-decoration: underline;
       }
     }
-    
+
     /* Estilos para Imagens */
     img {
       width: 100%;
@@ -45,15 +47,16 @@
     }
 
     /* Estilos para Listas */
-    ul, ol {
+    ul,
+    ol {
       margin: 1.25em 0;
       padding-left: 1.5em;
     }
 
     /* Estilo específico para listas checklist */
     ul.checklist {
-        list-style-type: none;
-        padding-left: 0;
+      list-style-type: none;
+      padding-left: 0;
     }
 
     /* Estilos para Tabelas */
@@ -76,15 +79,15 @@
     }
 
     td {
-        padding: 0.75rem;
+      padding: 0.75rem;
     }
 
     tr {
-        border-bottom: 1px solid #262626; // neutral-800
+      border-bottom: 1px solid #262626; // neutral-800
     }
 
     tbody tr:last-child {
-        border-bottom: none;
+      border-bottom: none;
     }
   }
 }

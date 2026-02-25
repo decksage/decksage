@@ -59,7 +59,9 @@ export async function fetchAutocomplete(query: string): Promise<{ data: string[]
   if (!query || typeof query !== 'string') {
     throw new Error('Query de autocomplete inválida');
   }
-  const res = await fetch(`https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`);
+  const res = await fetch(
+    `https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`,
+  );
   if (!res.ok) {
     throw new Error(`Erro no autocomplete: ${res.status} - ${res.statusText}`);
   }
@@ -70,7 +72,7 @@ export async function fetchAutocomplete(query: string): Promise<{ data: string[]
  * Busca carta por ID UUID do Scryfall.
  */
 export async function fetchCardById(scryfallId: string): Promise<ScryfallCard | null> {
-  if (!scryfallId || scryfallId === "undefined") return null;
+  if (!scryfallId || scryfallId === 'undefined') return null;
 
   try {
     const response = await fetch(`https://api.scryfall.com/cards/${scryfallId}`);
@@ -82,7 +84,7 @@ export async function fetchCardById(scryfallId: string): Promise<ScryfallCard | 
 
     return await response.json();
   } catch (error) {
-    console.error("Falha ao buscar por ID:", error);
+    console.error('Falha ao buscar por ID:', error);
     return null;
   }
 }
@@ -90,8 +92,11 @@ export async function fetchCardById(scryfallId: string): Promise<ScryfallCard | 
 /**
  * Busca carta por nome. Tenta busca exata, se falhar, tenta fuzzy.
  */
-export async function fetchCardByName(name: string, exact: boolean = true): Promise<ScryfallCard | null> {
-  if (!name || name === "undefined") return null;
+export async function fetchCardByName(
+  name: string,
+  exact: boolean = true,
+): Promise<ScryfallCard | null> {
+  if (!name || name === 'undefined') return null;
 
   const param = exact ? 'exact' : 'fuzzy';
   const url = `https://api.scryfall.com/cards/named?${param}=${encodeURIComponent(name)}`;
@@ -111,14 +116,14 @@ export async function fetchCardByName(name: string, exact: boolean = true): Prom
 
     return await res.json();
   } catch (error) {
-    console.error("Erro em fetchCardByName:", error);
+    console.error('Erro em fetchCardByName:', error);
     return null;
   }
 }
 
 export async function fetchSearchResults(
   query: string,
-  page: number = 1
+  page: number = 1,
 ): Promise<{ data: ScryfallCard[]; has_more: boolean; next_page?: string }> {
   if (!query || typeof query !== 'string') {
     throw new Error('Query de busca inválida');
@@ -127,7 +132,7 @@ export async function fetchSearchResults(
   const formattedQuery = `o:"${query}"`;
 
   const res = await fetch(
-    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(formattedQuery)}&page=${page}`
+    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(formattedQuery)}&page=${page}`,
   );
 
   if (!res.ok) {
@@ -148,7 +153,7 @@ export async function fetchFilteredSearchResults(
     cmc?: string[];
     artist?: string;
   },
-  page: number = 1
+  page: number = 1,
 ): Promise<{ data: ScryfallCard[]; has_more: boolean; next_page?: string }> {
   if (!query || typeof query !== 'string' || query.trim() === '') {
     throw new Error('Query de busca inválida');
@@ -161,8 +166,13 @@ export async function fetchFilteredSearchResults(
   }
   if (filters.colors?.length) {
     const colorMap: Record<string, string> = {
-      White: 'W', Blue: 'U', Black: 'B', Red: 'R', Green: 'G',
-      Colorless: 'C', Multicolor: 'M',
+      White: 'W',
+      Blue: 'U',
+      Black: 'B',
+      Red: 'R',
+      Green: 'G',
+      Colorless: 'C',
+      Multicolor: 'M',
     };
     const colorCodes = filters.colors
       .map((c) => colorMap[c] || c)
@@ -182,7 +192,11 @@ export async function fetchFilteredSearchResults(
     scryfallQuery += ` e:${filters.set.toLowerCase()}`;
   }
   if (filters.cmc?.length) {
-    const cmcQueries = filters.cmc.map((cmc) => (cmc.startsWith('>') || cmc.startsWith('<') || cmc.startsWith('=') || cmc.startsWith('!=')) ? `cmc${cmc}` : `cmc=${cmc}`);
+    const cmcQueries = filters.cmc.map((cmc) =>
+      cmc.startsWith('>') || cmc.startsWith('<') || cmc.startsWith('=') || cmc.startsWith('!=')
+        ? `cmc${cmc}`
+        : `cmc=${cmc}`,
+    );
     scryfallQuery += ` (${cmcQueries.join(' or ')})`;
   }
   if (filters.artist) {
@@ -191,7 +205,7 @@ export async function fetchFilteredSearchResults(
 
   try {
     const res = await fetch(
-      `https://api.scryfall.com/cards/search?q=${encodeURIComponent(scryfallQuery)}&page=${page}`
+      `https://api.scryfall.com/cards/search?q=${encodeURIComponent(scryfallQuery)}&page=${page}`,
     );
 
     if (res.status === 404) {
@@ -200,7 +214,9 @@ export async function fetchFilteredSearchResults(
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      throw new Error(`Erro na busca filtrada do Scryfall: ${res.status} - ${errorData.details || res.statusText}`);
+      throw new Error(
+        `Erro na busca filtrada do Scryfall: ${res.status} - ${errorData.details || res.statusText}`,
+      );
     }
 
     const result = await res.json();
@@ -244,16 +260,21 @@ const VALID_SET_TYPES = ['expansion', 'core', 'masters', 'draft_innovation', 'co
 
 export async function fetchLatestSets(count: number = 5): Promise<SetData[]> {
   try {
-    const response = await fetch("https://api.scryfall.com/sets");
+    const response = await fetch('https://api.scryfall.com/sets');
     if (!response.ok) {
       throw new Error(`Erro na API Scryfall (sets): ${response.statusText}`);
     }
 
     const result: ScryfallApiListResponse<ScryfallSet> = await response.json();
     const latestValidSets = result.data
-      .filter(set => !set.digital && VALID_SET_TYPES.includes(set.set_type) && new Date(set.released_at) <= new Date())
+      .filter(
+        (set) =>
+          !set.digital &&
+          VALID_SET_TYPES.includes(set.set_type) &&
+          new Date(set.released_at) <= new Date(),
+      )
       .slice(0, count)
-      .map(set => ({
+      .map((set) => ({
         name: set.name,
         code: set.code,
         iconUrl: set.icon_svg_uri,
@@ -261,7 +282,7 @@ export async function fetchLatestSets(count: number = 5): Promise<SetData[]> {
 
     return latestValidSets;
   } catch (error: any) {
-    console.error("Falha ao buscar últimas coleções:", error);
+    console.error('Falha ao buscar últimas coleções:', error);
     return [];
   }
 }
@@ -283,7 +304,7 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
       const res = await fetch('https://api.scryfall.com/cards/collection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifiers: batch.map(name => ({ name })) }),
+        body: JSON.stringify({ identifiers: batch.map((name) => ({ name })) }),
       });
 
       if (!res.ok) {
@@ -305,7 +326,9 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
           // Se o objeto not_found tiver 'name' e esse nome tiver '//', tentamos a frente
           if (item.name && typeof item.name === 'string' && item.name.includes(' // ')) {
             const frontName = item.name.split(' // ')[0].trim();
-            console.log(`fetchCardsByNames: Retentando carta não encontrada "${item.name}" como "${frontName}"`);
+            console.log(
+              `fetchCardsByNames: Retentando carta não encontrada "${item.name}" como "${frontName}"`,
+            );
             namesToRetry.push(frontName);
           } else {
             console.warn(`fetchCardsByNames: Carta não encontrada e sem fallback: "${item.name}"`);
@@ -319,7 +342,6 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
           results.push(...retriedCards);
         }
       }
-
     } catch (error) {
       console.error('Erro na requisição do lote de cartas:', error);
     }
@@ -327,7 +349,6 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
 
   return results;
 }
-
 
 // Em app/lib/scryfall.ts
 export async function searchCards(query: string, filters: { type_line?: string } = {}) {
@@ -339,7 +360,7 @@ export async function searchCards(query: string, filters: { type_line?: string }
 // Agrupa cartas por tipo de linha (type_line)
 export function groupCardsByType(cards: (ScryfallCard & { count: number })[]) {
   return cards.reduce<Record<string, (ScryfallCard & { count: number })[]>>((acc, card) => {
-    const typeKey = extractCardTypes(card.type_line || "Outros");
+    const typeKey = extractCardTypes(card.type_line || 'Outros');
     if (!acc[typeKey]) acc[typeKey] = [];
     acc[typeKey].push(card);
     return acc;
@@ -348,9 +369,18 @@ export function groupCardsByType(cards: (ScryfallCard & { count: number })[]) {
 
 // Extrai o tipo primário da carta para agrupamento
 function extractCardTypes(typeLine: string): string {
-  const parts = typeLine.split("—")[0].trim().split(" ");
-  const types = ["Creature", "Instant", "Sorcery", "Enchantment", "Artifact", "Land", "Planeswalker", "Battle"];
-  return types.find(t => parts.includes(t)) || "Outros";
+  const parts = typeLine.split('—')[0].trim().split(' ');
+  const types = [
+    'Creature',
+    'Instant',
+    'Sorcery',
+    'Enchantment',
+    'Artifact',
+    'Land',
+    'Planeswalker',
+    'Battle',
+  ];
+  return types.find((t) => parts.includes(t)) || 'Outros';
 }
 
 // Simula atualização do nome do deck (você pode adaptar para Supabase, localStorage, etc.)
@@ -368,12 +398,14 @@ export async function updateDeckName(deckId: string, newName: string): Promise<v
 export async function fetchAutocompleteNames(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
   try {
-    const res = await fetch(`https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`);
+    const res = await fetch(
+      `https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`,
+    );
     if (!res.ok) return [];
     const data = await res.json();
     return data.data || [];
   } catch (error) {
-    console.error("Erro na busca de autocomplete do Scryfall:", error);
+    console.error('Erro na busca de autocomplete do Scryfall:', error);
     return [];
   }
 }
@@ -403,11 +435,10 @@ export async function searchScryfallCards(query: string): Promise<ScryfallCard[]
     const result = await response.json();
     return result.data || [];
   } catch (error) {
-    console.error("Falha ao buscar cartas no Scryfall:", error);
+    console.error('Falha ao buscar cartas no Scryfall:', error);
     return [];
   }
 }
-
 
 /**
  * Busca os dados de uma única carta, incluindo o preço em USD, da API do Scryfall.
@@ -440,7 +471,6 @@ export async function getCardPriceFromScryfall(cardName: string): Promise<number
     }
 
     return null; // Retorna null se não houver preço em USD
-
   } catch (error) {
     console.error(`Failed to fetch price for "${cardName}" from Scryfall:`, error);
     return null;

@@ -20,24 +20,45 @@ interface DeckHeaderProps {
   currentUser?: User | null;
 }
 
-export default function DeckHeader({ deck, isOwner, isInitiallySaved, creatorProfile, currentUser }: DeckHeaderProps) {
+export default function DeckHeader({
+  deck,
+  isOwner,
+  isInitiallySaved,
+  creatorProfile,
+  currentUser,
+}: DeckHeaderProps) {
   const router = useRouter();
 
   return (
     <header className="mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <header className="flex flex-row items-center gap-4">
-          <Button variant="outline" size="icon" className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0" onClick={() => router.back()}>
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0"
+            onClick={() => router.back()}
+          >
             <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-amber-500 break-words">{deck.name}</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-amber-500 break-words">
+              {deck.name}
+            </h1>
             <div className="flex items-center gap-2 text-base sm:text-lg text-neutral-400 capitalize">
               <span>{deck.format}</span>
               {creatorProfile && (
                 <>
                   <span className="text-neutral-600">•</span>
-                  <span>por <Link href={`/profile/${creatorProfile.username || creatorProfile.id}`} className="hover:text-amber-400">{creatorProfile.full_name || creatorProfile.username}</Link></span>
+                  <span>
+                    por{' '}
+                    <Link
+                      href={`/profile/${creatorProfile.username || creatorProfile.id}`}
+                      className="hover:text-amber-400"
+                    >
+                      {creatorProfile.full_name || creatorProfile.username}
+                    </Link>
+                  </span>
                 </>
               )}
               <span className="text-neutral-600">•</span>
@@ -53,7 +74,6 @@ export default function DeckHeader({ deck, isOwner, isInitiallySaved, creatorPro
             </div>
           </div>
         </header>
-
 
         <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-center">
           {/* --- ADIÇÃO DO NOVO BOTÃO DE PLAYTEST --- */}

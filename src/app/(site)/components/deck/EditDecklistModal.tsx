@@ -41,12 +41,12 @@ export function EditDecklistModal({
   // Converte a decklist atual em texto para preencher o textarea
   const formatDecklistForTextarea = (decklist: Decklist): string => {
     let text = '';
-    initialDecklist.mainboard.forEach(card => {
+    initialDecklist.mainboard.forEach((card) => {
       text += `${card.count} ${card.name}\n`;
     });
     if (initialDecklist.sideboard && initialDecklist.sideboard.length > 0) {
       text += '\nSideboard\n';
-      initialDecklist.sideboard.forEach(card => {
+      initialDecklist.sideboard.forEach((card) => {
         text += `${card.count} ${card.name}\n`;
       });
     }
@@ -54,7 +54,7 @@ export function EditDecklistModal({
   };
 
   const [decklistTextInput, setDecklistTextInput] = useState(
-    formatDecklistForTextarea(initialDecklist)
+    formatDecklistForTextarea(initialDecklist),
   );
 
   // Re-inicializa o textarea se a decklist inicial mudar (ex: se o modal for reaberto para outro deck)
@@ -62,26 +62,29 @@ export function EditDecklistModal({
     setDecklistTextInput(formatDecklistForTextarea(initialDecklist));
   }, [initialDecklist]);
 
-  const [state, formAction] = useActionState(async (prevState: any, formData: FormData) => {
-    const text = formData.get('decklistText') as string;
-    if (!text) {
-      return { success: false, message: 'Nenhuma lista de cartas fornecida.' };
-    }
+  const [state, formAction] = useActionState(
+    async (prevState: any, formData: FormData) => {
+      const text = formData.get('decklistText') as string;
+      if (!text) {
+        return { success: false, message: 'Nenhuma lista de cartas fornecida.' };
+      }
 
-    // const result = await updateDecklistFromText(deckId, text);
+      // const result = await updateDecklistFromText(deckId, text);
 
-    // if (result.success) {
-    //   // Re-fetch o deck atualizado do DB para garantir que o estado do pai esteja correto
-    //   // Nota: getDeckForEdit precisa retornar o DeckFromDB completo
-    //   const { getDeckForEdit } = await import('@/app/(site)/actions/deckActions'); // Import dinâmico para evitar circular dependency
-    //   const updatedDeck = await getDeckForEdit(deckId, initialUserId);
-    //   if (updatedDeck) {
-    //     onDeckUpdated(updatedDeck); // Notifica o componente pai para atualizar o deck
-    //   }
-    //   onClose(); // Fecha o modal no sucesso
-    // }
-    return "result";
-  }, { success: false, message: '' });
+      // if (result.success) {
+      //   // Re-fetch o deck atualizado do DB para garantir que o estado do pai esteja correto
+      //   // Nota: getDeckForEdit precisa retornar o DeckFromDB completo
+      //   const { getDeckForEdit } = await import('@/app/(site)/actions/deckActions'); // Import dinâmico para evitar circular dependency
+      //   const updatedDeck = await getDeckForEdit(deckId, initialUserId);
+      //   if (updatedDeck) {
+      //     onDeckUpdated(updatedDeck); // Notifica o componente pai para atualizar o deck
+      //   }
+      //   onClose(); // Fecha o modal no sucesso
+      // }
+      return 'result';
+    },
+    { success: false, message: '' },
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -91,13 +94,17 @@ export function EditDecklistModal({
             <TextIcon /> Editar Lista de Cartas
           </DialogTitle>
           <DialogDescription className="text-neutral-300">
-            Cole a sua lista de cartas aqui. O formato esperado é &quot;Quantidade Nome da Carta&quot; por linha. Use &quot;Sideboard&quot; para separar.
+            Cole a sua lista de cartas aqui. O formato esperado é &quot;Quantidade Nome da
+            Carta&quot; por linha. Use &quot;Sideboard&quot; para separar.
           </DialogDescription>
         </DialogHeader>
         <form action={formAction} className="space-y-4 py-4">
-          <input type="hidden" name="deckId" value={deckId} /> {/* Garantir que o deckId seja enviado */}
+          <input type="hidden" name="deckId" value={deckId} />{' '}
+          {/* Garantir que o deckId seja enviado */}
           <div className="space-y-2">
-            <Label htmlFor="decklistText" className="text-neutral-300">Lista de Cartas:</Label>
+            <Label htmlFor="decklistText" className="text-neutral-300">
+              Lista de Cartas:
+            </Label>
             <Textarea
               id="decklistText"
               name="decklistText"

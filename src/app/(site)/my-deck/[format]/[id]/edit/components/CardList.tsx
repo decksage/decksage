@@ -25,7 +25,14 @@ interface CardRowProps {
   onCardLeave: () => void;
 }
 
-function CardRow({ card, collection, onCountChange, onCollectionChange, onCardHover, onCardLeave }: CardRowProps) {
+function CardRow({
+  card,
+  collection,
+  onCountChange,
+  onCollectionChange,
+  onCardHover,
+  onCardLeave,
+}: CardRowProps) {
   const [isUpdatingCollection, setIsUpdatingCollection] = useState(false);
   const ownedCount = collection.get(card.id) || 0;
   const neededCount = card.count;
@@ -39,7 +46,7 @@ function CardRow({ card, collection, onCountChange, onCollectionChange, onCardHo
     const fullCardData = await fetchCardById(card.id);
 
     if (!fullCardData) {
-      toast.error("Não foi possível obter os detalhes completos da carta. Tente novamente.");
+      toast.error('Não foi possível obter os detalhes completos da carta. Tente novamente.');
       setIsUpdatingCollection(false);
       return;
     }
@@ -63,7 +70,7 @@ function CardRow({ card, collection, onCountChange, onCollectionChange, onCardHo
       onCollectionChange(card.id, newQuantity);
       toast.success(`Coleção de "${card.name}" atualizada!`);
     } else {
-      toast.error(result.error || "Falha ao atualizar a coleção.");
+      toast.error(result.error || 'Falha ao atualizar a coleção.');
     }
     setIsUpdatingCollection(false);
   };
@@ -102,21 +109,57 @@ function CardRow({ card, collection, onCountChange, onCollectionChange, onCardHo
           <span className="flex-grow truncate pr-4">{card.name}</span>
           <div className="flex items-center gap-2 flex-shrink-0">
             <ManaCost cost={manaCost} />
-            <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => onCountChange(card.id, card.is_sideboard, neededCount - 1)}><Minus size={16} /></Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => onCountChange(card.id, card.is_sideboard, neededCount - 1)}
+            >
+              <Minus size={16} />
+            </Button>
             <span className="w-4 text-center font-medium">{neededCount}</span>
-            <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => onCountChange(card.id, card.is_sideboard, neededCount + 1)}><Plus size={16} /></Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => onCountChange(card.id, card.is_sideboard, neededCount + 1)}
+            >
+              <Plus size={16} />
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className={`flex items-center gap-2 flex-shrink-0 mt-2 sm:mt-0 sm:ml-4 p-1 rounded-md transition-colors ${hasEnough ? 'bg-green-500/10' : 'bg-yellow-500/10'}`}>
+      <div
+        className={`flex items-center gap-2 flex-shrink-0 mt-2 sm:mt-0 sm:ml-4 p-1 rounded-md transition-colors ${hasEnough ? 'bg-green-500/10' : 'bg-yellow-500/10'}`}
+      >
         <Library size={14} className={hasEnough ? 'text-green-400' : 'text-yellow-400'} />
         <span className={`text-xs font-medium ${hasEnough ? 'text-green-400' : 'text-yellow-400'}`}>
           Possui:
         </span>
-        <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCollectionUpdate(ownedCount - 1)} disabled={isUpdatingCollection || ownedCount <= 0}><Minus size={16} /></Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={() => handleCollectionUpdate(ownedCount - 1)}
+          disabled={isUpdatingCollection || ownedCount <= 0}
+        >
+          <Minus size={16} />
+        </Button>
         <span className="w-4 text-center font-medium text-sm">{ownedCount}</span>
-        <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleCollectionUpdate(ownedCount + 1)} disabled={isUpdatingCollection}><Plus size={16} /></Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-6 w-6"
+          onClick={() => handleCollectionUpdate(ownedCount + 1)}
+          disabled={isUpdatingCollection}
+        >
+          <Plus size={16} />
+        </Button>
       </div>
     </div>
   );
@@ -130,11 +173,27 @@ interface CardListProps {
   onCollectionChange: (cardId: string, newQuantity: number) => void;
   onCardHover: (event: React.MouseEvent, imageUrl: string | string[] | null) => void;
   onCardLeave: () => void;
-};
+}
 
-const TYPE_ORDER = ["Planeswalkers", "Criaturas", "Mágicas Instantâneas", "Feitiços", "Encantamentos", "Artefatos", "Terrenos", "Outros"];
+const TYPE_ORDER = [
+  'Planeswalkers',
+  'Criaturas',
+  'Mágicas Instantâneas',
+  'Feitiços',
+  'Encantamentos',
+  'Artefatos',
+  'Terrenos',
+  'Outros',
+];
 
-function CardSection({ cardList, collection, onCountChange, onCollectionChange, onCardHover, onCardLeave }: {
+function CardSection({
+  cardList,
+  collection,
+  onCountChange,
+  onCollectionChange,
+  onCardHover,
+  onCardLeave,
+}: {
   cardList: EditableCard[];
   collection: Map<string, number>;
   onCountChange: (cardId: string, isSideboard: boolean, newCount: number) => void;
@@ -143,24 +202,27 @@ function CardSection({ cardList, collection, onCountChange, onCollectionChange, 
   onCardLeave: () => void;
 }) {
   const groupedCards = useMemo(() => {
-    return cardList.reduce((acc, card) => {
-      if (!card.type_line) return acc;
-      let mainType = "Outros";
-      if (card.type_line.includes("Planeswalker")) mainType = "Planeswalkers";
-      else if (card.type_line.includes("Creature")) mainType = "Criaturas";
-      else if (card.type_line.includes("Land")) mainType = "Terrenos";
-      else if (card.type_line.includes("Instant")) mainType = "Mágicas Instantâneas";
-      else if (card.type_line.includes("Sorcery")) mainType = "Feitiços";
-      else if (card.type_line.includes("Artifact")) mainType = "Artefatos";
-      else if (card.type_line.includes("Enchantment")) mainType = "Encantamentos";
+    return cardList.reduce(
+      (acc, card) => {
+        if (!card.type_line) return acc;
+        let mainType = 'Outros';
+        if (card.type_line.includes('Planeswalker')) mainType = 'Planeswalkers';
+        else if (card.type_line.includes('Creature')) mainType = 'Criaturas';
+        else if (card.type_line.includes('Land')) mainType = 'Terrenos';
+        else if (card.type_line.includes('Instant')) mainType = 'Mágicas Instantâneas';
+        else if (card.type_line.includes('Sorcery')) mainType = 'Feitiços';
+        else if (card.type_line.includes('Artifact')) mainType = 'Artefatos';
+        else if (card.type_line.includes('Enchantment')) mainType = 'Encantamentos';
 
-      if (!acc[mainType]) acc[mainType] = [];
-      acc[mainType].push(card);
-      return acc;
-    }, {} as Record<string, EditableCard[]>);
+        if (!acc[mainType]) acc[mainType] = [];
+        acc[mainType].push(card);
+        return acc;
+      },
+      {} as Record<string, EditableCard[]>,
+    );
   }, [cardList]);
 
-  return TYPE_ORDER.map(type => {
+  return TYPE_ORDER.map((type) => {
     const cardsOfType = groupedCards[type];
     if (!cardsOfType || cardsOfType.length === 0) return null;
 
@@ -168,19 +230,39 @@ function CardSection({ cardList, collection, onCountChange, onCollectionChange, 
 
     return (
       <div key={type}>
-        <h4 className="font-semibold text-amber-500/80 mt-2">{type} ({typeCount})</h4>
-        {cardsOfType.sort((a, b) => a.name.localeCompare(b.name)).map(card => (
-          <CardRow key={`${card.id}-${card.is_sideboard ? 'sb' : 'mb'}`} card={card} collection={collection} onCountChange={onCountChange} onCollectionChange={onCollectionChange} onCardHover={onCardHover} onCardLeave={onCardLeave} />
-        ))}
+        <h4 className="font-semibold text-amber-500/80 mt-2">
+          {type} ({typeCount})
+        </h4>
+        {cardsOfType
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((card) => (
+            <CardRow
+              key={`${card.id}-${card.is_sideboard ? 'sb' : 'mb'}`}
+              card={card}
+              collection={collection}
+              onCountChange={onCountChange}
+              onCollectionChange={onCollectionChange}
+              onCardHover={onCardHover}
+              onCardLeave={onCardLeave}
+            />
+          ))}
       </div>
     );
   });
 }
 
-export default function CardList({ cards, commanderName, collection, onCountChange, onCollectionChange, onCardHover, onCardLeave }: CardListProps) {
+export default function CardList({
+  cards,
+  commanderName,
+  collection,
+  onCountChange,
+  onCollectionChange,
+  onCardHover,
+  onCardLeave,
+}: CardListProps) {
   const { mainboardCards, sideboardCards, mainboardCount, sideboardCount } = useMemo(() => {
-    const main = cards.filter(c => !c.is_sideboard && c.name !== commanderName);
-    const side = cards.filter(c => c.is_sideboard);
+    const main = cards.filter((c) => !c.is_sideboard && c.name !== commanderName);
+    const side = cards.filter((c) => c.is_sideboard);
 
     const mainCount = main.reduce((s, c) => s + c.count, 0);
     const sideCount = side.reduce((s, c) => s + c.count, 0);
@@ -189,21 +271,37 @@ export default function CardList({ cards, commanderName, collection, onCountChan
       mainboardCards: main,
       sideboardCards: side,
       mainboardCount: mainCount,
-      sideboardCount: sideCount
+      sideboardCount: sideCount,
     };
   }, [cards, commanderName]);
 
   return (
     <Card className="bg-neutral-900 border-neutral-800">
-      <CardHeader><CardTitle>Lista de Cartas</CardTitle></CardHeader>
+      <CardHeader>
+        <CardTitle>Lista de Cartas</CardTitle>
+      </CardHeader>
       <CardContent className="space-y-4">
         <h3 className="text-xl font-bold text-amber-500 mb-2">Mainboard ({mainboardCount})</h3>
-        <CardSection cardList={mainboardCards} collection={collection} onCountChange={onCountChange} onCollectionChange={onCollectionChange} onCardHover={onCardHover} onCardLeave={onCardLeave} />
+        <CardSection
+          cardList={mainboardCards}
+          collection={collection}
+          onCountChange={onCountChange}
+          onCollectionChange={onCollectionChange}
+          onCardHover={onCardHover}
+          onCardLeave={onCardLeave}
+        />
 
         {sideboardCards.length > 0 && (
           <div className="mt-6 pt-4 border-t border-neutral-700">
             <h3 className="text-xl font-bold text-amber-500 mb-2">Sideboard ({sideboardCount})</h3>
-            <CardSection cardList={sideboardCards} collection={collection} onCountChange={onCountChange} onCollectionChange={onCollectionChange} onCardHover={onCardHover} onCardLeave={onCardLeave} />
+            <CardSection
+              cardList={sideboardCards}
+              collection={collection}
+              onCountChange={onCountChange}
+              onCollectionChange={onCollectionChange}
+              onCardHover={onCardHover}
+              onCardLeave={onCardLeave}
+            />
           </div>
         )}
       </CardContent>

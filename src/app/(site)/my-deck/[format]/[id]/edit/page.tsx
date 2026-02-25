@@ -16,10 +16,12 @@ export default async function DeckEditPage(props: DeckEditPageProps) {
   const { id } = await props.params;
   const supabase = createClient();
 
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { data: deck, error } = await supabase
     .from('decks')
-    .select<"*", DeckFromDB>("*")
+    .select<'*', DeckFromDB>('*')
     .eq('id', id)
     .single();
 
@@ -37,7 +39,6 @@ export default async function DeckEditPage(props: DeckEditPageProps) {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-7xl">
-
         <header className="mb-10 flex flex-row gap-4">
           <Link href="/my-decks">
             <Button variant="outline" size="icon" className="h-12 w-12">
@@ -45,19 +46,14 @@ export default async function DeckEditPage(props: DeckEditPageProps) {
             </Button>
           </Link>
           <div className="title">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500">
-              Editar Deck
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500">Editar Deck</h1>
             <p className="text-lg text-neutral-300 mt-2">
               Ajuste a sua estratégia e refina a sua lista.
             </p>
           </div>
         </header>
 
-        <DeckEditView
-          initialDeck={deck}
-          initialScryfallCards={scryfallCards}
-        />
+        <DeckEditView initialDeck={deck} initialScryfallCards={scryfallCards} />
       </div>
     </div>
   );

@@ -5,7 +5,7 @@ import PlaytestView from './PlaytestView';
 import type { DeckFromDB, ScryfallCard } from '@/app/lib/types';
 
 interface PageProps {
-  params: { id: string; format: string; };
+  params: { id: string; format: string };
 }
 
 export default async function PlaytestPage(props: any) {
@@ -14,10 +14,10 @@ export default async function PlaytestPage(props: any) {
 
   const { data: deckData } = await supabase
     .from('decks')
-    .select<"*", DeckFromDB>("*")
+    .select<'*', DeckFromDB>('*')
     .eq('id', params.id)
     .single();
-  
+
   if (!deckData) {
     notFound();
   }
@@ -25,20 +25,19 @@ export default async function PlaytestPage(props: any) {
   const allCardNames = [
     ...(deckData.decklist.mainboard || []).map((c) => c.name),
     ...(deckData.decklist.sideboard || []).map((c) => c.name),
-    ...(deckData.decklist.commander || []).map((c) => c.name)
+    ...(deckData.decklist.commander || []).map((c) => c.name),
   ];
-  
+
   const uniqueCardNames = [...new Set(allCardNames)] as string[];
   const scryfallCards = await fetchCardsByNames(uniqueCardNames);
-  const scryfallCardMapArray = scryfallCards.map(card => [card.name, card] as unknown as [string, ScryfallCard]);
+  const scryfallCardMapArray = scryfallCards.map(
+    (card) => [card.name, card] as unknown as [string, ScryfallCard],
+  );
 
-  const fullDecklist = [
-    ...deckData.decklist.mainboard,
-    ...(deckData.decklist.sideboard || [])
-  ];
+  const fullDecklist = [...deckData.decklist.mainboard, ...(deckData.decklist.sideboard || [])];
 
   return (
-    <PlaytestView 
+    <PlaytestView
       initialDecklist={fullDecklist}
       initialCommanderList={deckData.decklist.commander}
       initialScryfallMapArray={scryfallCardMapArray}

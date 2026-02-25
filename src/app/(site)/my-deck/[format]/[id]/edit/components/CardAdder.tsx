@@ -30,17 +30,17 @@ export default function CardAdder({ onAddCard, placeholder }: CardAdderProps) {
   return (
     <div className="flex gap-2">
       <div className="flex-grow">
-        <AutocompleteInput 
-          onSelect={setSelectedCard} 
+        <AutocompleteInput
+          onSelect={setSelectedCard}
           placeholder={placeholder}
           // Limpa a seleção se o input for limpo manualmente (opcional, mas bom UX)
-          onClear={() => setSelectedCard(null)} 
+          onClear={() => setSelectedCard(null)}
         />
       </div>
-      <Button 
-        type="button" 
-        size="icon" 
-        onClick={handleAddClick} 
+      <Button
+        type="button"
+        size="icon"
+        onClick={handleAddClick}
         disabled={!selectedCard} // O botão fica desabilitado até uma carta ser selecionada
         aria-label="Adicionar carta"
       >

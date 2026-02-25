@@ -73,21 +73,21 @@ export default function SearchClientContent() {
     return `${baseUrl}/api/search?${params.toString()}`;
   };
 
-  const {
-    data,
-    error,
-    size,
-    setSize,
-    isLoading,
-    isValidating,
-  } = useSWRInfinite<ApiResponse>(getKey, fetcher, {
-    revalidateFirstPage: false,
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
-  });
+  const { data, error, size, setSize, isLoading, isValidating } = useSWRInfinite<ApiResponse>(
+    getKey,
+    fetcher,
+    {
+      revalidateFirstPage: false,
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    },
+  );
 
   const isLoadingInitialData = !data && !error && isLoading;
-  const isLoadingMore = isLoadingInitialData || (size > 0 && data && typeof data[size - 1] === 'undefined') || (isLoading && size > 0);
+  const isLoadingMore =
+    isLoadingInitialData ||
+    (size > 0 && data && typeof data[size - 1] === 'undefined') ||
+    (isLoading && size > 0);
 
   const isEmpty = data?.[0]?.data?.length === 0 && !isLoadingInitialData;
   const hasMore = data?.[data.length - 1]?.has_more === true;
@@ -115,7 +115,15 @@ export default function SearchClientContent() {
     setTempSet(selectedSet);
     setTempCmc(selectedCmc);
     setTempArtist(selectedArtist);
-  }, [selectedTypes, selectedColors, selectedRarity, selectedFormats, selectedSet, selectedCmc, selectedArtist]);
+  }, [
+    selectedTypes,
+    selectedColors,
+    selectedRarity,
+    selectedFormats,
+    selectedSet,
+    selectedCmc,
+    selectedArtist,
+  ]);
 
   useEffect(() => {
     if (!loaderRef.current || !hasMore || isLoadingMore || isValidating) return;
@@ -126,7 +134,7 @@ export default function SearchClientContent() {
           setSize((prevSize) => prevSize + 1);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.5 },
     );
 
     observer.observe(loaderRef.current);
@@ -229,7 +237,9 @@ export default function SearchClientContent() {
                 <p className="text-neutral-300">
                   Nenhuma carta encontrada com os critérios para “{query}”.
                 </p>
-                <p className="text-neutral-400 text-sm mt-2">Tente refinar seus filtros ou alterar o termo de busca.</p>
+                <p className="text-neutral-400 text-sm mt-2">
+                  Tente refinar seus filtros ou alterar o termo de busca.
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -261,7 +271,9 @@ export default function SearchClientContent() {
                       </Skeleton>
                     )}
                     <div className="mt-2">
-                      <h2 className="text-base font-semibold truncate group-hover:text-amber-500">{card.name}</h2>
+                      <h2 className="text-base font-semibold truncate group-hover:text-amber-500">
+                        {card.name}
+                      </h2>
                       <p className="text-neutral-400 text-sm truncate">{card.type_line}</p>
                     </div>
                   </CardContent>
@@ -271,7 +283,10 @@ export default function SearchClientContent() {
 
             {isLoadingMore &&
               [...Array(5)].map((_, i) => (
-                <Card key={`loading-${i}`} className="bg-neutral-800 border-neutral-700 animate-pulse">
+                <Card
+                  key={`loading-${i}`}
+                  className="bg-neutral-800 border-neutral-700 animate-pulse"
+                >
                   <CardContent className="p-2">
                     <Skeleton className="h-[300px] sm:h-[350px] w-full rounded-md bg-neutral-700" />
                     <div className="mt-2 space-y-2">

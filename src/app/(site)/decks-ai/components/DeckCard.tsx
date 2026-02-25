@@ -22,9 +22,10 @@ type DeckCardProps = {
 
 export default function DeckCard({ deck }: DeckCardProps) {
   // Gera um gradiente sutil com base na identidade de cor do deck
-  const colorStops = deck.color_identity && deck.color_identity.length > 0
-    ? deck.color_identity.map(color => `var(--mana-${color.toLowerCase()})`).join(', ')
-    : 'var(--mana-c)'; // Cor para decks incolores
+  const colorStops =
+    deck.color_identity && deck.color_identity.length > 0
+      ? deck.color_identity.map((color) => `var(--mana-${color.toLowerCase()})`).join(', ')
+      : 'var(--mana-c)'; // Cor para decks incolores
   const gradientStyle = {
     backgroundImage: `radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent), linear-gradient(to bottom right, ${colorStops})`,
   };
@@ -64,7 +65,9 @@ export default function DeckCard({ deck }: DeckCardProps) {
 
         {/* Informações do Deck */}
         <div className="p-4 pt-10 -mt-6 relative z-0">
-          <Badge variant="secondary" className="capitalize mb-2">{deck.format}</Badge>
+          <Badge variant="secondary" className="capitalize mb-2">
+            {deck.format}
+          </Badge>
           <h3 className="font-bold text-lg text-neutral-100 group-hover:text-amber-400 transition-colors line-clamp-2 leading-tight">
             {deck.name}
           </h3>

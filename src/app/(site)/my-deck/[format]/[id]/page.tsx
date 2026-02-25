@@ -22,12 +22,14 @@ export default async function DeckDetailPage(props: PageProps) {
   const { id } = params;
 
   // 1. Busca o utilizador logado
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   // 2. Busca os dados do deck
   const { data: deckData, error } = await supabase
     .from('decks')
-    .select<"*", DeckFromDB>("*")
+    .select<'*', DeckFromDB>('*')
     .eq('id', id)
     .single();
 
@@ -55,7 +57,10 @@ export default async function DeckDetailPage(props: PageProps) {
   // 3. Busca o perfil do criador do deck (lógica mantida)
   const { data: creatorProfile } = await supabase
     .from('profiles')
-    .select<"id, username, avatar_url, cover_image_url", CreatorProfile>('id, username, avatar_url, cover_image_url')
+    .select<
+      'id, username, avatar_url, cover_image_url',
+      CreatorProfile
+    >('id, username, avatar_url, cover_image_url')
     .eq('id', deckData.user_id)
     .single();
 
@@ -74,18 +79,22 @@ export default async function DeckDetailPage(props: PageProps) {
 
   // 5. Busca os dados detalhados das cartas (lógica mantida)
   const allCardNames = [
-    ...(deckData.decklist.commander || []).map(c => c.name),
-    ...deckData.decklist.mainboard.map(c => c.name),
-    ...(deckData.decklist.sideboard?.map(c => c.name) || []),
+    ...(deckData.decklist.commander || []).map((c) => c.name),
+    ...deckData.decklist.mainboard.map((c) => c.name),
+    ...(deckData.decklist.sideboard?.map((c) => c.name) || []),
   ].filter(Boolean);
 
   const uniqueCardNames = Array.from(new Set(allCardNames));
   const scryfallCards = await fetchCardsByNames(uniqueCardNames);
 
-  const scryfallCardMapArray = scryfallCards.map(card => [card.name, card] as [string, ScryfallCard]);
+  const scryfallCardMapArray = scryfallCards.map(
+    (card) => [card.name, card] as [string, ScryfallCard],
+  );
 
   // NOVO: Busca a coleção física do usuário logado
-  const userPhysicalCollection = user ? await fetchUserPhysicalCollection() : new Map<string, number>();
+  const userPhysicalCollection = user
+    ? await fetchUserPhysicalCollection()
+    : new Map<string, number>();
 
   return (
     <DeckDetailView

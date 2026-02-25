@@ -18,7 +18,7 @@ async function analyzeDeck(decklist: string[], format: string) {
     }
 
     // Normaliza a lista de deck
-    const cardNames = decklist.map(line => line.replace(/^\d+\s+/, '').trim()).join('\n');
+    const cardNames = decklist.map((line) => line.replace(/^\d+\s+/, '').trim()).join('\n');
 
     let prompt;
     const model = 'gpt-4o-mini';

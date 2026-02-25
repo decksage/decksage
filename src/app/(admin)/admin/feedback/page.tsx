@@ -4,7 +4,14 @@ import { checkUserRole } from '@/lib/auth';
 import { createClient } from '@/app/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Eye } from 'lucide-react';
@@ -15,14 +22,14 @@ import { Eye } from 'lucide-react';
 import PaginationControls from '@/app/(admin)/admin/components/PaginationControls';
 
 const statusStyles: Record<string, string> = {
-  'new': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-  'in_analysis': 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-  'completed': 'bg-green-500/20 text-green-300 border-green-500/30',
-  'unnecessary': 'bg-neutral-700/20 text-neutral-400 border-neutral-700/30',
-}
+  new: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+  in_analysis: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+  completed: 'bg-green-500/20 text-green-300 border-green-500/30',
+  unnecessary: 'bg-neutral-700/20 text-neutral-400 border-neutral-700/30',
+};
 
 export default async function AdminFeedbackPage(props: {
-  searchParams?: Promise<{ query?: string; page?: string; }>
+  searchParams?: Promise<{ query?: string; page?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const isAdmin = await checkUserRole('admin');
@@ -37,14 +44,14 @@ export default async function AdminFeedbackPage(props: {
   const { data: feedbacks, error } = await supabase.rpc('search_feedback_paginated', {
     search_term: query,
     page_size: ITEMS_PER_PAGE,
-    page_offset: offset
+    page_offset: offset,
   });
 
   if (error) {
-    console.error("Erro ao buscar feedbacks FULL:", JSON.stringify(error, null, 2));
-    console.error("Erro message:", error.message);
-    console.error("Erro details:", error.details);
-    console.error("Erro hint:", error.hint);
+    console.error('Erro ao buscar feedbacks FULL:', JSON.stringify(error, null, 2));
+    console.error('Erro message:', error.message);
+    console.error('Erro details:', error.details);
+    console.error('Erro hint:', error.hint);
   }
 
   const totalItems = feedbacks?.[0]?.total_count || 0;
@@ -83,7 +90,7 @@ export default async function AdminFeedbackPage(props: {
                     <Badge className={statusStyles[fb.status] || ''}>{fb.status}</Badge>
                   </TableCell>
                   <TableCell className="text-neutral-400">
-                    {fb.username ? `@${fb.username}` : (fb.email || 'Anônimo')}
+                    {fb.username ? `@${fb.username}` : fb.email || 'Anônimo'}
                   </TableCell>
                   <TableCell className="text-neutral-400">
                     {new Date(fb.created_at).toLocaleDateString('pt-BR')}
@@ -98,14 +105,22 @@ export default async function AdminFeedbackPage(props: {
                 </TableRow>
               ))
             ) : (
-              <TableRow><TableCell colSpan={5} className="text-center text-neutral-500 py-10">Nenhum feedback encontrado.</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-neutral-500 py-10">
+                  Nenhum feedback encontrado.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
 
       <div className="mt-6">
-        <PaginationControls totalPages={totalPages} currentPage={currentPage} basePath="/admin/feedback" />
+        <PaginationControls
+          totalPages={totalPages}
+          currentPage={currentPage}
+          basePath="/admin/feedback"
+        />
       </div>
     </>
   );

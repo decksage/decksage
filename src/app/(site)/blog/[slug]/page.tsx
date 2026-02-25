@@ -19,17 +19,17 @@ interface PageProps {
 
 // Tipagem para os dados que esperamos da nossa função RPC
 type PostData = {
-  id: string; 
-  title: string; 
-  content: string; 
+  id: string;
+  title: string;
+  content: string;
   excerpt: string | null;
-  cover_image_url: string | null; 
+  cover_image_url: string | null;
   published_at: string;
-  username: string | null; 
-  full_name: string | null; 
+  username: string | null;
+  full_name: string | null;
   avatar_url: string | null;
   categories: { slug: string; name: string }[] | null;
-}
+};
 
 /**
  * Gera os metadados de SEO (título, descrição, etc.) para a página.
@@ -38,7 +38,7 @@ type PostData = {
 export async function generateMetadata(props: any) {
   const { params } = props as PageProps;
   const supabase = createClient();
-  
+
   const { data: post } = await supabase
     .from('posts')
     .select('title, excerpt, meta_title, meta_description, cover_image_url')
@@ -79,9 +79,9 @@ export default async function PostPage(props: any) {
 
   // 2. Incrementa a contagem de visualizações sem bloquear a renderização da página
   supabase.rpc('increment_post_view', { post_slug: params.slug }).then(({ error }) => {
-    if(error) console.error(`Falha ao incrementar view para ${params.slug}:`, error.message);
+    if (error) console.error(`Falha ao incrementar view para ${params.slug}:`, error.message);
   });
-  
+
   // 3. Limpa o HTML do conteúdo para renderização segura
   const cleanContent = post.content ? DOMPurify.sanitize(post.content) : '';
 
@@ -100,12 +100,15 @@ export default async function PostPage(props: any) {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/30"></div>
-        
+
         <div className="relative z-10 max-w-4xl">
-           <div className="flex justify-center items-center flex-wrap gap-2 mb-4">
+          <div className="flex justify-center items-center flex-wrap gap-2 mb-4">
             {post.categories?.map((cat) => (
               <Link key={cat.slug} href={`/blog/category/${cat.slug}`}>
-                <Badge variant="outline" className="border-white/20 bg-black/20 text-white backdrop-blur-sm hover:bg-white/20 transition-colors">
+                <Badge
+                  variant="outline"
+                  className="border-white/20 bg-black/20 text-white backdrop-blur-sm hover:bg-white/20 transition-colors"
+                >
                   {cat.name}
                 </Badge>
               </Link>
@@ -114,16 +117,25 @@ export default async function PostPage(props: any) {
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight drop-shadow-lg">
             {post.title}
           </h1>
-           <div className="mt-6 flex items-center justify-center gap-4 text-base text-neutral-200">
-              <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border-2 border-white/50">
-                      <AvatarImage src={post.avatar_url || ''} />
-                      <AvatarFallback>{post.full_name?.charAt(0).toUpperCase() || post.username?.charAt(0).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <span className="font-medium">por {post.full_name || post.username}</span>
-              </div>
-              <span className="text-neutral-500">•</span>
-              <span>{new Date(post.published_at).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+          <div className="mt-6 flex items-center justify-center gap-4 text-base text-neutral-200">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 border-2 border-white/50">
+                <AvatarImage src={post.avatar_url || ''} />
+                <AvatarFallback>
+                  {post.full_name?.charAt(0).toUpperCase() ||
+                    post.username?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <span className="font-medium">por {post.full_name || post.username}</span>
+            </div>
+            <span className="text-neutral-500">•</span>
+            <span>
+              {new Date(post.published_at).toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
           </div>
         </div>
       </header>

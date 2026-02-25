@@ -6,8 +6,20 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Filter, Check, ChevronsUpDown } from 'lucide-react';
@@ -82,12 +94,21 @@ export default function SearchFilters({
   const [openCombobox, setOpenCombobox] = useState(false);
 
   const totalFilters = useMemo(() => {
-    let count = selectedTypes.length + selectedColors.length + selectedRarity.length + selectedFormats.length;
+    let count =
+      selectedTypes.length + selectedColors.length + selectedRarity.length + selectedFormats.length;
     if (selectedSet) count += 1;
     if (selectedCmc.length > 0) count += 1;
     if (selectedArtist) count += 1;
     return count;
-  }, [selectedTypes, selectedColors, selectedRarity, selectedFormats, selectedSet, selectedCmc, selectedArtist]);
+  }, [
+    selectedTypes,
+    selectedColors,
+    selectedRarity,
+    selectedFormats,
+    selectedSet,
+    selectedCmc,
+    selectedArtist,
+  ]);
 
   const toggle = (value: string, list: string[], setter: (v: string[]) => void) => {
     setter(list.includes(value) ? list.filter((v) => v !== value) : [...list, value]);
@@ -105,7 +126,11 @@ export default function SearchFilters({
   };
 
   return (
-    <Sheet onOpenChange={(open) => { if (open && onOpen) onOpen(); }}>
+    <Sheet
+      onOpenChange={(open) => {
+        if (open && onOpen) onOpen();
+      }}
+    >
       <SheetTrigger asChild>
         <Button
           variant="outline"
@@ -192,7 +217,7 @@ export default function SearchFilters({
                             <span
                               className={cn(
                                 'inline-flex items-center justify-center rounded-full w-4 h-4',
-                                colorStyles[color]
+                                colorStyles[color],
                               )}
                             />
                             <span>{color}</span>
@@ -217,16 +242,16 @@ export default function SearchFilters({
                           <Checkbox
                             id={`rarity-${rarity}`}
                             checked={selectedRarity.includes(rarity)}
-                            onCheckedChange={() => toggle(rarity, selectedRarity, setSelectedRarity)}
+                            onCheckedChange={() =>
+                              toggle(rarity, selectedRarity, setSelectedRarity)
+                            }
                             aria-label={`Filtrar por ${rarity}`}
                           />
                           <label
                             htmlFor={`rarity-${rarity}`}
                             className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer flex items-center space-x-2"
                           >
-                            <span
-                              className={cn('w-3 h-3 rounded-full', rarityStyles[rarity])}
-                            />
+                            <span className={cn('w-3 h-3 rounded-full', rarityStyles[rarity])} />
                             <span>{rarity}</span>
                           </label>
                         </div>
@@ -249,7 +274,9 @@ export default function SearchFilters({
                           <Checkbox
                             id={`format-${format}`}
                             checked={selectedFormats.includes(format)}
-                            onCheckedChange={() => toggle(format, selectedFormats, setSelectedFormats)}
+                            onCheckedChange={() =>
+                              toggle(format, selectedFormats, setSelectedFormats)
+                            }
                             aria-label={`Filtrar por ${format}`}
                           />
                           <label
@@ -282,14 +309,18 @@ export default function SearchFilters({
                             className="w-full justify-between bg-neutral-800 border-neutral-700 text-neutral-100 hover:bg-neutral-700"
                           >
                             {selectedSet
-                              ? sets.find((set) => set.code === selectedSet)?.name || 'Selecione a coleção'
+                              ? sets.find((set) => set.code === selectedSet)?.name ||
+                                'Selecione a coleção'
                               : 'Selecione a coleção'}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-full p-0 bg-neutral-900 border-neutral-700">
                           <Command className="bg-neutral-900">
-                            <CommandInput placeholder="Buscar coleção..." className="text-neutral-100" />
+                            <CommandInput
+                              placeholder="Buscar coleção..."
+                              className="text-neutral-100"
+                            />
                             <CommandList>
                               <CommandEmpty className="text-neutral-400 p-4">
                                 Nenhuma coleção encontrada.
@@ -316,7 +347,7 @@ export default function SearchFilters({
                                       <Check
                                         className={cn(
                                           'mr-2 h-4 w-4',
-                                          selectedSet === set.code ? 'opacity-100' : 'opacity-0'
+                                          selectedSet === set.code ? 'opacity-100' : 'opacity-0',
                                         )}
                                       />
                                       {set.name}

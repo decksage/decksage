@@ -20,17 +20,14 @@ export default function AuthCodeErrorPage() {
         </div>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-red-400">
-            Ocorreu um Erro
-          </h1>
-          <p className="text-neutral-300 mt-3 text-lg">
-            Não foi possível verificar a sua conta.
-          </p>
+          <h1 className="text-4xl font-extrabold text-red-400">Ocorreu um Erro</h1>
+          <p className="text-neutral-300 mt-3 text-lg">Não foi possível verificar a sua conta.</p>
         </header>
-        
+
         <div className="text-neutral-400 mb-8">
           <p>
-            O link de confirmação pode ter expirado ou ser inválido. Por favor, tente fazer login ou registar-se novamente.
+            O link de confirmação pode ter expirado ou ser inválido. Por favor, tente fazer login ou
+            registar-se novamente.
           </p>
         </div>
 
@@ -44,9 +41,7 @@ export default function AuthCodeErrorPage() {
             </Button>
           </Link>
           <Link href="/">
-            <Button
-              className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600 px-8 py-6 text-base"
-            >
+            <Button className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600 px-8 py-6 text-base">
               Página Inicial
             </Button>
           </Link>

@@ -5,20 +5,20 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
 
-import { fetchCardById } from "@/app/lib/scryfall";
-import { ScryfallCard } from "@/app/lib/types";
-import { translateCardText } from "@/app/actions/aiActions";
+import { fetchCardById } from '@/app/lib/scryfall';
+import { ScryfallCard } from '@/app/lib/types';
+import { translateCardText } from '@/app/actions/aiActions';
 
-import CardDetailPageLayout from "../../components/CardDetailPageLayout";
-import CardImageDisplay from "../../components/CardImageDisplay";
-import CardDetailsDisplay from "../../components/CardDetailsDisplay";
-import CardHeaderInfo from "../../components/CardHeaderInfo";
-import CardTypeLine from "../../components/CardTypeLine";
-import CardTextDisplay from "../../components/CardTextDisplay";
-import CardFlavorText from "../../components/CardFlavorText";
-import CardPowerToughness from "../../components/CardPowerToughness";
-import CardRaritySetInfo from "../../components/CardRaritySetInfo";
-import { Separator } from "@/components/ui/separator";
+import CardDetailPageLayout from '../../components/CardDetailPageLayout';
+import CardImageDisplay from '../../components/CardImageDisplay';
+import CardDetailsDisplay from '../../components/CardDetailsDisplay';
+import CardHeaderInfo from '../../components/CardHeaderInfo';
+import CardTypeLine from '../../components/CardTypeLine';
+import CardTextDisplay from '../../components/CardTextDisplay';
+import CardFlavorText from '../../components/CardFlavorText';
+import CardPowerToughness from '../../components/CardPowerToughness';
+import CardRaritySetInfo from '../../components/CardRaritySetInfo';
+import { Separator } from '@/components/ui/separator';
 
 // No Next.js 15+, params é uma Promise
 interface PageProps {
@@ -29,13 +29,13 @@ export async function generateMetadata({ params }: PageProps) {
   const resolvedParams = await params;
   const cardId = resolvedParams.cardId ?? '';
 
-  if (!cardId) return { title: "Carta não especificada" };
+  if (!cardId) return { title: 'Carta não especificada' };
 
   try {
     const card = await fetchCardById(cardId);
 
     if (!card) {
-      return { title: "Carta não encontrada" };
+      return { title: 'Carta não encontrada' };
     }
 
     return {
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: PageProps) {
       },
     };
   } catch (error) {
-    return { title: "Erro ao carregar carta" };
+    return { title: 'Erro ao carregar carta' };
   }
 }
 
@@ -60,14 +60,14 @@ export default async function CardByIdPage({ params }: PageProps) {
   let errorMsg: string | null = null;
 
   try {
-    if (!cardId || cardId === "undefined") {
-      errorMsg = "ID da carta não fornecido.";
+    if (!cardId || cardId === 'undefined') {
+      errorMsg = 'ID da carta não fornecido.';
     } else {
       card = await fetchCardById(cardId);
     }
   } catch (error: any) {
-    console.error("Erro inesperado ao buscar carta por ID:", error);
-    errorMsg = "Erro interno ao processar a requisição.";
+    console.error('Erro inesperado ao buscar carta por ID:', error);
+    errorMsg = 'Erro interno ao processar a requisição.';
   }
 
   // Tratamento de segurança caso a carta não exista no Scryfall
@@ -83,9 +83,8 @@ export default async function CardByIdPage({ params }: PageProps) {
   }
 
   // Lógica para cartas de face dupla (Transform) - Verifica se as faces têm imagens de fato
-  const isDoubleFaced = Array.isArray(card.card_faces) &&
-    card.card_faces.length > 0 &&
-    !!card.card_faces[0].image_uris;
+  const isDoubleFaced =
+    Array.isArray(card.card_faces) && card.card_faces.length > 0 && !!card.card_faces[0].image_uris;
 
   const displayCard = isDoubleFaced ? card.card_faces?.[0] : card;
   const backCard = isDoubleFaced ? card.card_faces?.[1] : null;

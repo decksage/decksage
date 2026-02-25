@@ -1,13 +1,13 @@
-'use client'
+'use client';
 
 import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem, // Usando o item de menu correto
-  DropdownMenuTrigger, 
-  DropdownMenuSeparator 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, User, Shield, ShieldOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
@@ -19,8 +19,8 @@ type UserActionsProps = {
     id: string;
     username: string | null;
     status: string;
-  }
-}
+  };
+};
 
 export default function UserActions({ user }: UserActionsProps) {
   const [isPending, startTransition] = useTransition();
@@ -36,15 +36,22 @@ export default function UserActions({ user }: UserActionsProps) {
       }
     });
   };
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" disabled={isPending}>
-          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
+          {isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <MoreHorizontal className="h-4 w-4" />
+          )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-neutral-900 border-neutral-700 text-neutral-200" align="end">
+      <DropdownMenuContent
+        className="w-56 bg-neutral-900 border-neutral-700 text-neutral-200"
+        align="end"
+      >
         <DropdownMenuItem asChild className="cursor-pointer">
           <Link href={`/profile/${user.username || user.id}`} target="_blank">
             <User className="mr-2 h-4 w-4" />
@@ -52,7 +59,7 @@ export default function UserActions({ user }: UserActionsProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-neutral-700" />
-        
+
         {/* AJUSTE: Corrigido de <ContextMenuItem> para <DropdownMenuItem> */}
         <DropdownMenuItem
           onSelect={handleStatusChange}

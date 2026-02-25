@@ -23,13 +23,13 @@ type ColumnKey = '1' | '2' | '3' | '4' | '5' | '6+' | 'Terrenos';
 export default function CardKanban({ cards }: CardKanbanProps) {
   // Agrupa cartas por custo de mana
   const groupedCards: Record<ColumnKey, CardData[]> = {
-    '1': cards.filter(card => !card.isLand && card.cmc === 1),
-    '2': cards.filter(card => !card.isLand && card.cmc === 2),
-    '3': cards.filter(card => !card.isLand && card.cmc === 3),
-    '4': cards.filter(card => !card.isLand && card.cmc === 4),
-    '5': cards.filter(card => !card.isLand && card.cmc === 5),
-    '6+': cards.filter(card => !card.isLand && card.cmc >= 6),
-    'Terrenos': cards.filter(card => card.isLand),
+    '1': cards.filter((card) => !card.isLand && card.cmc === 1),
+    '2': cards.filter((card) => !card.isLand && card.cmc === 2),
+    '3': cards.filter((card) => !card.isLand && card.cmc === 3),
+    '4': cards.filter((card) => !card.isLand && card.cmc === 4),
+    '5': cards.filter((card) => !card.isLand && card.cmc === 5),
+    '6+': cards.filter((card) => !card.isLand && card.cmc >= 6),
+    Terrenos: cards.filter((card) => card.isLand),
   };
 
   // Colunas do Kanban
@@ -79,9 +79,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
                     >
                       <div className="relative">
                         {card.quantity > 1 && (
-                          <Badge
-                            className="absolute w-[20px] h-[20px] -top-2 -right-0 bg-amber-500 rounded-[20px] text-white text-[9px] font-bold z-10 flex items-center justify-center"
-                          >
+                          <Badge className="absolute w-[20px] h-[20px] -top-2 -right-0 bg-amber-500 rounded-[20px] text-white text-[9px] font-bold z-10 flex items-center justify-center">
                             {card.quantity}
                           </Badge>
                         )}

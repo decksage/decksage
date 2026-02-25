@@ -7,7 +7,7 @@ import GlobalSearch from './GlobalSearch';
 import UserMenu from './UserMenu';
 import { Menu, X, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
 import DeckSageLogo from '../../../../public/decksage.png';
 import { createClient } from '@/app/utils/supabase/client';
@@ -21,7 +21,9 @@ export default function Header() {
   useEffect(() => {
     const fetchSession = async () => {
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (session?.user) {
         setIsAuthenticated(true);
@@ -45,7 +47,10 @@ export default function Header() {
     <div className="relative">
       <header className="w-full p-4 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800/50 shadow-sm sticky top-0 z-50 transition-all duration-300">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
-          <Link href="/" className="text-2xl font-bold text-amber-500 hover:text-amber-400 transition-colors">
+          <Link
+            href="/"
+            className="text-2xl font-bold text-amber-500 hover:text-amber-400 transition-colors"
+          >
             <Image
               src={DeckSageLogo}
               alt={'DeckSage'}
@@ -81,7 +86,10 @@ export default function Header() {
                 </Avatar>
               </Link>
             )}
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-white focus:outline-none">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-white focus:outline-none"
+            >
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
@@ -95,16 +103,32 @@ export default function Header() {
               <GlobalSearch />
             </div>
 
-            <Link href="/" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+            <Link
+              href="/"
+              onClick={handleLinkClick}
+              className="hover:text-amber-500 transition-colors text-lg py-2"
+            >
               Buscar
             </Link>
-            <Link href="/collections" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+            <Link
+              href="/collections"
+              onClick={handleLinkClick}
+              className="hover:text-amber-500 transition-colors text-lg py-2"
+            >
               Coleções
             </Link>
-            <Link href="/glossary" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+            <Link
+              href="/glossary"
+              onClick={handleLinkClick}
+              className="hover:text-amber-500 transition-colors text-lg py-2"
+            >
               Glossário
             </Link>
-            <Link href="/deck-analyzer" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+            <Link
+              href="/deck-analyzer"
+              onClick={handleLinkClick}
+              className="hover:text-amber-500 transition-colors text-lg py-2"
+            >
               Análise de Deck IA
             </Link>
 
@@ -112,13 +136,25 @@ export default function Header() {
 
             {isAuthenticated ? (
               <>
-                <Link href="/profile" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+                <Link
+                  href="/profile"
+                  onClick={handleLinkClick}
+                  className="hover:text-amber-500 transition-colors text-lg py-2"
+                >
                   Editar Perfil
                 </Link>
-                <Link href="/my-decks" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+                <Link
+                  href="/my-decks"
+                  onClick={handleLinkClick}
+                  className="hover:text-amber-500 transition-colors text-lg py-2"
+                >
                   Meus Decks
                 </Link>
-                <Link href="/favorites" onClick={handleLinkClick} className="hover:text-amber-500 transition-colors text-lg py-2">
+                <Link
+                  href="/favorites"
+                  onClick={handleLinkClick}
+                  className="hover:text-amber-500 transition-colors text-lg py-2"
+                >
                   Favoritos
                 </Link>
                 <button

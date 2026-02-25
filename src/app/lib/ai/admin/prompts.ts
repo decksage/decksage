@@ -35,15 +35,22 @@ const jsonDeckOutputFormat = `IMPORTANTE: Você deve responder com um único obj
     "sideboard": [ { "count": number, "name": "string" } ]
   }
 }`;
-const jsonDeckCheckOutputFormat = 'Responda APENAS com um objeto JSON com a estrutura: { "playstyle": "string", "win_condition": "string", "difficulty": "string (Fácil, Médio, ou Difícil)", "strengths": ["array de 2 a 3 pontos fortes"], "weaknesses": ["array de 2 a 3 pontos fracos"] }';
-const jsonSocialOutputFormat = 'Responda APENAS com um objeto JSON com a seguinte estrutura: { "facebook": "string", "instagram": "string", "x": "string", "reddit": "string" }';
+const jsonDeckCheckOutputFormat =
+  'Responda APENAS com um objeto JSON com a estrutura: { "playstyle": "string", "win_condition": "string", "difficulty": "string (Fácil, Médio, ou Difícil)", "strengths": ["array de 2 a 3 pontos fortes"], "weaknesses": ["array de 2 a 3 pontos fracos"] }';
+const jsonSocialOutputFormat =
+  'Responda APENAS com um objeto JSON com a seguinte estrutura: { "facebook": "string", "instagram": "string", "x": "string", "reddit": "string" }';
 
 // --- Funções de Geração de Prompt ---
 
 /**
  * Cria o prompt para a IA gerar uma DECKLIST base.
  */
-export function createDecklistPrompt({ format, userPrompt, commanderName, commanderColorIdentity }: DecklistPromptData): string {
+export function createDecklistPrompt({
+  format,
+  userPrompt,
+  commanderName,
+  commanderColorIdentity,
+}: DecklistPromptData): string {
   const instructions = userPrompt
     ? `A instrução principal do usuário para o deck é: "${userPrompt}". A estratégia do deck deve girar em torno desta instrução.`
     : `Não há instrução do usuário. Crie uma estratégia sinérgica e eficaz com base nas melhores práticas do formato.`;
@@ -67,8 +74,8 @@ export function createDecklistPrompt({ format, userPrompt, commanderName, comman
         ${jsonDeckOutputFormat}
               `.trim();
 
-            case 'pauper':
-              return `
+    case 'pauper':
+      return `
         Você é um deckbuilder veterano em Magic: The Gathering. Crie um deck no formato **Pauper** com base nas regras abaixo:
 
         1. O maindeck deve conter exatamente 60 cartas.
@@ -83,8 +90,8 @@ export function createDecklistPrompt({ format, userPrompt, commanderName, comman
         ${jsonDeckOutputFormat}
               `.trim();
 
-            case 'standard':
-              return `
+    case 'standard':
+      return `
         Você é um jogador de Pro Tour focado no formato **Standard (T2)**. Crie um deck rigorosamente legal com base nas regras abaixo:
 
         1. O maindeck deve conter exatamente 60 cartas.
@@ -99,8 +106,8 @@ export function createDecklistPrompt({ format, userPrompt, commanderName, comman
         ${jsonDeckOutputFormat}
               `.trim();
 
-            case 'pioneer':
-              return `
+    case 'pioneer':
+      return `
         Você é um deckbuilder de alto nível, especializado no formato **Pioneer**. Crie um deck com as seguintes regras:
 
         1. O maindeck deve conter exatamente 60 cartas.
@@ -115,9 +122,9 @@ export function createDecklistPrompt({ format, userPrompt, commanderName, comman
         ${jsonDeckOutputFormat}
               `.trim();
 
-            case 'modern':
-            default:
-              return `
+    case 'modern':
+    default:
+      return `
         Você é um deckbuilder experiente, focado no formato **Modern**. Construa um deck seguindo estas regras:
 
         1. O maindeck deve conter exatamente 60 cartas.
@@ -137,14 +144,22 @@ export function createDecklistPrompt({ format, userPrompt, commanderName, comman
 /**
  * Cria o prompt para a IA fazer a ANÁLISE (Deck Check).
  */
-export function createDeckCheckPrompt({ decklist, format, commanderName }: AnalysisPromptData): string {
+export function createDeckCheckPrompt({
+  decklist,
+  format,
+  commanderName,
+}: AnalysisPromptData): string {
   return `Você é um jogador profissional de Magic. Analise a seguinte decklist do formato ${format} (Comandante: ${commanderName || 'N/A'}):\n${decklist}\n\nFaça uma análise técnica detalhada ("Deck Check") em Português do Brasil, cobrindo os pontos: Modo de Jogo, Rota de Vitória, Dificuldade (Fácil, Médio ou Difícil), um array com 2 a 3 Pontos Fortes, e um array com 2 a 3 Pontos Fracos. ${jsonDeckCheckOutputFormat}`;
 }
 
 /**
  * Cria o prompt para a IA gerar o GUIA DE COMO JOGAR.
  */
-export function createHowToPlayGuidePrompt({ deckName, deckDescription, deckCheck }: Omit<ContentPromptsData, 'format' | 'decklist'>): string {
+export function createHowToPlayGuidePrompt({
+  deckName,
+  deckDescription,
+  deckCheck,
+}: Omit<ContentPromptsData, 'format' | 'decklist'>): string {
   const deckInfo = `Nome do Deck: ${deckName}\nDescrição: ${deckDescription}\nEstilo: ${deckCheck.playstyle}\nCondição de Vitória: ${deckCheck.win_condition}`;
 
   return `Você é um criador de conteúdo de Magic: The Gathering. Escreva um "Guia de Como Jogar" para o deck abaixo, em Português do Brasil. O guia deve ser amigável para jogadores intermediários.\n\n${deckInfo}\n\nEstruture o guia com as seguintes seções, usando markdown simples para títulos (ex: "### Título") e listas com marcadores (*):\n### Visão Geral da Estratégia\nExplique o plano de jogo principal em poucas frases.\n### Postura de Mulligan\nDescreva que tipo de mão inicial o jogador deve procurar e quais deve mulligar.\n### Jogo Inicial (Turnos 1-3)\nQuais são as jogadas ideais no início do jogo?\n### Meio de Jogo (Turnos 4-6)\nComo o deck começa a estabelecer sua presença na mesa?\n### Fim de Jogo (Turnos 7+)\nComo o deck finaliza a partida? Quais são os finalizadores?\n### Dicas e Sinergias\nListe 2 ou 3 interações ou sinergias importantes do deck que um jogador precisa saber.`;
@@ -153,7 +168,12 @@ export function createHowToPlayGuidePrompt({ deckName, deckDescription, deckChec
 /**
  * Cria o prompt para a IA gerar os POSTS PARA REDES SOCIAIS.
  */
-export function createSocialPostsPrompt({ deckName, deckDescription, deckCheck, format }: SocialPostsPromptData): string {
+export function createSocialPostsPrompt({
+  deckName,
+  deckDescription,
+  deckCheck,
+  format,
+}: SocialPostsPromptData): string {
   const deckCheckSummary = `- Estilo: ${deckCheck.playstyle}\n- Como Vence: ${deckCheck.win_condition}`;
 
   return `Você é um social media especialista em Magic: The Gathering. Baseado no deck "${deckName}" (${deckDescription}) e na análise:\n${deckCheckSummary}\n\nCrie textos em Português do Brasil com linguagem jovem e engajante, usando emojis e hashtags. No final de cada post, inclua o placeholder [LINK PARA O DECK NO SITE] para que o admin possa substituí-lo pela URL correta.\n\n- Facebook: Post com 2-3 parágrafos, explicando o estilo de jogo e convidando para ver a lista completa. Use #MagicTheGathering, #MTG, #MTGDecks, #${format}.\n- Instagram: Legenda curta e impactante para um carrossel de imagens. Foque no apelo visual e na ideia principal.\n- X (Twitter): Tweet curto (máximo 280 caracteres) com uma pergunta.\n- Reddit: Post para r/MagicBrasil, com tom mais técnico, pedindo feedback.\n\nOutput:\n${jsonSocialOutputFormat}`;

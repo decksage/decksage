@@ -8,7 +8,12 @@ interface CardImageDisplayProps {
   backAltText?: string;
 }
 
-const CardImageDisplay = ({ imageUrl, altText, backImageUrl, backAltText }: CardImageDisplayProps) => {
+const CardImageDisplay = ({
+  imageUrl,
+  altText,
+  backImageUrl,
+  backAltText,
+}: CardImageDisplayProps) => {
   return (
     <div className="flex flex-col items-center gap-4">
       {imageUrl && (

@@ -16,10 +16,6 @@ export default async function SetPage({ params }: PageProps) {
   const cardsData = await cardsRes.json();
 
   return (
-    <CollectionDetailView
-      setInfo={setInfo}
-      initialCards={cardsData.data || []}
-      setCode={set}
-    />
+    <CollectionDetailView setInfo={setInfo} initialCards={cardsData.data || []} setCode={set} />
   );
 }

@@ -48,19 +48,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/api/:path*",
+        source: '/api/:path*',
         headers: [
-          { 
-            key: "Access-Control-Allow-Origin", 
-            value: "https://decksage.com.br"
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://decksage.com.br',
           },
           {
-            key: "Access-Control-Allow-Methods",
-            value: "GET, POST, OPTIONS, PUT, PATCH, DELETE",
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
           },
           {
-            key: "Access-Control-Allow-Headers",
-            value: "X-Requested-With, content-type, Authorization",
+            key: 'Access-Control-Allow-Headers',
+            value: 'X-Requested-With, content-type, Authorization',
           },
         ],
       },

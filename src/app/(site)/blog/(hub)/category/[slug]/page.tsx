@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-import { createClient } from "@/app/utils/supabase/server";
-import { notFound } from "next/navigation";
-import PostCard from "@/app/(site)/components/blog/PostCard";
-import PaginationControls from "@/app/(site)/components/blog/PaginationControls";
+import { createClient } from '@/app/utils/supabase/server';
+import { notFound } from 'next/navigation';
+import PostCard from '@/app/(site)/components/blog/PostCard';
+import PaginationControls from '@/app/(site)/components/blog/PaginationControls';
 
 // O tipo das props para referência interna
 interface PageProps {
@@ -39,22 +39,20 @@ export default async function CategoryPage(props: any) {
   }
 
   // 2. Busca os posts e o total de posts da categoria em paralelo
-  const [
-    { data: posts, error: postsError }, 
-    { data: totalPosts, error: countError }
-  ] = await Promise.all([
-      supabase.rpc('get_posts_by_category_slug_paginated', { 
+  const [{ data: posts, error: postsError }, { data: totalPosts, error: countError }] =
+    await Promise.all([
+      supabase.rpc('get_posts_by_category_slug_paginated', {
         category_slug: params.slug,
         page_size: POSTS_PER_PAGE,
-        page_offset: offset 
+        page_offset: offset,
       }),
-      supabase.rpc('count_posts_in_category', { 
-        category_slug: params.slug 
-      })
-  ]);
+      supabase.rpc('count_posts_in_category', {
+        category_slug: params.slug,
+      }),
+    ]);
 
   if (postsError || countError) {
-    console.error("Erro ao buscar posts da categoria:", postsError || countError);
+    console.error('Erro ao buscar posts da categoria:', postsError || countError);
   }
 
   const totalPages = Math.ceil((totalPosts || 0) / POSTS_PER_PAGE);
@@ -77,7 +75,9 @@ export default async function CategoryPage(props: any) {
           ))}
         </div>
       ) : (
-        <p className="text-center text-neutral-500 py-10">Nenhum artigo encontrado nesta categoria.</p>
+        <p className="text-center text-neutral-500 py-10">
+          Nenhum artigo encontrado nesta categoria.
+        </p>
       )}
 
       {/* Renderiza os controles de paginação */}

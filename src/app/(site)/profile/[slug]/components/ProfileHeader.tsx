@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,12 +12,12 @@ type ProfileHeaderProps = {
     cover_image_url: string | null;
     bio: string | null;
   } | null; // O perfil pode ser nulo se não for encontrado
-}
+};
 
 export default function ProfileHeader({ profile }: ProfileHeaderProps) {
   // Lida com o caso de perfil não encontrado
   if (!profile) {
-    return null; 
+    return null;
   }
 
   const fallbackInitial = profile.full_name?.charAt(0) || profile.username?.charAt(0) || '?';
@@ -27,8 +27,8 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
       {/* Imagem de Capa */}
       <div className="h-48 sm:h-64 bg-neutral-800 relative">
         {profile.cover_image_url ? (
-          <Image 
-            src={profile.cover_image_url} 
+          <Image
+            src={profile.cover_image_url}
             alt={`Capa do perfil de ${profile.username}`}
             fill
             unoptimized
@@ -40,11 +40,10 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
         )}
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
-      
+
       {/* Container para Avatar e Informações */}
       <div className="container mx-auto px-6 -mt-16 sm:-mt-20">
         <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-          
           {/* AJUSTE: O Avatar agora usa a estrutura correta do Shadcn/UI */}
           <div className="relative h-32 w-32 sm:h-40 sm:w-40 rounded-full border-4 border-neutral-950 bg-neutral-700 flex-shrink-0">
             <Avatar className="w-full h-full">

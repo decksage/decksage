@@ -5,11 +5,7 @@ import { checkUserRole } from '@/lib/auth';
 import { notFound } from 'next/navigation';
 import AdminSidebar from './admin/components/AdminSidebar';
 
-export default async function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   // Segurança em nível de layout (continua igual)
   const isAdmin = await checkUserRole('admin');
   if (!isAdmin) {

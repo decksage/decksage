@@ -17,9 +17,9 @@ export async function getLigamagicPrice(cardName: string): Promise<PriceResult> 
   let browser;
   try {
     console.log(`Iniciando busca de preço para: ${cardName}`);
-    
+
     // 1. Inicia o navegador Puppeteer
-    browser = await puppeteer.launch({ 
+    browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
@@ -36,13 +36,13 @@ export async function getLigamagicPrice(cardName: string): Promise<PriceResult> 
 
     // AJUSTE CRÍTICO: Este é o novo seletor, baseado no HTML que você forneceu.
     // Ele busca pela div com classe "price" dentro da div com classe "min".
-    const priceSelector = '.price-mkp .min .price'; 
-    
+    const priceSelector = '.price-mkp .min .price';
+
     // 4. Espera o seletor do preço mínimo aparecer na página
     await page.waitForSelector(priceSelector, { timeout: 10000 });
 
     // 5. Extrai o texto do elemento do preço
-    const priceText = await page.$eval(priceSelector, el => el.textContent);
+    const priceText = await page.$eval(priceSelector, (el) => el.textContent);
 
     if (!priceText) {
       throw new Error('Não foi possível encontrar o texto do preço.');
@@ -51,12 +51,8 @@ export async function getLigamagicPrice(cardName: string): Promise<PriceResult> 
     console.log(`Texto do preço extraído: "${priceText}"`);
 
     // 6. Limpa e formata o texto para obter um número (esta lógica já está correta para "R$ 12,34")
-    const cleanedPrice = priceText
-      .replace('R$', '')
-      .replace('.', '')
-      .replace(',', '.')
-      .trim();
-    
+    const cleanedPrice = priceText.replace('R$', '').replace('.', '').replace(',', '.').trim();
+
     const price = parseFloat(cleanedPrice);
 
     if (isNaN(price)) {
@@ -66,7 +62,6 @@ export async function getLigamagicPrice(cardName: string): Promise<PriceResult> 
     console.log(`Preço final: ${price}`);
 
     return { price };
-
   } catch (err: any) {
     console.error(`Erro ao buscar preço para "${cardName}":`, err.message);
     return { price: null, error: err.message };

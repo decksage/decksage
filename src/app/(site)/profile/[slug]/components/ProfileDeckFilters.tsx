@@ -7,7 +7,11 @@ interface ProfileDeckFiltersProps {
   slug: string;
 }
 
-export default function ProfileDeckFilters({ availableFormats, activeFormat, slug }: ProfileDeckFiltersProps) {
+export default function ProfileDeckFilters({
+  availableFormats,
+  activeFormat,
+  slug,
+}: ProfileDeckFiltersProps) {
   // Mostrar o componente se houver pelo menos 1 formato
   if (availableFormats.length === 0) {
     return null;
@@ -18,16 +22,12 @@ export default function ProfileDeckFilters({ availableFormats, activeFormat, slu
       <h3 className="text-sm font-semibold text-neutral-400 mr-2">Filtrar por formato:</h3>
 
       <Link href={`/profile/${slug}`}>
-        <Button
-          variant={!activeFormat ? 'default' : 'outline'}
-          size="sm"
-          className="rounded-full"
-        >
+        <Button variant={!activeFormat ? 'default' : 'outline'} size="sm" className="rounded-full">
           Todos
         </Button>
       </Link>
 
-      {availableFormats.map(format => (
+      {availableFormats.map((format) => (
         <Link href={`/profile/${slug}?format=${format.toLowerCase()}`} key={format}>
           <Button
             variant={activeFormat === format.toLowerCase() ? 'default' : 'outline'}

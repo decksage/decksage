@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // app/my-decks/components/DeckCardItem.tsx
-'use client'
+'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import { deleteDeck } from '@/app/actions/deckActions';
 import { toast } from 'sonner';
 import ManaCost from '@/components/ui/ManaCost';
@@ -47,7 +47,8 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
   const manaCostString = deck.color_identity ? `{${deck.color_identity.join('}{')}}` : '';
 
   // Cálculo da quantidade de cartas
-  const cardCount = (deck.decklist?.mainboard?.reduce((acc: number, card: any) => acc + card.count, 0) || 0) +
+  const cardCount =
+    (deck.decklist?.mainboard?.reduce((acc: number, card: any) => acc + card.count, 0) || 0) +
     (deck.decklist?.sideboard?.reduce((acc: number, card: any) => acc + card.count, 0) || 0);
 
   const handleDelete = async () => {
@@ -108,7 +109,9 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
 
       <CardContent className="p-4 flex flex-col flex-grow">
         <Link href={`/my-deck/${deck.format}/${deck.id}`}>
-          <CardTitle className="text-lg font-bold text-neutral-200 group-hover:text-amber-400 truncate transition-colors">{deck.name}</CardTitle>
+          <CardTitle className="text-lg font-bold text-neutral-200 group-hover:text-amber-400 truncate transition-colors">
+            {deck.name}
+          </CardTitle>
         </Link>
         <div className="flex-grow"></div>
 
@@ -129,13 +132,22 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
           </p>
           <div className="flex gap-2">
             <Link href={`/my-deck/${deck.format}/${deck.id}/edit`}>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-amber-400 hover:bg-neutral-800">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-neutral-400 hover:text-amber-400 hover:bg-neutral-800"
+              >
                 <Edit className="h-4 w-4" />
               </Button>
             </Link>
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-neutral-800" disabled={isDeleting}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-neutral-800"
+                  disabled={isDeleting}
+                >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
@@ -147,9 +159,15 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border-neutral-700 hover:bg-neutral-800 text-neutral-300">Cancelar</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete} disabled={isDeleting} className="bg-red-600 hover:bg-red-700 text-white border-0">
-                    {isDeleting ? "A excluir..." : "Excluir"}
+                  <AlertDialogCancel className="bg-transparent border-neutral-700 hover:bg-neutral-800 text-neutral-300">
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                    className="bg-red-600 hover:bg-red-700 text-white border-0"
+                  >
+                    {isDeleting ? 'A excluir...' : 'Excluir'}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

@@ -1,16 +1,16 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { searchCards } from "@/app/lib/scryfall";
-import type { ScryfallCard } from '@/app/lib/types';  // Corrigido aqui
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { searchCards } from '@/app/lib/scryfall';
+import type { ScryfallCard } from '@/app/lib/types'; // Corrigido aqui
 
 interface CardSearchAddProps {
   onAddCard: (card: ScryfallCard) => void;
 }
 
 export default function CardSearchAdd({ onAddCard }: CardSearchAddProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<ScryfallCard[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -42,11 +42,7 @@ export default function CardSearchAdd({ onAddCard }: CardSearchAddProps) {
           >
             <div className="font-medium">{card.name}</div>
             {card.image_uris?.small && (
-              <img
-                src={card.image_uris.small}
-                alt={card.name}
-                className="w-full mt-1 rounded"
-              />
+              <img src={card.image_uris.small} alt={card.name} className="w-full mt-1 rounded" />
             )}
           </button>
         ))}

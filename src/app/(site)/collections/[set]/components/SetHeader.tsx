@@ -30,11 +30,7 @@ export function SetHeader({ name, released_at, card_count, icon }: SetHeaderProp
             Lançado em {released_at} — {card_count} cartas
           </p>
         </div>
-        <button
-          onClick={toggleFavorite}
-          className="hover:scale-110 transition"
-          title="Favoritar"
-        >
+        <button onClick={toggleFavorite} className="hover:scale-110 transition" title="Favoritar">
           {favorite ? (
             <Star className="text-amber-500" />
           ) : (

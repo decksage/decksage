@@ -11,8 +11,8 @@ type PostCardProps = {
     excerpt: string | null;
     cover_image_url: string | null;
     published_at: string | null;
-    username: string | null;      // Não está mais aninhado
-    avatar_url: string | null;    // Não está mais aninhado
+    username: string | null; // Não está mais aninhado
+    avatar_url: string | null; // Não está mais aninhado
   };
 };
 
@@ -45,23 +45,21 @@ export default function PostCard({ post }: PostCardProps) {
           <h3 className="text-xl font-bold text-amber-400 group-hover:text-amber-300 transition-colors line-clamp-2">
             {post.title}
           </h3>
-          <p className="text-sm text-neutral-400 mt-2 line-clamp-3">
-            {post.excerpt}
-          </p>
+          <p className="text-sm text-neutral-400 mt-2 line-clamp-3">{post.excerpt}</p>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center text-xs text-neutral-500">
-            <div className="flex items-center gap-2">
-                <Avatar className="h-6 w-6">
-                    {/* AJUSTE: Acessando a URL do avatar diretamente */}
-                    <AvatarImage src={post.avatar_url || ''} />
-                    <AvatarFallback>{authorInitial}</AvatarFallback>
-                </Avatar>
-                {/* AJUSTE: Acessando o nome de usuário diretamente */}
-                <span>{authorName}</span>
-            </div>
-            {post.published_at && (
-                <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
-            )}
+          <div className="flex items-center gap-2">
+            <Avatar className="h-6 w-6">
+              {/* AJUSTE: Acessando a URL do avatar diretamente */}
+              <AvatarImage src={post.avatar_url || ''} />
+              <AvatarFallback>{authorInitial}</AvatarFallback>
+            </Avatar>
+            {/* AJUSTE: Acessando o nome de usuário diretamente */}
+            <span>{authorName}</span>
+          </div>
+          {post.published_at && (
+            <span>{new Date(post.published_at).toLocaleDateString('pt-BR')}</span>
+          )}
         </CardFooter>
       </Card>
     </Link>

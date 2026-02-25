@@ -1,11 +1,12 @@
-import { Accordion } from "@/components/ui/accordion";
-import TermDefinition from "@/app/(site)/components/glossary/TermDefinition";
+import { Accordion } from '@/components/ui/accordion';
+import TermDefinition from '@/app/(site)/components/glossary/TermDefinition';
 import { Metadata } from 'next';
 import glossaryTerms from '@/app/(site)/data/glossaryTerms.json';
 
 export const metadata: Metadata = {
   title: 'Glossário de Termos | MTG Translate',
-  description: 'Entenda os termos e palavras-chave do Magic: The Gathering com explicações detalhadas.',
+  description:
+    'Entenda os termos e palavras-chave do Magic: The Gathering com explicações detalhadas.',
 };
 
 interface TranslatedTerm {
@@ -16,7 +17,7 @@ interface TranslatedTerm {
 
 export default async function GlossaryPage() {
   const allTranslatedTerms: TranslatedTerm[] = glossaryTerms.terms.sort((a, b) =>
-    a.translated.localeCompare(b.translated, 'pt-BR')
+    a.translated.localeCompare(b.translated, 'pt-BR'),
   );
 
   return (
@@ -56,9 +57,9 @@ export default async function GlossaryPage() {
             Todas as definições são pré-carregadas para uma experiência rápida e offline.
           </p>
           <p className="text-neutral-500 text-xs mt-4">
-            As definições são fornecidas por uma Inteligência Artificial e podem requerer interpretação
-            adicional para casos de regras muito específicos. Consulte sempre o Comprehensive Rules
-            para informações oficiais.
+            As definições são fornecidas por uma Inteligência Artificial e podem requerer
+            interpretação adicional para casos de regras muito específicos. Consulte sempre o
+            Comprehensive Rules para informações oficiais.
           </p>
         </aside>
       </div>

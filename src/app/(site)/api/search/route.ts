@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
   try {
     query = decodeURIComponent(query);
   } catch (e: unknown) {
-    console.error('Erro ao decodificar query:', { query, error: e instanceof Error ? e.message : 'Unknown error' });
+    console.error('Erro ao decodificar query:', {
+      query,
+      error: e instanceof Error ? e.message : 'Unknown error',
+    });
     return NextResponse.json({ error: 'Query inválida' }, { status: 400 });
   }
 
@@ -42,7 +45,9 @@ export async function GET(request: NextRequest) {
       translatedQuery = translation || query;
     }
   } catch (e: unknown) {
-    console.error('Erro ao chamar API de tradução:', { error: e instanceof Error ? e.message : 'Unknown error' });
+    console.error('Erro ao chamar API de tradução:', {
+      error: e instanceof Error ? e.message : 'Unknown error',
+    });
   }
 
   // Obter filtros
@@ -56,9 +61,25 @@ export async function GET(request: NextRequest) {
 
   // Validar filtros
   const validColors = ['White', 'Blue', 'Black', 'Red', 'Green', 'Colorless', 'Multicolor'];
-  const validTypes = ['Creature', 'Instant', 'Sorcery', 'Land', 'Enchantment', 'Artifact', 'Planeswalker'];
+  const validTypes = [
+    'Creature',
+    'Instant',
+    'Sorcery',
+    'Land',
+    'Enchantment',
+    'Artifact',
+    'Planeswalker',
+  ];
   const validRarities = ['Common', 'Uncommon', 'Rare', 'Mythic'];
-  const validFormats = ['Standard', 'Modern', 'Commander', 'Legacy', 'Vintage', 'Pioneer', 'Pauper'];
+  const validFormats = [
+    'Standard',
+    'Modern',
+    'Commander',
+    'Legacy',
+    'Vintage',
+    'Pioneer',
+    'Pauper',
+  ];
   const validCmc = ['1', '2', '3', '4', '5', '>5'];
 
   if (types.some((t) => !validTypes.includes(t))) {
@@ -81,11 +102,16 @@ export async function GET(request: NextRequest) {
   }
 
   // Verificar se há filtros ativos
-  const hasFilters = types.length || colors.length || rarity.length || formats.length || set || cmc.length || artist;
+  const hasFilters =
+    types.length || colors.length || rarity.length || formats.length || set || cmc.length || artist;
 
   try {
     const result = hasFilters
-      ? await fetchFilteredSearchResults(translatedQuery, { types, colors, rarity, formats, set, cmc, artist }, page)
+      ? await fetchFilteredSearchResults(
+          translatedQuery,
+          { types, colors, rarity, formats, set, cmc, artist },
+          page,
+        )
       : await fetchSearchResults(translatedQuery, page);
     return NextResponse.json(
       {
@@ -94,7 +120,7 @@ export async function GET(request: NextRequest) {
         next_page: result.next_page,
         original_query: query,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error('Erro na rota /api/search:', {
@@ -113,7 +139,7 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json(
       { error: error.message || 'Erro interno ao processar a busca' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

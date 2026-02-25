@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use server'
+'use server';
 
 import { createClient } from '@/app/utils/supabase/server';
 import { checkUserRole } from '@/lib/auth';
@@ -18,19 +18,18 @@ export async function updateUserStatus(userId: string, newStatus: 'active' | 'bl
 
   // 2. Garante que um admin não possa bloquear a si mesmo
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (user?.id === userId) {
     return { success: false, message: 'Um administrador não pode bloquear a si mesmo.' };
   }
 
   // 3. Atualiza o perfil do usuário alvo
-  const { error } = await supabase
-    .from('profiles')
-    .update({ status: newStatus })
-    .eq('id', userId);
+  const { error } = await supabase.from('profiles').update({ status: newStatus }).eq('id', userId);
 
   if (error) {
-    console.error("Erro ao atualizar status do usuário:", error);
+    console.error('Erro ao atualizar status do usuário:', error);
     return { success: false, message: 'Erro no banco de dados.' };
   }
 

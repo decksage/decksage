@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-'use server'
+'use server';
 
 import { createClient } from '@/app/utils/supabase/server';
 import { revalidatePath } from 'next/cache';
@@ -20,8 +20,15 @@ if (!process.env.OPENAI_API_KEY && !process.env.GOOGLE_API_KEY) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
-interface CoreCard { name: string; count: number; }
-interface Decklist { mainboard: CoreCard[]; sideboard?: CoreCard[]; commander?: CoreCard[]; }
+interface CoreCard {
+  name: string;
+  count: number;
+}
+interface Decklist {
+  mainboard: CoreCard[];
+  sideboard?: CoreCard[];
+  commander?: CoreCard[];
+}
 interface BuildDeckState {
   deck?: { name: string; description: string; decklist: Decklist };
   error?: string;
@@ -32,11 +39,13 @@ const parseDecklistArray = (arr: any[]): CoreCard[] => {
   if (!arr || arr.length === 0) return [];
   if (typeof arr[0] === 'object' && 'name' in arr[0] && 'count' in arr[0]) return arr;
   if (typeof arr[0] === 'string') {
-    return arr.map(line => {
-      const match = line.match(/^(\d+)x?\s+(.+)/i);
-      const name = match ? match[2].trim().replace(/\s\([\w\d]+\)$/i, '') : null;
-      return match ? { count: parseInt(match[1], 10), name: name! } : null;
-    }).filter((c): c is CoreCard => c !== null);
+    return arr
+      .map((line) => {
+        const match = line.match(/^(\d+)x?\s+(.+)/i);
+        const name = match ? match[2].trim().replace(/\s\([\w\d]+\)$/i, '') : null;
+        return match ? { count: parseInt(match[1], 10), name: name! } : null;
+      })
+      .filter((c): c is CoreCard => c !== null);
   }
   return [];
 };
@@ -62,7 +71,10 @@ const cleanJsonString = (rawResponse: string): string => {
   }
 };
 
-const formatRules: Record<string, { mainboardSize: number; maxCopies: number; singleton: boolean }> = {
+const formatRules: Record<
+  string,
+  { mainboardSize: number; maxCopies: number; singleton: boolean }
+> = {
   commander: { mainboardSize: 99, maxCopies: 1, singleton: true },
   standard: { mainboardSize: 60, maxCopies: 4, singleton: false },
   pioneer: { mainboardSize: 60, maxCopies: 4, singleton: false },
@@ -80,9 +92,9 @@ const fillBasicLands = (mainboard: CoreCard[], colorIdentity: string[]): CoreCar
     G: 'Forest',
   };
   const applicableLands = colorIdentity
-    .filter(color => basicLands[color])
-    .map(color => ({ name: basicLands[color], count: 0 }));
-  
+    .filter((color) => basicLands[color])
+    .map((color) => ({ name: basicLands[color], count: 0 }));
+
   if (applicableLands.length === 0) {
     applicableLands.push({ name: 'Swamp', count: 0 });
   }
@@ -99,8 +111,8 @@ const fillBasicLands = (mainboard: CoreCard[], colorIdentity: string[]): CoreCar
   });
 
   const updatedMainboard = [...mainboard];
-  applicableLands.forEach(land => {
-    const existingLand = updatedMainboard.find(card => card.name === land.name);
+  applicableLands.forEach((land) => {
+    const existingLand = updatedMainboard.find((card) => card.name === land.name);
     if (existingLand) {
       existingLand.count += land.count;
     } else {
@@ -112,7 +124,11 @@ const fillBasicLands = (mainboard: CoreCard[], colorIdentity: string[]): CoreCar
 };
 
 // Função para preencher com criaturas genéricas
-const fillGenericCreatures = async (mainboard: CoreCard[], colorIdentity: string[], cardsNeeded: number): Promise<CoreCard[]> => {
+const fillGenericCreatures = async (
+  mainboard: CoreCard[],
+  colorIdentity: string[],
+  cardsNeeded: number,
+): Promise<CoreCard[]> => {
   const genericCreatures: Record<string, string[]> = {
     W: ['Savannah Lions', 'Elite Vanguard'],
     U: ['Merfolk Looter', 'Cloudkin Seer'],
@@ -122,9 +138,9 @@ const fillGenericCreatures = async (mainboard: CoreCard[], colorIdentity: string
   };
 
   const applicableCreatures = colorIdentity
-    .filter(color => genericCreatures[color])
-    .flatMap(color => genericCreatures[color].map(name => ({ name, count: 0 })));
-  
+    .filter((color) => genericCreatures[color])
+    .flatMap((color) => genericCreatures[color].map((name) => ({ name, count: 0 })));
+
   if (applicableCreatures.length === 0) {
     applicableCreatures.push({ name: 'Ornithopter', count: 0 });
   }
@@ -137,9 +153,9 @@ const fillGenericCreatures = async (mainboard: CoreCard[], colorIdentity: string
   });
 
   const updatedMainboard = [...mainboard];
-  applicableCreatures.forEach(creature => {
+  applicableCreatures.forEach((creature) => {
     if (creature.count > 0) {
-      const existingCreature = updatedMainboard.find(card => card.name === creature.name);
+      const existingCreature = updatedMainboard.find((card) => card.name === creature.name);
       if (existingCreature) {
         existingCreature.count += creature.count;
       } else {
@@ -157,9 +173,14 @@ const fillGenericCreatures = async (mainboard: CoreCard[], colorIdentity: string
  * @param formData Dados do formulário contendo formato, prompt e comandante.
  * @returns Objeto com o deck gerado ou mensagem de erro.
  */
-export async function buildUserDeckWithAI(prevState: BuildDeckState, formData: FormData): Promise<BuildDeckState> {
+export async function buildUserDeckWithAI(
+  prevState: BuildDeckState,
+  formData: FormData,
+): Promise<BuildDeckState> {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Você precisa estar logado para usar esta função.' };
 
   const format = formData.get('format') as string;
@@ -168,35 +189,45 @@ export async function buildUserDeckWithAI(prevState: BuildDeckState, formData: F
   const userPrompt = formData.get('user_prompt') as string | null;
 
   if (!format || !formatRules[format]) return { success: false, error: 'Formato inválido.' };
-  if (format === 'commander' && !commanderName && !userPrompt) return { success: false, error: 'Para Commander, forneça um comandante ou uma instrução.' };
+  if (format === 'commander' && !commanderName && !userPrompt)
+    return { success: false, error: 'Para Commander, forneça um comandante ou uma instrução.' };
 
-  const commanderColorIdentity = commanderColorIdentityJSON ? JSON.parse(commanderColorIdentityJSON) : null;
-  const finalPrompt = createDeckForUserPrompt({ format, commanderName, userPrompt, commanderColorIdentity });
+  const commanderColorIdentity = commanderColorIdentityJSON
+    ? JSON.parse(commanderColorIdentityJSON)
+    : null;
+  const finalPrompt = createDeckForUserPrompt({
+    format,
+    commanderName,
+    userPrompt,
+    commanderColorIdentity,
+  });
 
   try {
     const aiProvider = process.env.AI_PROVIDER || 'openai';
     let rawJsonResponse: string | undefined | null;
 
     if (aiProvider === 'google') {
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
       const result = await model.generateContent(finalPrompt);
       rawJsonResponse = result.response.text();
     } else {
       const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: finalPrompt }],
-        response_format: { type: "json_object" },
+        response_format: { type: 'json_object' },
       });
       rawJsonResponse = completion.choices[0]?.message?.content;
     }
 
-    if (!rawJsonResponse) return { success: false, error: 'A IA não retornou uma resposta válida. Tente novamente.' };
+    if (!rawJsonResponse)
+      return { success: false, error: 'A IA não retornou uma resposta válida. Tente novamente.' };
 
     const cleanedJson = cleanJsonString(rawJsonResponse);
     const parsedResult = JSON.parse(cleanedJson);
 
     parsedResult.decklist.mainboard = parseDecklistArray(parsedResult.decklist.mainboard);
-    if (parsedResult.decklist.sideboard) parsedResult.decklist.sideboard = parseDecklistArray(parsedResult.decklist.sideboard);
+    if (parsedResult.decklist.sideboard)
+      parsedResult.decklist.sideboard = parseDecklistArray(parsedResult.decklist.sideboard);
 
     // Validação e ajuste para Commander
     if (format === 'commander') {
@@ -205,38 +236,54 @@ export async function buildUserDeckWithAI(prevState: BuildDeckState, formData: F
         parsedResult.decklist.commander = [{ name: commanderName, count: 1 }];
         // Remover o comandante do mainboard, se presente
         parsedResult.decklist.mainboard = parsedResult.decklist.mainboard.filter(
-          (card: CoreCard) => card.name !== commanderName
+          (card: CoreCard) => card.name !== commanderName,
         );
       }
 
       // Validar identidade de cor
-      const allCardNames = parsedResult.decklist.mainboard.map(c => c.name);
+      const allCardNames = parsedResult.decklist.mainboard.map((c) => c.name);
       const scryfallData = await fetchCardsByNames(allCardNames);
-      const invalidCards = scryfallData.filter(card => 
-        !card.color_identity.every((color: string) => commanderColorIdentity?.includes(color) || color === '')
+      const invalidCards = scryfallData.filter(
+        (card) =>
+          !card.color_identity.every(
+            (color: string) => commanderColorIdentity?.includes(color) || color === '',
+          ),
       );
       if (invalidCards.length > 0) {
-        return { success: false, error: `O deck contém cartas (${invalidCards.map(c => c.name).join(', ')}) fora da identidade de cor do comandante [${commanderColorIdentity?.join(', ')}]. Tente novamente.` };
+        return {
+          success: false,
+          error: `O deck contém cartas (${invalidCards.map((c) => c.name).join(', ')}) fora da identidade de cor do comandante [${commanderColorIdentity?.join(', ')}]. Tente novamente.`,
+        };
       }
 
       // Validar número de criaturas
       let creatureCount = 0;
-      scryfallData.forEach(card => {
+      scryfallData.forEach((card) => {
         if (card.type_line.toLowerCase().includes('creature')) {
-          const cardInMainboard = parsedResult.decklist.mainboard.find(c => c.name === card.name);
+          const cardInMainboard = parsedResult.decklist.mainboard.find((c) => c.name === card.name);
           if (cardInMainboard) creatureCount += cardInMainboard.count;
         }
       });
       if (creatureCount < 20) {
         const creaturesNeeded = 20 - creatureCount;
-        parsedResult.decklist.mainboard = await fillGenericCreatures(parsedResult.decklist.mainboard, commanderColorIdentity || ['B'], creaturesNeeded);
+        parsedResult.decklist.mainboard = await fillGenericCreatures(
+          parsedResult.decklist.mainboard,
+          commanderColorIdentity || ['B'],
+          creaturesNeeded,
+        );
       }
 
       // Validar e ajustar número de cartas no mainboard (excluindo comandante)
-      let mainboardCount = parsedResult.decklist.mainboard.reduce((sum: number, card: CoreCard) => sum + card.count, 0);
+      let mainboardCount = parsedResult.decklist.mainboard.reduce(
+        (sum: number, card: CoreCard) => sum + card.count,
+        0,
+      );
       if (mainboardCount !== 99) {
         if (mainboardCount < 50) {
-          return { success: false, error: `O deck Commander contém apenas ${mainboardCount} cartas no mainboard, muito abaixo das 99 exigidas. Tente ajustar sua instrução ou gerar novamente.` };
+          return {
+            success: false,
+            error: `O deck Commander contém apenas ${mainboardCount} cartas no mainboard, muito abaixo das 99 exigidas. Tente ajustar sua instrução ou gerar novamente.`,
+          };
         }
         if (mainboardCount > 99) {
           parsedResult.decklist.mainboard.sort((a: CoreCard, b: CoreCard) => a.count - b.count);
@@ -247,29 +294,40 @@ export async function buildUserDeckWithAI(prevState: BuildDeckState, formData: F
             } else {
               parsedResult.decklist.mainboard.shift();
             }
-            mainboardCount = parsedResult.decklist.mainboard.reduce((sum: number, c: CoreCard) => sum + c.count, 0);
+            mainboardCount = parsedResult.decklist.mainboard.reduce(
+              (sum: number, c: CoreCard) => sum + c.count,
+              0,
+            );
           }
         }
         if (mainboardCount < 99) {
-          parsedResult.decklist.mainboard = fillBasicLands(parsedResult.decklist.mainboard, commanderColorIdentity || ['B']);
-          mainboardCount = parsedResult.decklist.mainboard.reduce((sum: number, c: CoreCard) => sum + c.count, 0);
+          parsedResult.decklist.mainboard = fillBasicLands(
+            parsedResult.decklist.mainboard,
+            commanderColorIdentity || ['B'],
+          );
+          mainboardCount = parsedResult.decklist.mainboard.reduce(
+            (sum: number, c: CoreCard) => sum + c.count,
+            0,
+          );
         }
         if (mainboardCount !== 99) {
-          return { success: false, error: `Não foi possível ajustar o deck para conter exatamente 99 cartas no mainboard (contém ${mainboardCount}). Tente novamente.` };
+          return {
+            success: false,
+            error: `Não foi possível ajustar o deck para conter exatamente 99 cartas no mainboard (contém ${mainboardCount}). Tente novamente.`,
+          };
         }
       }
     }
 
     return { success: true, deck: parsedResult };
-
   } catch (error) {
     console.error('Erro na API de IA (Usuário):', error);
     const errorMessage =
       error instanceof OpenAI.APIError
         ? 'Falha na comunicação com a API de IA. Tente novamente mais tarde.'
         : error instanceof SyntaxError
-        ? 'Resposta da IA em formato inválido. Tente novamente.'
-        : 'Ocorreu um erro ao construir o deck. Tente novamente.';
+          ? 'Resposta da IA em formato inválido. Tente novamente.'
+          : 'Ocorreu um erro ao construir o deck. Tente novamente.';
     return { success: false, error: errorMessage };
   }
 }
@@ -281,7 +339,9 @@ export async function buildUserDeckWithAI(prevState: BuildDeckState, formData: F
  */
 export async function saveUserDeck(formData: FormData) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) return { success: false, error: 'Você precisa estar logado para salvar o deck.' };
 
   const name = formData.get('name') as string;
@@ -300,18 +360,24 @@ export async function saveUserDeck(formData: FormData) {
       decklist.commander = [{ name: commanderName, count: 1 }];
     }
 
-    const allCardNames = [...new Set([...(decklist.commander || []), ...decklist.mainboard, ...(decklist.sideboard || [])].map(c => c.name))];
+    const allCardNames = [
+      ...new Set(
+        [...(decklist.commander || []), ...decklist.mainboard, ...(decklist.sideboard || [])].map(
+          (c) => c.name,
+        ),
+      ),
+    ];
     const scryfallData = await fetchCardsByNames(allCardNames);
 
     // Calcular identidade de cor
     const colorIdentitySet = new Set<string>();
-    const commanderCard = commanderName ? scryfallData.find(c => c.name === commanderName) : null;
+    const commanderCard = commanderName ? scryfallData.find((c) => c.name === commanderName) : null;
     if (format === 'commander' && commanderCard) {
-      commanderCard.color_identity.forEach(color => colorIdentitySet.add(color));
+      commanderCard.color_identity.forEach((color) => colorIdentitySet.add(color));
     } else {
       scryfallData
-        .filter(card => !card.type_line.toLowerCase().includes('land'))
-        .forEach(card => card.color_identity.forEach(color => colorIdentitySet.add(color)));
+        .filter((card) => !card.type_line.toLowerCase().includes('land'))
+        .forEach((card) => card.color_identity.forEach((color) => colorIdentitySet.add(color)));
     }
 
     // Obter a imagem representativa
@@ -321,7 +387,8 @@ export async function saveUserDeck(formData: FormData) {
     }
     if (!representative_card_image_url) {
       console.warn(`Imagem não encontrada para a carta ${commanderName || allCardNames[0]}`);
-      representative_card_image_url = scryfallData.find(c => c.name === allCardNames[0])?.image_uris?.normal || '';
+      representative_card_image_url =
+        scryfallData.find((c) => c.name === allCardNames[0])?.image_uris?.normal || '';
     }
 
     const { data: newDeck, error } = await supabase

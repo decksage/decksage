@@ -7,14 +7,20 @@ interface DeckPromptData {
 }
 
 // O formato de saída que esperamos da IA
-const jsonOutputFormat = 'Você DEVE responder usando apenas um objeto JSON válido, sem nenhum texto adicional. A estrutura do JSON deve ser: { "name": "string (nome criativo em Português do Brasil)", "description": "string (breve descrição da estratégia em Português do Brasil)", "decklist": { "mainboard": [{"count": number, "name": "string"}], "sideboard": [{"count": number, "name": "string"}] } }.';
+const jsonOutputFormat =
+  'Você DEVE responder usando apenas um objeto JSON válido, sem nenhum texto adicional. A estrutura do JSON deve ser: { "name": "string (nome criativo em Português do Brasil)", "description": "string (breve descrição da estratégia em Português do Brasil)", "decklist": { "mainboard": [{"count": number, "name": "string"}], "sideboard": [{"count": number, "name": "string"}] } }.';
 
 /**
  * Cria o prompt para o gerador PÚBLICO de decks.
  * @param param0 Dados do prompt: formato, instrução do usuário, nome e identidade de cor do comandante.
  * @returns Prompt formatado para a IA.
  */
-export function createDeckForUserPrompt({ format, commanderName, userPrompt, commanderColorIdentity }: DeckPromptData): string {
+export function createDeckForUserPrompt({
+  format,
+  commanderName,
+  userPrompt,
+  commanderColorIdentity,
+}: DeckPromptData): string {
   const instructions = userPrompt
     ? `Construa um deck de Magic: The Gathering para o formato ${format} com base na seguinte instrução: "${userPrompt}". A sinergia do deck deve girar em torno desta instrução.`
     : `Construa um deck sinérgico e eficaz para o formato ${format}.`;

@@ -44,12 +44,7 @@ export default function MissingCardImage({ name, missing, imageUrl }: MissingCar
   return (
     <div style={containerStyle}>
       {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt={name}
-          style={imageStyle}
-          crossOrigin="anonymous"
-        />
+        <img src={imageUrl} alt={name} style={imageStyle} crossOrigin="anonymous" />
       ) : (
         <div
           style={{
@@ -68,9 +63,7 @@ export default function MissingCardImage({ name, missing, imageUrl }: MissingCar
         </div>
       )}
 
-      {missing > 0 && (
-        <div style={quantityStyle}>{missing}</div>
-      )}
+      {missing > 0 && <div style={quantityStyle}>{missing}</div>}
     </div>
   );
 }

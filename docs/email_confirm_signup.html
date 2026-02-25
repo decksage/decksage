@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      /* Estilos gerais */
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #171717;
+        /* Fundo escuro */
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #d4d4d8;
+        /* Cinza claro para o texto */
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #262626;
+        /* Fundo do card um pouco mais claro */
+        border: 1px solid #404040;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        text-align: center;
+        padding-bottom: 25px;
+        border-bottom: 1px solid #404040;
+      }
+
+      .header img {
+        max-width: 180px;
+        height: auto;
+        display: block;
+        margin: 0 auto 15px auto;
+      }
+
+      .header h1 {
+        color: #f59e0b;
+        /* Âmbar/Dourado */
+        margin: 0;
+        font-size: 26px;
+      }
+
+      .content {
+        padding: 30px 0;
+        line-height: 1.6;
+        font-size: 16px;
+      }
+
+      .content h2 {
+        color: #e2e8f0;
+        /* Branco suave */
+        font-size: 22px;
+        margin-top: 0;
+      }
+
+      .button-container {
+        text-align: center;
+        padding: 30px 0;
+      }
+
+      .button {
+        background-color: #f59e0b;
+        color: #171717;
+        padding: 14px 28px;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 18px;
+        display: inline-block;
+        transition: background-color 0.2s ease;
+      }
+
+      .button:hover {
+        background-color: #d97706;
+        /* Hover mais escuro */
+      }
+
+      .footer {
+        text-align: center;
+        padding-top: 25px;
+        border-top: 1px solid #404040;
+        font-size: 13px;
+        color: #a1a1aa;
+      }
+
+      .social-link {
+        color: #f59e0b;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .social-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <!-- Usa a variável do Supabase para o URL do site para renderizar a imagem -->
+        <img src="{{ .SiteURL }}/decksage.png" alt="DeckSage Logo" />
+        <h1>🧙 Bem-vindo ao DeckSage!</h1>
+      </div>
+      <div class="content">
+        <h2>Complete a sua Iniciação!</h2>
+        <p>Olá, Planeswalker!</p>
+        <p>
+          Estamos muito empolgados em ter você na nossa comunidade. Sua jornada no DeckSage está
+          prestes a começar, e em breve você poderá explorar, gerenciar e aperfeiçoar todos os seus
+          decks.
+        </p>
+        <p>
+          Para ativar a sua conta e liberar todo o seu potencial, por favor, clique no botão abaixo
+          para confirmar o seu e-mail.
+        </p>
+
+        <div class="button-container">
+          <!-- O link de confirmação do Supabase será inserido aqui -->
+          <a href="{{ .ConfirmationURL }}" class="button"> Confirmar e Entrar no Multiverso </a>
+        </div>
+
+        <p>
+          Se você não se cadastrou no DeckSage, por favor, desconsidere este e-mail de forma segura.
+        </p>
+        <p>Até breve nos campos de batalha!</p>
+      </div>
+      <div class="footer">
+        <p>&copy; 2026 DeckSage. Todos os direitos reservados.</p>
+        <p>
+          Acompanhe nossas novidades e dicas no <br />
+          <a href="https://www.instagram.com/decksage/" target="_blank" class="social-link"
+            >Instagram oficial do DeckSage</a
+          >
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

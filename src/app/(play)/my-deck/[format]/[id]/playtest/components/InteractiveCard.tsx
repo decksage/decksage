@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-'use client'
+'use client';
 
 import { useDraggable } from '@dnd-kit/core';
 import Image from 'next/image';
@@ -14,8 +14,19 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
   ContextMenuSeparator,
-} from "@/components/ui/context-menu";
-import { Hand, Skull, ShieldEllipsis, ArrowDownToLine, ArrowUpToLine, RefreshCw, Play, BookOpen, Crown, Plus } from 'lucide-react';
+} from '@/components/ui/context-menu';
+import {
+  Hand,
+  Skull,
+  ShieldEllipsis,
+  ArrowDownToLine,
+  ArrowUpToLine,
+  RefreshCw,
+  Play,
+  BookOpen,
+  Crown,
+  Plus,
+} from 'lucide-react';
 
 interface InteractiveCardProps {
   card: GameCard;
@@ -24,7 +35,12 @@ interface InteractiveCardProps {
   onViewDetails: (card: GameCard) => void;
 }
 
-export default function InteractiveCard({ card, zone, onHover, onViewDetails }: InteractiveCardProps) {
+export default function InteractiveCard({
+  card,
+  zone,
+  onHover,
+  onViewDetails,
+}: InteractiveCardProps) {
   const { actions } = usePlaytestStore();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
@@ -45,8 +61,14 @@ export default function InteractiveCard({ card, zone, onHover, onViewDetails }: 
   };
 
   const handleAddPowerToughnessCounters = () => {
-    const powerInput = window.prompt(`Quantos marcadores de poder deseja adicionar a ${card.name}? (Ex.: 2 ou -2)`, '0');
-    const toughnessInput = window.prompt(`Quantos marcadores de resistência deseja adicionar a ${card.name}? (Ex.: 2 ou -2)`, '0');
+    const powerInput = window.prompt(
+      `Quantos marcadores de poder deseja adicionar a ${card.name}? (Ex.: 2 ou -2)`,
+      '0',
+    );
+    const toughnessInput = window.prompt(
+      `Quantos marcadores de resistência deseja adicionar a ${card.name}? (Ex.: 2 ou -2)`,
+      '0',
+    );
     if (powerInput !== null && toughnessInput !== null) {
       const power = parseInt(powerInput, 10);
       const toughness = parseInt(toughnessInput, 10);
@@ -67,17 +89,21 @@ export default function InteractiveCard({ card, zone, onHover, onViewDetails }: 
     <div
       onMouseEnter={() => onHover(card)}
       onMouseLeave={() => onHover(null)}
-      className={cn("flex-shrink-0 relative group", isDragging && "opacity-30", isBattlefield ? "w-[116px]" : "w-28")}
+      className={cn(
+        'flex-shrink-0 relative group',
+        isDragging && 'opacity-30',
+        isBattlefield ? 'w-[116px]' : 'w-28',
+      )}
       title={card.name}
     >
-      <Image 
+      <Image
         src={card.image_uris?.small || ''}
         alt={card.name}
         width={cardWidth}
         height={cardHeight}
         className={cn(
-          "rounded-md shadow-lg pointer-events-none transition-transform duration-200 group-hover:-translate-y-1", 
-          card.tapped && isBattlefield && "rotate-90"
+          'rounded-md shadow-lg pointer-events-none transition-transform duration-200 group-hover:-translate-y-1',
+          card.tapped && isBattlefield && 'rotate-90',
         )}
         unoptimized
       />
@@ -88,7 +114,9 @@ export default function InteractiveCard({ card, zone, onHover, onViewDetails }: 
       )}
       {zone === 'battlefield' && (card.powerCounters !== 0 || card.toughnessCounters !== 0) && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black text-white text-xs font-bold px-2 py-1 rounded-full flex items-center justify-center border-2 border-neutral-900 shadow-md">
-          {card.powerCounters >= 0 ? '+' : ''}{card.powerCounters}/{card.toughnessCounters >= 0 ? '+' : ''}{card.toughnessCounters}
+          {card.powerCounters >= 0 ? '+' : ''}
+          {card.powerCounters}/{card.toughnessCounters >= 0 ? '+' : ''}
+          {card.toughnessCounters}
         </div>
       )}
     </div>
@@ -110,55 +138,88 @@ export default function InteractiveCard({ card, zone, onHover, onViewDetails }: 
             <BookOpen className="mr-2 h-4 w-4" /> Ver Detalhes / Traduzir
           </ContextMenuItem>
           <ContextMenuSeparator className="bg-neutral-700" />
-          
+
           {zone === 'battlefield' && (
             <>
               {isCommander && (
                 <>
-                  <ContextMenuItem onSelect={() => actions.returnCommanderToZone(card.instanceId)} className="cursor-pointer text-amber-400 focus:text-amber-400">
+                  <ContextMenuItem
+                    onSelect={() => actions.returnCommanderToZone(card.instanceId)}
+                    className="cursor-pointer text-amber-400 focus:text-amber-400"
+                  >
                     <Crown className="mr-2 h-4 w-4" /> Voltar p/ Zona de Comando
                   </ContextMenuItem>
                   <ContextMenuSeparator className="bg-neutral-700" />
                 </>
               )}
-              <ContextMenuItem onSelect={() => actions.toggleTap(card.instanceId)} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.toggleTap(card.instanceId)}
+                className="cursor-pointer"
+              >
                 <RefreshCw className="mr-2 h-4 w-4" /> Virar / Desvirar
               </ContextMenuItem>
-              <ContextMenuItem onSelect={handleAddPowerToughnessCounters} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={handleAddPowerToughnessCounters}
+                className="cursor-pointer"
+              >
                 <Plus className="mr-2 h-4 w-4" /> Adicionar Marcadores Poder/Resistência
               </ContextMenuItem>
-              <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'hand')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'hand')}
+                className="cursor-pointer"
+              >
                 <Hand className="mr-2 h-4 w-4" /> Voltar para a Mão
               </ContextMenuItem>
-              <ContextMenuItem onSelect={() => actions.moveCardToLibrary(card.instanceId, 'battlefield', 'top')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCardToLibrary(card.instanceId, 'battlefield', 'top')}
+                className="cursor-pointer"
+              >
                 <ArrowUpToLine className="mr-2 h-4 w-4" /> Mover para o Topo
               </ContextMenuItem>
-              <ContextMenuItem onSelect={() => actions.moveCardToLibrary(card.instanceId, 'battlefield', 'bottom')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCardToLibrary(card.instanceId, 'battlefield', 'bottom')}
+                className="cursor-pointer"
+              >
                 <ArrowDownToLine className="mr-2 h-4 w-4" /> Mover para o Fundo
               </ContextMenuItem>
               <ContextMenuSeparator className="bg-neutral-700" />
-              <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'graveyard')} className="cursor-pointer text-red-400 focus:text-red-400">
+              <ContextMenuItem
+                onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'graveyard')}
+                className="cursor-pointer text-red-400 focus:text-red-400"
+              >
                 <Skull className="mr-2 h-4 w-4" /> Mover para o Cemitério
               </ContextMenuItem>
-              <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'exile')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCard(card.instanceId, 'battlefield', 'exile')}
+                className="cursor-pointer"
+              >
                 <ShieldEllipsis className="mr-2 h-4 w-4" /> Mover para o Exílio
               </ContextMenuItem>
             </>
           )}
           {zone === 'hand' && (
             <>
-              <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, 'hand', 'battlefield')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCard(card.instanceId, 'hand', 'battlefield')}
+                className="cursor-pointer"
+              >
                 <Play className="mr-2 h-4 w-4" /> Jogar no Campo
               </ContextMenuItem>
-              <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, 'hand', 'graveyard')} className="cursor-pointer">
+              <ContextMenuItem
+                onSelect={() => actions.moveCard(card.instanceId, 'hand', 'graveyard')}
+                className="cursor-pointer"
+              >
                 <Skull className="mr-2 h-4 w-4" /> Descartar
               </ContextMenuItem>
             </>
           )}
           {(zone === 'commandZone' || zone === 'graveyard' || zone === 'exile') && (
-             <ContextMenuItem onSelect={() => actions.moveCard(card.instanceId, zone, 'battlefield')} className="cursor-pointer">
-                <Play className="mr-2 h-4 w-4" /> Mover para o Campo
-             </ContextMenuItem>
+            <ContextMenuItem
+              onSelect={() => actions.moveCard(card.instanceId, zone, 'battlefield')}
+              className="cursor-pointer"
+            >
+              <Play className="mr-2 h-4 w-4" /> Mover para o Campo
+            </ContextMenuItem>
           )}
         </ContextMenuContent>
       </ContextMenu>

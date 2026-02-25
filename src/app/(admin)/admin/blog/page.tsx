@@ -6,7 +6,14 @@ import { notFound } from 'next/navigation';
 import { createClient } from '@/app/utils/supabase/server';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { PlusCircle, Edit, ExternalLink } from 'lucide-react';
 
 export default async function AdminBlogPage() {
@@ -19,9 +26,9 @@ export default async function AdminBlogPage() {
   // 2. Busca de Dados: Agora chama a nossa nova função RPC
   const supabase = createClient();
   const { data: posts, error } = await supabase.rpc('get_all_posts_with_author');
-  
+
   if (error) {
-    console.error("Erro ao buscar posts com RPC:", error);
+    console.error('Erro ao buscar posts com RPC:', error);
   }
 
   return (
@@ -61,20 +68,22 @@ export default async function AdminBlogPage() {
                     </Badge>
                   </TableCell>
                   {/* AJUSTE: O nome de usuário agora vem direto no objeto 'post' */}
-                  <TableCell className="text-neutral-400">
-                    @{post.username || 'N/A'}
-                  </TableCell>
+                  <TableCell className="text-neutral-400">@{post.username || 'N/A'}</TableCell>
                   <TableCell className="text-neutral-400">
                     {new Date(post.created_at).toLocaleDateString('pt-BR')}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex gap-2 justify-end">
                       <Link href={`/blog/${post.slug}`} target="_blank" title="Ver post no site">
-                         <Button variant="outline" size="icon" className="h-8 w-8"><ExternalLink className="h-4 w-4" /></Button>
+                        <Button variant="outline" size="icon" className="h-8 w-8">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
                       </Link>
                       {/* Futuramente o link de edição funcionará */}
                       <Link href={`/admin/blog/edit/${post.id}`} title="Editar post">
-                         <Button variant="secondary" size="icon" className="h-8 w-8"><Edit className="h-4 w-4" /></Button>
+                        <Button variant="secondary" size="icon" className="h-8 w-8">
+                          <Edit className="h-4 w-4" />
+                        </Button>
                       </Link>
                     </div>
                   </TableCell>

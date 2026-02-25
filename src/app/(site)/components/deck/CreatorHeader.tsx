@@ -25,25 +25,24 @@ export default function CreatorHeader({ profile }: { profile: Profile | null }) 
     <div className="mb-8 p-4 bg-neutral-900 rounded-lg border border-neutral-800">
       <div className="relative h-24 sm:h-32 rounded-md overflow-hidden">
         {profile.cover_image_url ? (
-          <Image 
-            src={profile.cover_image_url} 
-            alt="Capa do criador" 
-            fill 
+          <Image
+            src={profile.cover_image_url}
+            alt="Capa do criador"
+            fill
             unoptimized
-            className="object-cover" 
+            className="object-cover"
           />
         ) : (
           // AJUSTE: Usando o novo placeholder com padrão de pontos
-          <div 
-            className="w-full h-full" 
-            style={placeholderStyle} 
-          />
+          <div className="w-full h-full" style={placeholderStyle} />
         )}
       </div>
       <div className="flex items-center -mt-8 ml-4 sm:-mt-10 sm:ml-6">
         <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-4 border-neutral-900">
           <AvatarImage src={profile.avatar_url || ''} alt={`Avatar de ${profile.username}`} />
-          <AvatarFallback className="text-2xl bg-neutral-700 text-amber-500">{fallbackInitial}</AvatarFallback>
+          <AvatarFallback className="text-2xl bg-neutral-700 text-amber-500">
+            {fallbackInitial}
+          </AvatarFallback>
         </Avatar>
         <div className="ml-4">
           <p className="text-xs text-neutral-400">Criado por</p>

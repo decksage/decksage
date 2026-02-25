@@ -7,13 +7,11 @@ import { createClient } from '@/app/utils/supabase/server';
 import FloatingFeedback from './components/FloatingFeedback';
 import StickyFooterAd from '@/app/(site)/components/ads/StickyFooterAd';
 
-export default async function SiteLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   let profile = null;
   if (user) {
@@ -35,9 +33,7 @@ export default async function SiteLayout({
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
       <Footer />
       <FloatingFeedback user={user} />
       <StickyFooterAd adConfig={adConfig} />

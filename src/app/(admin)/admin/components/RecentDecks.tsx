@@ -14,7 +14,7 @@ type RecentDeck = {
     username: string | null;
     avatar_url: string | null;
   } | null; // O perfil inteiro pode ser nulo
-}
+};
 
 export default function RecentDecks({ decks }: { decks: RecentDeck[] }) {
   return (
@@ -24,22 +24,35 @@ export default function RecentDecks({ decks }: { decks: RecentDeck[] }) {
         <CardDescription>Os últimos 5 decks adicionados à plataforma.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {decks && decks.length > 0 ? decks.map(deck => (
-          <div key={deck.id} className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-9 w-9">
-                <AvatarImage src={deck.profiles?.avatar_url || ''} />
-                <AvatarFallback>{deck.profiles?.username?.charAt(0).toUpperCase() || '?'}</AvatarFallback>
-              </Avatar>
-              <div>
-                <Link href={`/my-deck/${deck.format}/${deck.id}`} className="font-semibold text-neutral-100 hover:text-amber-400 transition-colors">{deck.name}</Link>
-                <p className="text-xs text-neutral-400">por @{deck.profiles?.username || 'anônimo'}</p>
+        {decks && decks.length > 0 ? (
+          decks.map((deck) => (
+            <div key={deck.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={deck.profiles?.avatar_url || ''} />
+                  <AvatarFallback>
+                    {deck.profiles?.username?.charAt(0).toUpperCase() || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <Link
+                    href={`/my-deck/${deck.format}/${deck.id}`}
+                    className="font-semibold text-neutral-100 hover:text-amber-400 transition-colors"
+                  >
+                    {deck.name}
+                  </Link>
+                  <p className="text-xs text-neutral-400">
+                    por @{deck.profiles?.username || 'anônimo'}
+                  </p>
+                </div>
               </div>
+              <span className="text-sm font-medium text-neutral-500 capitalize">{deck.format}</span>
             </div>
-            <span className="text-sm font-medium text-neutral-500 capitalize">{deck.format}</span>
-          </div>
-        )) : (
-          <p className="text-sm text-center py-4 text-neutral-500">Nenhum deck recente encontrado.</p>
+          ))
+        ) : (
+          <p className="text-sm text-center py-4 text-neutral-500">
+            Nenhum deck recente encontrado.
+          </p>
         )}
       </CardContent>
     </Card>

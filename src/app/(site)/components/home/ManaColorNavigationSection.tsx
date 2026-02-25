@@ -1,13 +1,13 @@
 import ManaColorLink from './ManaColorLink';
 
 const manaColorsData = [
-  { symbol: "W", name: "Branco", textColor: "text-stone-100", href: "/search?colors=W" },
-  { symbol: "U", name: "Azul", textColor: "text-sky-400", href: "/search?colors=U" },
-  { symbol: "B", name: "Preto", textColor: "text-neutral-400", href: "/search?colors=B" },
-  { symbol: "R", name: "Vermelho", textColor: "text-red-500", href: "/search?colors=R" },
-  { symbol: "G", name: "Verde", textColor: "text-green-500", href: "/search?colors=G" },
-  { symbol: "C", name: "Incolor", textColor: "text-neutral-500", href: "/search?colors=C" },
-  { symbol: "M", name: "Multicolor", textColor: "", href: "/search?colors=M" },
+  { symbol: 'W', name: 'Branco', textColor: 'text-stone-100', href: '/search?colors=W' },
+  { symbol: 'U', name: 'Azul', textColor: 'text-sky-400', href: '/search?colors=U' },
+  { symbol: 'B', name: 'Preto', textColor: 'text-neutral-400', href: '/search?colors=B' },
+  { symbol: 'R', name: 'Vermelho', textColor: 'text-red-500', href: '/search?colors=R' },
+  { symbol: 'G', name: 'Verde', textColor: 'text-green-500', href: '/search?colors=G' },
+  { symbol: 'C', name: 'Incolor', textColor: 'text-neutral-500', href: '/search?colors=C' },
+  { symbol: 'M', name: 'Multicolor', textColor: '', href: '/search?colors=M' },
 ];
 
 export default function ManaColorNavigationSection() {
@@ -19,7 +19,8 @@ export default function ManaColorNavigationSection() {
             Navegue por Cor
           </h2>
           <p className="mt-4 text-base md:text-lg text-neutral-100 max-w-2xl mx-auto">
-            Explore as cartas de Magic com base na identidade de cor e descubra novas sinergias para seus decks.
+            Explore as cartas de Magic com base na identidade de cor e descubra novas sinergias para
+            seus decks.
           </p>
         </div>
 

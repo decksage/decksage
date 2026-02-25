@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
-'use client'
+'use client';
 
 import { Editor as TinyMCEEditor } from '@tinymce/tinymce-react';
 import { uploadImage } from '@/app/actions/postActions';
@@ -12,7 +12,6 @@ interface EditorProps {
 }
 
 export default function Editor({ onEditorChange, initialValue }: EditorProps) {
-  
   const imageUploadHandler = async (blobInfo: any): Promise<string> => {
     const formData = new FormData();
     formData.append('file', blobInfo.blob(), blobInfo.filename());
@@ -26,14 +25,36 @@ export default function Editor({ onEditorChange, initialValue }: EditorProps) {
 
   return (
     <TinyMCEEditor
-      apiKey='gh28lo786los493f359etal65m9sadq1j1k05ddse50xmy19' // Lembre-se de colocar sua chave de API
+      apiKey="gh28lo786los493f359etal65m9sadq1j1k05ddse50xmy19" // Lembre-se de colocar sua chave de API
       initialValue={initialValue}
       onEditorChange={(newValue, editor) => onEditorChange(newValue)}
       init={{
         height: 500,
         menubar: false,
-        plugins: [ 'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount' ],
-        toolbar: 'undo redo | blocks | ' + 'bold italic forecolor | alignleft aligncenter ' + 'alignright alignjustify | bullist numlist outdent indent | ' + 'removeformat | image media | help',
+        plugins: [
+          'advlist',
+          'autolink',
+          'lists',
+          'link',
+          'image',
+          'charmap',
+          'preview',
+          'anchor',
+          'searchreplace',
+          'visualblocks',
+          'code',
+          'fullscreen',
+          'insertdatetime',
+          'media',
+          'table',
+          'help',
+          'wordcount',
+        ],
+        toolbar:
+          'undo redo | blocks | ' +
+          'bold italic forecolor | alignleft aligncenter ' +
+          'alignright alignjustify | bullist numlist outdent indent | ' +
+          'removeformat | image media | help',
         content_style: `
           body { 
             background-color: #171717; 

@@ -1,11 +1,11 @@
 export function generateEmailHTML(bodyContent: string): string {
-    const currentYear = new Date().getFullYear();
-    // Using a public URL for the logo, assuming it's hosted where the app is. 
-    // For local dev, this might need adjustment or be a hosted image.
-    // Ideally, replace with a CDN link in production.
-    const logoUrl = 'https://decksage.com.br/decksage.png'; // Fallback or production URL
+  const currentYear = new Date().getFullYear();
+  // Using a public URL for the logo, assuming it's hosted where the app is.
+  // For local dev, this might need adjustment or be a hosted image.
+  // Ideally, replace with a CDN link in production.
+  const logoUrl = 'https://decksage.com.br/decksage.png'; // Fallback or production URL
 
-    return `
+  return `
     <!DOCTYPE html>
     <html lang="pt-BR">
     <head>

@@ -35,11 +35,7 @@ export default function GlobalSearch() {
         disabled={isSubmitting}
         className="bg-amber-500 hover:bg-amber-600 text-black px-3 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
       >
-        {isSubmitting ? (
-          <span className="animate-spin">⏳</span>
-        ) : (
-          <span>🔍</span>
-        )}
+        {isSubmitting ? <span className="animate-spin">⏳</span> : <span>🔍</span>}
       </Button>
     </form>
   );

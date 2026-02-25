@@ -6,5 +6,6 @@ export default function DeckAnalyzerPage() {
 
 export const metadata = {
   title: 'Analisador de Deck - Magic: The Gathering',
-  description: 'Analise seu deck de Magic: The Gathering e descubra seu nível de potência com base no sistema Commander Brackets.',
+  description:
+    'Analise seu deck de Magic: The Gathering e descubra seu nível de potência com base no sistema Commander Brackets.',
 };

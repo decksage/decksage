@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -19,21 +19,17 @@ export default function CardTextDisplay({ originalText, translatedText }: CardTe
   }
 
   // Determina qual texto exibir com base no estado 'showOriginal'
-  const textToDisplay = showOriginal ? originalText : (translatedText || originalText);
-  const buttonText = showOriginal ? "Ver Tradução" : "Ver Original";
+  const textToDisplay = showOriginal ? originalText : translatedText || originalText;
+  const buttonText = showOriginal ? 'Ver Tradução' : 'Ver Original';
 
   return (
     <div className="space-y-4">
       {/* Renderiza o texto da carta usando nosso componente que formata os símbolos de mana */}
       <MagicTextRenderer text={textToDisplay} />
-      
+
       {/* O botão só aparece se houver uma tradução disponível e diferente da original */}
       {translatedText && translatedText !== originalText && (
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => setShowOriginal(!showOriginal)}
-        >
+        <Button variant="outline" size="sm" onClick={() => setShowOriginal(!showOriginal)}>
           <Languages className="mr-2 h-4 w-4" />
           {buttonText}
         </Button>

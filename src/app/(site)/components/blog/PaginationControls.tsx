@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -30,7 +30,7 @@ export default function PaginationControls({ totalPages, currentPage }: Paginati
           <ChevronLeft className="h-4 w-4" />
         </Button>
       </Link>
-      
+
       <span className="text-sm font-medium">
         Página {currentPage} de {totalPages}
       </span>

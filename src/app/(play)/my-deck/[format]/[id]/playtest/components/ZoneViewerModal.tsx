@@ -1,9 +1,15 @@
 /* eslint-disable no-unused-vars */
-'use client'
+'use client';
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { GameCard } from "@/app/(play)/stores/playtest-store";
-import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { GameCard } from '@/app/(play)/stores/playtest-store';
+import Image from 'next/image';
 
 interface ZoneViewerModalProps {
   isOpen: boolean;
@@ -12,7 +18,12 @@ interface ZoneViewerModalProps {
   cards: GameCard[];
 }
 
-export default function ZoneViewerModal({ isOpen, onOpenChange, zoneName, cards }: ZoneViewerModalProps) {
+export default function ZoneViewerModal({
+  isOpen,
+  onOpenChange,
+  zoneName,
+  cards,
+}: ZoneViewerModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="bg-neutral-900 border-neutral-800 text-white max-w-4xl h-[90vh]">

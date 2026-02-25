@@ -25,7 +25,10 @@ interface DailyDeckItemProps {
 
 export default function DailyDeckItem({ deck }: DailyDeckItemProps) {
   return (
-    <Link href={`/decks/${deck.format}/${deck.id}`} className="block bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow">
+    <Link
+      href={`/decks/${deck.format}/${deck.id}`}
+      className="block bg-neutral-800 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+    >
       <div className="relative w-full">
         <Image
           src={deck.representativeCard.imageUrl}
@@ -40,9 +43,7 @@ export default function DailyDeckItem({ deck }: DailyDeckItemProps) {
         <h3 className="text-lg font-semibold text-neutral-100 truncate">{deck.name}</h3>
         <p className="text-neutral-400 capitalize">{deck.format}</p>
         <p className="text-neutral-300">Carta Principal: {deck.representativeCard.name}</p>
-        {deck.price && (
-          <p className="text-neutral-300">Preço: ${deck.price.toFixed(2)}</p>
-        )}
+        {deck.price && <p className="text-neutral-300">Preço: ${deck.price.toFixed(2)}</p>}
       </div>
     </Link>
   );

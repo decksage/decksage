@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import Image from 'next/image';
 import ManaCost from '@/components/ui/ManaCost';
@@ -18,7 +18,7 @@ export default function PreviewPanel({ imageUrl, manaCost }: PreviewPanelProps) 
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          transition={{ duration: 0.2, ease: "easeInOut" }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
           // Painel posicionado no canto inferior direito da área principal
           className="absolute bottom-[256px] right-[20px] w-52 z-30 pointer-events-none"
         >

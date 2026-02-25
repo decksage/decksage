@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
-import { searchCards } from "@/app/lib/scryfall";
-import type { ScryfallCard } from '@/app/lib/types';  // Corrigido aqui
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { searchCards } from '@/app/lib/scryfall';
+import type { ScryfallCard } from '@/app/lib/types'; // Corrigido aqui
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 interface CommanderSelectorProps {
   commander?: {
@@ -14,7 +14,7 @@ interface CommanderSelectorProps {
 }
 
 export default function CommanderSelector({ commander, onSelect }: CommanderSelectorProps) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState<ScryfallCard[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -57,11 +57,7 @@ export default function CommanderSelector({ commander, onSelect }: CommanderSele
           >
             <div className="font-medium">{card.name}</div>
             {card.image_uris?.small && (
-              <img
-                src={card.image_uris.small}
-                alt={card.name}
-                className="w-full mt-1 rounded"
-              />
+              <img src={card.image_uris.small} alt={card.name} className="w-full mt-1 rounded" />
             )}
           </button>
         ))}

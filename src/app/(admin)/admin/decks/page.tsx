@@ -6,7 +6,14 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { PlusCircle } from 'lucide-react';
 import UserControls from '../users/components/UserControls';
@@ -17,7 +24,7 @@ import DeckActions from './components/DeckActions';
 export const dynamic = 'force-dynamic';
 
 interface PageProps {
-  searchParams?: { query?: string; page?: string; }
+  searchParams?: { query?: string; page?: string };
 }
 
 export default async function AdminSiteDecksPage(props: any) {
@@ -34,10 +41,10 @@ export default async function AdminSiteDecksPage(props: any) {
   const { data: decks, error } = await supabase.rpc('search_site_decks_paginated', {
     search_term: query,
     page_size: ITEMS_PER_PAGE,
-    page_offset: offset
+    page_offset: offset,
   });
 
-  if (error) console.error("Erro ao buscar decks do site:", error);
+  if (error) console.error('Erro ao buscar decks do site:', error);
 
   const totalItems = decks?.[0]?.total_count || 0;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -47,15 +54,27 @@ export default async function AdminSiteDecksPage(props: any) {
       <header className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-amber-500">Decks do Site</h1>
-          <p className="text-neutral-400 mt-1">Gerencie todos os decks criados para serem exibidos no site.</p>
+          <p className="text-neutral-400 mt-1">
+            Gerencie todos os decks criados para serem exibidos no site.
+          </p>
         </div>
         <div className="flex gap-2">
-            <Link href="/admin/decks/new"><Button variant="secondary"><PlusCircle className="mr-2 h-4 w-4" /> Criar Manual</Button></Link>
-            <Link href="/admin/ai-generator"><Button><PlusCircle className="mr-2 h-4 w-4" /> Gerar com IA</Button></Link>
+          <Link href="/admin/decks/new">
+            <Button variant="secondary">
+              <PlusCircle className="mr-2 h-4 w-4" /> Criar Manual
+            </Button>
+          </Link>
+          <Link href="/admin/ai-generator">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" /> Gerar com IA
+            </Button>
+          </Link>
         </div>
       </header>
 
-      <div className="max-w-md"><UserControls initialQuery={query} totalPages={totalPages} currentPage={0}/></div>
+      <div className="max-w-md">
+        <UserControls initialQuery={query} totalPages={totalPages} currentPage={0} />
+      </div>
 
       <div className="bg-neutral-900 border border-neutral-800 rounded-lg mt-6">
         <Table>
@@ -73,8 +92,16 @@ export default async function AdminSiteDecksPage(props: any) {
               decks.map((deck: any) => (
                 <TableRow key={deck.id} className="border-neutral-800">
                   <TableCell className="font-medium text-white">{deck.name}</TableCell>
-                  <TableCell><Badge variant="outline">{deck.format}</Badge></TableCell>
-                  <TableCell><div className="flex gap-1">{deck.color_identity.map((c: string) => (<ManaCost key={c} cost={`{${c}}`} />))}</div></TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{deck.format}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      {deck.color_identity.map((c: string) => (
+                        <ManaCost key={c} cost={`{${c}}`} />
+                      ))}
+                    </div>
+                  </TableCell>
                   <TableCell>{new Date(deck.created_at).toLocaleDateString('pt-BR')}</TableCell>
                   <TableCell className="text-right">
                     {/* AJUSTE: Usamos o novo componente de ações */}
@@ -83,7 +110,11 @@ export default async function AdminSiteDecksPage(props: any) {
                 </TableRow>
               ))
             ) : (
-              <TableRow><TableCell colSpan={5} className="text-center text-neutral-500 py-10">Nenhum deck encontrado.</TableCell></TableRow>
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-neutral-500 py-10">
+                  Nenhum deck encontrado.
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

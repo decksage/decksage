@@ -73,18 +73,16 @@ export async function getDailyDecks(date: Date = new Date()): Promise<DeckData[]
   console.log('Novos decks gerados:', newDecks);
 
   for (const deck of newDecks) {
-    const { error: insertError } = await supabaseServiceClient
-      .from('daily_decks')
-      .insert({
-        date: dateStr,
-        format: deck.format,
-        deck_id: deck.id,
-        name: deck.name,
-        representative_card_name: deck.representativeCard.name,
-        representative_card_image_url: deck.representativeCard.imageUrl,
-        decklist: deck.decklist,
-        price: deck.price,
-      });
+    const { error: insertError } = await supabaseServiceClient.from('daily_decks').insert({
+      date: dateStr,
+      format: deck.format,
+      deck_id: deck.id,
+      name: deck.name,
+      representative_card_name: deck.representativeCard.name,
+      representative_card_image_url: deck.representativeCard.imageUrl,
+      decklist: deck.decklist,
+      price: deck.price,
+    });
 
     if (insertError) {
       console.error('Erro ao inserir deck:', insertError);
@@ -110,7 +108,9 @@ async function generateDailyDecks(): Promise<DeckData[]> {
       format,
       representativeCard: {
         name: deck.representativeCard.name,
-        imageUrl: (await fetchCardByName(deck.representativeCard.name)).image_uris?.normal || 'https://via.placeholder.com/146x204',
+        imageUrl:
+          (await fetchCardByName(deck.representativeCard.name)).image_uris?.normal ||
+          'https://via.placeholder.com/146x204',
       },
       decklist,
       price,
@@ -120,7 +120,9 @@ async function generateDailyDecks(): Promise<DeckData[]> {
   return decks;
 }
 
-async function generateDeckForFormat(format: 'commander' | 'pauper' | 'modern'): Promise<OpenAIDeckResponse> {
+async function generateDeckForFormat(
+  format: 'commander' | 'pauper' | 'modern',
+): Promise<OpenAIDeckResponse> {
   const prompt = `
 You are an expert in Magic: The Gathering deckbuilding. Generate a deck for the ${format.toUpperCase()} format that is legal, thematic, and optimized for casual play (Bracket 3 for Commander, competitive but accessible for Pauper/Modern). Ensure:
 - All cards are legal in ${format.toUpperCase()} (check MTG banlist).
@@ -146,7 +148,10 @@ Output in JSON format, without Markdown code blocks:
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
-        { role: 'system', content: 'Always return valid JSON without Markdown or extra formatting.' },
+        {
+          role: 'system',
+          content: 'Always return valid JSON without Markdown or extra formatting.',
+        },
         { role: 'user', content: prompt },
       ],
       max_tokens: 2000,
@@ -164,13 +169,13 @@ Output in JSON format, without Markdown code blocks:
 
     const cardNames = [
       deckData.representativeCard.name,
-      ...deckData.decklist.mainboard.map(c => c.name),
-      ...(deckData.decklist.sideboard?.map(c => c.name) || []),
+      ...deckData.decklist.mainboard.map((c) => c.name),
+      ...(deckData.decklist.sideboard?.map((c) => c.name) || []),
     ];
     const cards = await fetchCardsByNames(cardNames);
-    const invalidCards = cards.filter(card => !card.legalities[format]);
+    const invalidCards = cards.filter((card) => !card.legalities[format]);
     if (invalidCards.length > 0) {
-      throw new Error(`Invalid cards for ${format}: ${invalidCards.map(c => c.name).join(', ')}`);
+      throw new Error(`Invalid cards for ${format}: ${invalidCards.map((c) => c.name).join(', ')}`);
     }
 
     return deckData;
@@ -182,10 +187,7 @@ Output in JSON format, without Markdown code blocks:
 
 async function calculateDeckPrice(decklist: OpenAIDeckResponse['decklist']): Promise<number> {
   let totalPrice = 0;
-  const cards = [
-    ...decklist.mainboard,
-    ...(decklist.sideboard || []),
-  ];
+  const cards = [...decklist.mainboard, ...(decklist.sideboard || [])];
 
   for (const { name, count } of cards) {
     const card = await fetchCardByName(name);
@@ -200,11 +202,16 @@ function getFallbackDeck(format: 'commander' | 'pauper' | 'modern'): OpenAIDeckR
   return {
     name: `Fallback ${format} Deck`,
     format,
-    representativeCard: { name: format === 'commander' ? 'Bello, Bard of the Brambles' : 'Lightning Bolt' },
+    representativeCard: {
+      name: format === 'commander' ? 'Bello, Bard of the Brambles' : 'Lightning Bolt',
+    },
     decklist: {
       mainboard: [
         { name: 'Mountain', count: 20 },
-        { name: format === 'commander' ? 'Bello, Bard of the Brambles' : 'Lightning Bolt', count: format === 'commander' ? 1 : 4 },
+        {
+          name: format === 'commander' ? 'Bello, Bard of the Brambles' : 'Lightning Bolt',
+          count: format === 'commander' ? 1 : 4,
+        },
       ],
       sideboard: format !== 'commander' ? [{ name: 'Shock', count: 15 }] : [],
     },

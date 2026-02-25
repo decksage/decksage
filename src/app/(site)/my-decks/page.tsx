@@ -3,18 +3,18 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 // app/my-decks/page.tsx
-'use client'
+'use client';
 
-import { useEffect, useState, useCallback } from 'react'
-import { createClient } from '@/app/utils/supabase/client'
-import type { User } from '@supabase/supabase-js'
-import { Button } from '@/components/ui/button'
-import { Loader2, PlusCircle, Swords, Bookmark } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import DeckCardItem from './componentes/DeckCardItem'
-import DeckCardItemShared from './componentes/DeckCardItemShared'
-import DynamicAdSlot from '@/app/(site)/components/ads/DynamicAdSlot'
+import { useEffect, useState, useCallback } from 'react';
+import { createClient } from '@/app/utils/supabase/client';
+import type { User } from '@supabase/supabase-js';
+import { Button } from '@/components/ui/button';
+import { Loader2, PlusCircle, Swords, Bookmark } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import DeckCardItem from './componentes/DeckCardItem';
+import DeckCardItemShared from './componentes/DeckCardItemShared';
+import DynamicAdSlot from '@/app/(site)/components/ads/DynamicAdSlot';
 // AJUSTE: Importar componentes do Card para o nosso novo botão
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -30,7 +30,7 @@ type OwnDeck = {
   save_count?: number;
   color_identity?: string[];
   decklist: any; // Adicionado para contagem de cartas
-}
+};
 
 // Tipagem para um deck guardado, que inclui o perfil do criador
 type SavedDeck = OwnDeck & {
@@ -38,83 +38,96 @@ type SavedDeck = OwnDeck & {
     username: string | null;
     full_name: string | null;
   } | null;
-}
+};
 
 export default function MyDecksPage() {
-  const supabase = createClient()
-  const router = useRouter()
-  const [user, setUser] = useState<User | null>(null)
-  const [myDecks, setMyDecks] = useState<OwnDeck[]>([])
-  const [savedDecks, setSavedDecks] = useState<SavedDeck[]>([])
-  const [loading, setLoading] = useState(true)
-  const [adConfig, setAdConfig] = useState<any>(null)
-  const fetchMyDecks = useCallback(async (userId: string) => {
-    const { data, error } = await supabase
-      .from('decks')
-      .select('id, name, format, representative_card_image_url, created_at, view_count, save_count, color_identity, decklist')
-      .eq('user_id', userId)
-      .eq('owner_type', 'user')
-      .order('created_at', { ascending: false })
+  const supabase = createClient();
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [myDecks, setMyDecks] = useState<OwnDeck[]>([]);
+  const [savedDecks, setSavedDecks] = useState<SavedDeck[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [adConfig, setAdConfig] = useState<any>(null);
+  const fetchMyDecks = useCallback(
+    async (userId: string) => {
+      const { data, error } = await supabase
+        .from('decks')
+        .select(
+          'id, name, format, representative_card_image_url, created_at, view_count, save_count, color_identity, decklist',
+        )
+        .eq('user_id', userId)
+        .eq('owner_type', 'user')
+        .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Erro ao buscar meus decks:', error.message)
-    } else {
-      setMyDecks(data || [])
-    }
-  }, [supabase]);
+      if (error) {
+        console.error('Erro ao buscar meus decks:', error.message);
+      } else {
+        setMyDecks(data || []);
+      }
+    },
+    [supabase],
+  );
 
   // Função para buscar decks guardados
-  const fetchSavedDecks = useCallback(async (userId: string) => {
-    try {
-      const { data: savedRelations, error: savedError } = await supabase
-        .from('saved_decks')
-        .select('deck_id')
-        .eq('user_id', userId);
+  const fetchSavedDecks = useCallback(
+    async (userId: string) => {
+      try {
+        const { data: savedRelations, error: savedError } = await supabase
+          .from('saved_decks')
+          .select('deck_id')
+          .eq('user_id', userId);
 
-      if (savedError) throw new Error(`Falha ao buscar relações de decks guardados: ${savedError.message}`);
-      if (!savedRelations || savedRelations.length === 0) {
+        if (savedError)
+          throw new Error(`Falha ao buscar relações de decks guardados: ${savedError.message}`);
+        if (!savedRelations || savedRelations.length === 0) {
+          setSavedDecks([]);
+          return;
+        }
+
+        const savedDeckIds = savedRelations.map((r) => r.deck_id);
+
+        const { data: decksData, error: decksError } = await supabase
+          .from('decks')
+          .select(
+            `id, name, format, representative_card_image_url, created_at, view_count, save_count, color_identity, user_id, decklist`,
+          )
+          .in('id', savedDeckIds);
+
+        if (decksError)
+          throw new Error(`Falha ao buscar detalhes dos decks: ${decksError.message}`);
+        if (!decksData) {
+          setSavedDecks([]);
+          return;
+        }
+
+        const creatorIds = [...new Set(decksData.map((d) => d.user_id))];
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, username, full_name')
+          .in('id', creatorIds);
+
+        if (profilesError)
+          throw new Error(`Falha ao buscar perfis dos criadores: ${profilesError.message}`);
+
+        const profilesMap = new Map(profilesData.map((p) => [p.id, p]));
+
+        const finalSavedDecks = decksData.map((deck) => ({
+          ...deck,
+          profiles: profilesMap.get(deck.user_id) || null,
+        }));
+
+        finalSavedDecks.sort(
+          (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
+
+        setSavedDecks(finalSavedDecks as SavedDeck[]);
+      } catch (error: any) {
+        console.error('Erro detalhado no processo de buscar decks guardados:', error.message);
         setSavedDecks([]);
-        return;
       }
-
-      const savedDeckIds = savedRelations.map(r => r.deck_id);
-
-      const { data: decksData, error: decksError } = await supabase
-        .from('decks')
-        .select(`id, name, format, representative_card_image_url, created_at, view_count, save_count, color_identity, user_id, decklist`)
-        .in('id', savedDeckIds);
-
-      if (decksError) throw new Error(`Falha ao buscar detalhes dos decks: ${decksError.message}`);
-      if (!decksData) {
-        setSavedDecks([]);
-        return;
-      }
-
-      const creatorIds = [...new Set(decksData.map(d => d.user_id))];
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, username, full_name')
-        .in('id', creatorIds);
-
-      if (profilesError) throw new Error(`Falha ao buscar perfis dos criadores: ${profilesError.message}`);
-
-      const profilesMap = new Map(profilesData.map(p => [p.id, p]));
-
-      const finalSavedDecks = decksData.map(deck => ({
-        ...deck,
-        profiles: profilesMap.get(deck.user_id) || null
-      }));
-
-      finalSavedDecks.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-      setSavedDecks(finalSavedDecks as SavedDeck[]);
-
-    } catch (error: any) {
-      console.error('Erro detalhado no processo de buscar decks guardados:', error.message);
-      setSavedDecks([]);
-    }
-  }, [supabase]);
-
+    },
+    [supabase],
+  );
 
   const handleDeckDelete = useCallback((deckId: string) => {
     setMyDecks((prevDecks) => prevDecks.filter((deck) => deck.id !== deckId));
@@ -125,7 +138,9 @@ export default function MyDecksPage() {
   useEffect(() => {
     const initialize = async () => {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (user) {
         setUser(user);
         await Promise.all([
@@ -137,23 +152,22 @@ export default function MyDecksPage() {
             .eq('slot_name', 'banner_dashboard')
             .eq('is_active', true)
             .maybeSingle()
-            .then(({ data }) => setAdConfig(data))
+            .then(({ data }) => setAdConfig(data)),
         ]);
       } else {
         router.push('/login');
       }
       setLoading(false);
-    }
+    };
     initialize();
   }, [supabase, router, fetchMyDecks, fetchSavedDecks]);
-
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-neutral-950">
         <Loader2 className="h-12 w-12 animate-spin text-amber-500" />
       </div>
-    )
+    );
   }
 
   return (
@@ -161,9 +175,7 @@ export default function MyDecksPage() {
       <div className="container mx-auto max-w-7xl">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500 mb-2">
-              Meus Decks
-            </h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500 mb-2">Meus Decks</h1>
             <p className="text-lg text-neutral-300">
               Crie, compartilha e analise seus decks com a DeckSage IA
             </p>
@@ -213,15 +225,22 @@ export default function MyDecksPage() {
               {savedDecks.map((deck) => {
                 const creatorDisplayName = deck.profiles?.username || deck.profiles?.full_name;
                 return (
-                  <DeckCardItemShared key={deck.id} deck={deck} creatorUsername={creatorDisplayName} onDelete={handleDeckDelete} />
-                )
+                  <DeckCardItemShared
+                    key={deck.id}
+                    deck={deck}
+                    creatorUsername={creatorDisplayName}
+                    onDelete={handleDeckDelete}
+                  />
+                );
               })}
             </div>
           ) : (
-            <p className="text-neutral-500 mt-2">Quando guardar decks de outros criadores, eles aparecerão aqui.</p>
+            <p className="text-neutral-500 mt-2">
+              Quando guardar decks de outros criadores, eles aparecerão aqui.
+            </p>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,21 +1,24 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use server'
+'use server';
 
-import { createClient } from '@/app/utils/supabase/server'
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
+import { createClient } from '@/app/utils/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 export async function signOut() {
   console.log('Iniciando logout');
   try {
     const supabase = createClient();
-    
+
     // Verifica se há uma sessão ativa
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
     console.log('Usuário verificado:', user ? user.id : 'Nenhum usuário');
-    
+
     if (userError) {
       console.error('Erro ao verificar usuário:', userError.message, userError);
     }
@@ -23,7 +26,7 @@ export async function signOut() {
     // Tenta realizar o logout mesmo sem usuário, para limpar qualquer sessão residual
     console.log('Executando supabase.auth.signOut');
     const { error } = await supabase.auth.signOut();
-    
+
     if (error) {
       console.error('Erro ao realizar logout:', error.message, error);
       throw new Error(`Falha ao realizar logout: ${error.message}`);
@@ -32,7 +35,12 @@ export async function signOut() {
 
     // Remove cookies de autenticação
     const cookieStore = await cookies();
-    const cookieNames = ['sb-access-token', 'sb-refresh-token', 'sb-provider-token', 'sb-provider-refresh-token'];
+    const cookieNames = [
+      'sb-access-token',
+      'sb-refresh-token',
+      'sb-provider-token',
+      'sb-provider-refresh-token',
+    ];
     cookieNames.forEach((name) => {
       try {
         cookieStore.delete(name);
@@ -45,7 +53,7 @@ export async function signOut() {
     // Invalida o cache
     console.log('Invalidando cache');
     revalidatePath('/', 'layout');
-    
+
     // Redireciona para a página de login
     console.log('Redirecionando para /login');
     redirect('/login');

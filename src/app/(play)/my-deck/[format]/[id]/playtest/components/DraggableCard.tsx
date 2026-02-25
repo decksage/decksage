@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useDraggable } from '@dnd-kit/core';
 import Image from 'next/image';
@@ -16,7 +16,7 @@ export default function DraggableCard({ card, zone }: DraggableCardProps) {
 
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: card.instanceId,
-    data: { cardObject: card, fromZone: zone } 
+    data: { cardObject: card, fromZone: zone },
   });
 
   const style = {
@@ -25,19 +25,21 @@ export default function DraggableCard({ card, zone }: DraggableCardProps) {
 
   return (
     <div
-      ref={setNodeRef} 
-      style={style} 
-      className={cn("w-28 flex-shrink-0 cursor-grab active:cursor-grabbing", isDragging && "opacity-50")}
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        'w-28 flex-shrink-0 cursor-grab active:cursor-grabbing',
+        isDragging && 'opacity-50',
+      )}
     >
-      <Image 
+      <Image
         src={card.image_uris?.small || ''}
         alt={card.name}
         width={146}
         height={204}
-        
         className={cn(
-          "rounded shadow-lg pointer-events-none transition-transform duration-300",
-          card.tapped && "rotate-90"
+          'rounded shadow-lg pointer-events-none transition-transform duration-300',
+          card.tapped && 'rotate-90',
         )}
         // O onClick agora vira a carta, mas só se ela estiver no campo de batalha
         onClick={(e) => {
@@ -47,7 +49,7 @@ export default function DraggableCard({ card, zone }: DraggableCardProps) {
           }
         }}
         // O Dnd Kit agora lida com o "arrastar" através dos listeners
-        {...listeners} 
+        {...listeners}
         {...attributes}
         unoptimized
       />

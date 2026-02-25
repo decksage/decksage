@@ -7,8 +7,8 @@ import ProfileDeckFilters from './components/ProfileDeckFilters';
 export const dynamic = 'force-dynamic';
 
 interface PageProps {
-  params: { slug: string; };
-  searchParams?: { format?: string; };
+  params: { slug: string };
+  searchParams?: { format?: string };
 }
 
 const isUUID = (str: string) => {
@@ -52,12 +52,14 @@ export default async function PublicProfilePage(props: any) {
     .eq('is_public', true)
     .eq('owner_type', 'user');
 
-  const availableFormats = allDecks ? [...new Set(allDecks.map(d => d.format))] : [];
+  const availableFormats = allDecks ? [...new Set(allDecks.map((d) => d.format))] : [];
   const formatFilter = searchParams?.format?.toLowerCase() || null;
 
   let decksQuery = supabase
     .from('decks')
-    .select('id, name, format, representative_card_image_url, color_identity, created_at, view_count, save_count, clone_count')
+    .select(
+      'id, name, format, representative_card_image_url, color_identity, created_at, view_count, save_count, clone_count',
+    )
     .eq('user_id', profile.id)
     .eq('is_public', true)
     .eq('owner_type', 'user');
@@ -83,11 +85,7 @@ export default async function PublicProfilePage(props: any) {
         {decks && decks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {decks.map((deck) => (
-              <DeckCardItemShared
-                key={deck.id}
-                deck={deck}
-                creatorUsername={profile.username}
-              />
+              <DeckCardItemShared key={deck.id} deck={deck} creatorUsername={profile.username} />
             ))}
           </div>
         ) : (

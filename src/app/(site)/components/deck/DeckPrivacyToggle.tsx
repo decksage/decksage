@@ -1,36 +1,36 @@
 // app/components/deck/DeckPrivacyToggle.tsx
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { Switch } from '@/components/ui/switch'
-import { Label } from '@/components/ui/label'
-import { updateDeckPrivacy } from '@/app/actions/deckActions'
-import { toast } from 'sonner' // Usando sonner para notificações (opcional)
+import { useState } from 'react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { updateDeckPrivacy } from '@/app/actions/deckActions';
+import { toast } from 'sonner'; // Usando sonner para notificações (opcional)
 
 interface DeckPrivacyToggleProps {
-  deckId: string
-  initialIsPublic: boolean
+  deckId: string;
+  initialIsPublic: boolean;
 }
 
 export function DeckPrivacyToggle({ deckId, initialIsPublic }: DeckPrivacyToggleProps) {
-  const [isPublic, setIsPublic] = useState(initialIsPublic)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPublic, setIsPublic] = useState(initialIsPublic);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleToggle = async (checked: boolean) => {
-    setIsLoading(true)
-    setIsPublic(checked)
+    setIsLoading(true);
+    setIsPublic(checked);
 
     try {
-      await updateDeckPrivacy(deckId, checked)
-      toast.success(`Deck agora é ${checked ? 'público' : 'privado'}.`)
+      await updateDeckPrivacy(deckId, checked);
+      toast.success(`Deck agora é ${checked ? 'público' : 'privado'}.`);
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message);
       // Reverte a alteração visual em caso de erro
-      setIsPublic(!checked)
+      setIsPublic(!checked);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex items-center space-x-2">
@@ -41,8 +41,8 @@ export function DeckPrivacyToggle({ deckId, initialIsPublic }: DeckPrivacyToggle
         disabled={isLoading}
       />
       <Label htmlFor="privacy-mode" className="text-neutral-300">
-        {isLoading ? 'A guardar...' : (isPublic ? 'Público' : 'Privado')}
+        {isLoading ? 'A guardar...' : isPublic ? 'Público' : 'Privado'}
       </Label>
     </div>
-  )
+  );
 }

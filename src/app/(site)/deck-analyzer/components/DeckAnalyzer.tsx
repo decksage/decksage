@@ -45,12 +45,12 @@ export default function DeckAnalyzer() {
       const decklistArray = decklist
         .trim()
         .split('\n')
-        .map(line => line.trim())
-        .filter(line => line);
+        .map((line) => line.trim())
+        .filter((line) => line);
 
       // Conta quantidades de cópias
       const cardCounts: Record<string, number> = {};
-      decklistArray.forEach(line => {
+      decklistArray.forEach((line) => {
         const match = line.match(/^(\d+)\s+(.+)$/);
         if (match) {
           const [, quantity, name] = match;
@@ -59,12 +59,12 @@ export default function DeckAnalyzer() {
       });
 
       // Busca dados das cartas
-      const cardNames = decklistArray.map(line => line.replace(/^\d+\s+/, '').trim());
+      const cardNames = decklistArray.map((line) => line.replace(/^\d+\s+/, '').trim());
       const uniqueCardNames = [...new Set(cardNames)];
       const scryfallCards = await fetchCardsByNames(uniqueCardNames);
 
       // Mapeia com quantidades
-      const cardData: CardData[] = scryfallCards.map(card => ({
+      const cardData: CardData[] = scryfallCards.map((card) => ({
         id: card.id,
         name: card.name,
         cmc: card.cmc || 0,
@@ -90,7 +90,7 @@ export default function DeckAnalyzer() {
       const analysis: DeckAnalysisResult = await response.json();
       setResult(analysis);
       setCards(cardData);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       setResult({ explanation: '', error: 'Erro ao conectar com o servidor' });
     } finally {
@@ -100,28 +100,28 @@ export default function DeckAnalyzer() {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
-        <div className="container mx-auto p-6">
-            <h1 className="text-3xl font-bold mb-6">Analisador de Deck</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Formulário */}
-                <DeckForm
-                    decklist={decklist}
-                    setDecklist={setDecklist}
-                    format={format}
-                    setFormat={setFormat}
-                    onAnalyze={handleAnalyze}
-                    loading={loading}
-                />
-                {/* Resultado e Kanban */}
-                <div className="space-y-6">
-                    <AnalysisResult result={result} loading={loading} />
-                </div>
-            </div>
+      <div className="container mx-auto p-6">
+        <h1 className="text-3xl font-bold mb-6">Analisador de Deck</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Formulário */}
+          <DeckForm
+            decklist={decklist}
+            setDecklist={setDecklist}
+            format={format}
+            setFormat={setFormat}
+            onAnalyze={handleAnalyze}
+            loading={loading}
+          />
+          {/* Resultado e Kanban */}
+          <div className="space-y-6">
+            <AnalysisResult result={result} loading={loading} />
+          </div>
         </div>
+      </div>
 
-        <div className="container mx-auto p-6">
-            <CardKanban cards={cards} />
-        </div>
+      <div className="container mx-auto p-6">
+        <CardKanban cards={cards} />
+      </div>
     </div>
   );
 }

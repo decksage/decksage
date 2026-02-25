@@ -1,42 +1,42 @@
 /* eslint-disable no-undef */
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { AlertCircle, Gift, Loader2 } from 'lucide-react'
-import { createClient } from '@/app/utils/supabase/client'
-import { FaGoogle } from 'react-icons/fa' // Lembre-se de instalar: npm install react-icons
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertCircle, Gift, Loader2 } from 'lucide-react';
+import { createClient } from '@/app/utils/supabase/client';
+import { FaGoogle } from 'react-icons/fa'; // Lembre-se de instalar: npm install react-icons
 
 export default function SignupPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [fullName, setFullName] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  
-  const [referralCode, setReferralCode] = useState<string | null>(null)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [referralCode, setReferralCode] = useState<string | null>(null);
 
   // Efeito que roda no cliente para ler o código de convite da URL
   useEffect(() => {
-    const ref = searchParams.get('ref')
+    const ref = searchParams.get('ref');
     if (ref) {
-      setReferralCode(ref)
+      setReferralCode(ref);
     }
-  }, [searchParams])
+  }, [searchParams]);
 
   const handleEmailSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setIsSubmitting(true)
-    setError(null)
-    const supabase = createClient()
+    event.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+    const supabase = createClient();
 
     // Envia os dados, incluindo o código de referência se ele existir
     const { error } = await supabase.auth.signUp({
@@ -49,16 +49,16 @@ export default function SignupPage() {
         },
         emailRedirectTo: `${location.origin}/auth/callback`,
       },
-    })
+    });
 
     if (error) {
-      setError(error.message)
-      setIsSubmitting(false)
+      setError(error.message);
+      setIsSubmitting(false);
     } else {
-      router.push('/confirm-email')
+      router.push('/confirm-email');
     }
-  }
-  
+  };
+
   // Função para lidar com o login social
   const handleSocialLogin = async (provider: 'google' | 'github') => {
     const supabase = createClient();
@@ -71,12 +71,12 @@ export default function SignupPage() {
         // Passa o código de referência como query param
         queryParams: {
           ...(referralCode && { referral_code: referralCode }),
-        }
-      }
+        },
+      },
     });
     if (error) {
-        setError(error.message);
-        setIsSubmitting(false);
+      setError(error.message);
+      setIsSubmitting(false);
     }
   };
 
@@ -84,9 +84,7 @@ export default function SignupPage() {
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full p-8 bg-neutral-900 rounded-lg shadow-lg border border-neutral-700">
         <header className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold text-amber-500">
-            Criar Conta
-          </h1>
+          <h1 className="text-4xl font-extrabold text-amber-500">Criar Conta</h1>
           <p className="text-neutral-300 mt-2">
             Junte-se à comunidade e comece a montar seus decks.
           </p>
@@ -100,12 +98,20 @@ export default function SignupPage() {
         )}
 
         <div className="flex flex-col gap-4 mb-6">
-            <Button variant="outline" onClick={() => handleSocialLogin('google')} disabled={isSubmitting}>
-              {isSubmitting ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <FaGoogle className="mr-2 h-5 w-5" />}
-                Continuar com Google
-            </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSocialLogin('google')}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+            ) : (
+              <FaGoogle className="mr-2 h-5 w-5" />
+            )}
+            Continuar com Google
+          </Button>
         </div>
-        
+
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-neutral-700" />
@@ -157,7 +163,7 @@ export default function SignupPage() {
             />
             <p className="text-xs text-neutral-500">Mínimo de 6 caracteres.</p>
           </div>
-          
+
           {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
@@ -166,8 +172,16 @@ export default function SignupPage() {
             </Alert>
           )}
 
-          <Button type="submit" className="w-full bg-amber-500 text-black hover:bg-amber-600" disabled={isSubmitting}>
-            {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin"/> : 'Criar Conta com Email'}
+          <Button
+            type="submit"
+            className="w-full bg-amber-500 text-black hover:bg-amber-600"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              'Criar Conta com Email'
+            )}
           </Button>
         </form>
 
@@ -181,5 +195,5 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

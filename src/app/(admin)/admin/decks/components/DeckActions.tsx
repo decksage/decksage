@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
@@ -14,14 +14,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 import { deleteSiteDeck } from '@/app/actions/admin/deckAdminActions';
 import { toast } from 'sonner';
 
 interface DeckActionsProps {
   deck: {
     id: string;
-  }
+  };
 }
 
 export default function DeckActions({ deck }: DeckActionsProps) {
@@ -50,16 +50,22 @@ export default function DeckActions({ deck }: DeckActionsProps) {
           <Edit className="mr-2 h-4 w-4" /> Editar
         </Button>
       </Link>
-      
+
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant="destructive" size="sm" disabled={isPending}>
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent className="bg-neutral-900 border-neutral-700">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-amber-400">Você tem certeza absoluta?</AlertDialogTitle>
+            <AlertDialogTitle className="text-amber-400">
+              Você tem certeza absoluta?
+            </AlertDialogTitle>
             <AlertDialogDescription className="text-neutral-300">
               Esta ação não pode ser desfeita. Isso irá apagar permanentemente este deck do site.
             </AlertDialogDescription>

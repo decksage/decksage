@@ -25,11 +25,11 @@ export default function ManaColorLink({ symbol, name, textColor, href }: ManaCol
         <i
           className={cn(
             manaSymbolClass,
-            "transition-transform duration-300 group-hover:scale-110",
-            textColor
+            'transition-transform duration-300 group-hover:scale-110',
+            textColor,
           )}
           style={{
-            fontSize: '2rem',          // << AQUI O TAMANHO REALMENTE GRANDE DO ÍCONE
+            fontSize: '2rem', // << AQUI O TAMANHO REALMENTE GRANDE DO ÍCONE
             lineHeight: 1,
             display: 'flex',
             alignItems: 'center',
@@ -41,11 +41,11 @@ export default function ManaColorLink({ symbol, name, textColor, href }: ManaCol
         />
         <span
           className={cn(
-            "mt-4 text-base md:text-lg font-semibold tracking-wide uppercase text-center",
-            "transition-colors duration-300",
+            'mt-4 text-base md:text-lg font-semibold tracking-wide uppercase text-center',
+            'transition-colors duration-300',
             symbol === 'M'
-              ? "bg-gradient-to-r from-amber-400 to-fuchsia-500 bg-clip-text text-transparent"
-              : "text-neutral-300 group-hover:text-white"
+              ? 'bg-gradient-to-r from-amber-400 to-fuchsia-500 bg-clip-text text-transparent'
+              : 'text-neutral-300 group-hover:text-white',
           )}
         >
           {name}

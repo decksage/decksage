@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import type { ScryfallCard } from '@/app/lib/types'; 
+import type { ScryfallCard } from '@/app/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Minus } from 'lucide-react';
@@ -55,9 +55,7 @@ function CardListSection({
             <li
               key={`${cardInfo.card.id}-${index}`}
               className="py-1 flex items-center justify-between"
-              onMouseEnter={() =>
-                onCardHover(cardInfo.card.image_uris?.normal || null)
-              }
+              onMouseEnter={() => onCardHover(cardInfo.card.image_uris?.normal || null)}
               onMouseLeave={onCardLeave}
             >
               <span>
@@ -72,11 +70,7 @@ function CardListSection({
                 >
                   <Minus className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onAddCard(cardInfo.card.name)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => onAddCard(cardInfo.card.name)}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -100,12 +94,12 @@ export default function DeckListViewEdit({
   const [mainboard, setMainboard] = useState<DeckCard[]>(
     Object.values(mainboardGrouped)
       .flat()
-      .map(({ card, count }) => ({ name: card.name, count }))
+      .map(({ card, count }) => ({ name: card.name, count })),
   );
   const [sideboard, setSideboard] = useState<DeckCard[]>(
     Object.values(sideboardGrouped)
       .flat()
-      .map(({ card, count }) => ({ name: card.name, count }))
+      .map(({ card, count }) => ({ name: card.name, count })),
   );
 
   // Função para adicionar uma cópia de uma carta
@@ -132,7 +126,7 @@ export default function DeckListViewEdit({
         onDeckChange(newMainboard, sideboard);
       }
     },
-    [mainboard, sideboard, onDeckChange]
+    [mainboard, sideboard, onDeckChange],
   );
 
   // Função para remover uma cópia de uma carta
@@ -161,7 +155,7 @@ export default function DeckListViewEdit({
         onDeckChange(newMainboard, sideboard);
       }
     },
-    [mainboard, sideboard, onDeckChange]
+    [mainboard, sideboard, onDeckChange],
   );
 
   // Função para reagrupar as cartas para exibição
@@ -199,8 +193,22 @@ export default function DeckListViewEdit({
   };
 
   // Reagrupar mainboard e sideboard para exibição
-  const updatedMainboardGrouped = groupForListView(mainboard, new Map(Object.entries(mainboardGrouped).flatMap(([, cards]) => cards.map(c => [c.card.name, c.card]))));
-  const updatedSideboardGrouped = groupForListView(sideboard, new Map(Object.entries(sideboardGrouped).flatMap(([, cards]) => cards.map(c => [c.card.name, c.card]))));
+  const updatedMainboardGrouped = groupForListView(
+    mainboard,
+    new Map(
+      Object.entries(mainboardGrouped).flatMap(([, cards]) =>
+        cards.map((c) => [c.card.name, c.card]),
+      ),
+    ),
+  );
+  const updatedSideboardGrouped = groupForListView(
+    sideboard,
+    new Map(
+      Object.entries(sideboardGrouped).flatMap(([, cards]) =>
+        cards.map((c) => [c.card.name, c.card]),
+      ),
+    ),
+  );
 
   return (
     <div>
@@ -211,9 +219,7 @@ export default function DeckListViewEdit({
           </CardHeader>
           <CardContent>
             <div
-              onMouseEnter={() =>
-                onCardHover(commanderCard.card.image_uris?.normal || null)
-              }
+              onMouseEnter={() => onCardHover(commanderCard.card.image_uris?.normal || null)}
               onMouseLeave={onCardLeave}
             >
               {commanderCard.count} x {commanderCard.card.name}

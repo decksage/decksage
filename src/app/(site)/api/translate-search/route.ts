@@ -71,6 +71,9 @@ export async function POST(req: Request) {
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Erro na API de tradução:', error);
-    return NextResponse.json({ error: 'Ocorreu um erro interno ao traduzir o texto.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Ocorreu um erro interno ao traduzir o texto.' },
+      { status: 500 },
+    );
   }
 }

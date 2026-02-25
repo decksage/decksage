@@ -13,7 +13,11 @@ interface PaginationControlsProps {
   basePath: string;
 }
 
-export default function PaginationControls({ totalPages, currentPage, basePath }: PaginationControlsProps) {
+export default function PaginationControls({
+  totalPages,
+  currentPage,
+  basePath,
+}: PaginationControlsProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 

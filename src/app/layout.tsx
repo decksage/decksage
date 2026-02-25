@@ -15,11 +15,7 @@ export const metadata: Metadata = {
 
 const GTM_ID = 'GTM-WBDZV8XS'; // Coloque seu GTM ID aqui
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="pt-BR" className="dark">
       <head>

@@ -1,9 +1,9 @@
 'use client';
-import Link from "next/link";
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import Link from 'next/link';
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // Interface para a resposta da API do Scryfall
 import type { ScryfallCard } from '@/app/lib/types'; // Ajuste o caminho conforme necessário
@@ -52,14 +52,20 @@ const renderOracleText = (text: string) => {
   return lines.map((line, index) => {
     const formattedLine = line.replace(
       /\b(Channel|Flash|Haste|Flying|Trample|Lifelink|Deathtouch|Vigilance|Hexproof)\b/gi,
-      (match) => `<span class="font-bold text-yellow-400">${match}</span>`
+      (match) => `<span class="font-bold text-yellow-400">${match}</span>`,
     );
     const withMana = renderManaCost(formattedLine);
     return <div key={index} dangerouslySetInnerHTML={{ __html: withMana }} />;
   });
 };
 
-export default function CardDisplay({ card, isDoubleFaced, displayCard, translatedOracleText, translatedBackOracleText }: Props) {
+export default function CardDisplay({
+  card,
+  isDoubleFaced,
+  displayCard,
+  translatedOracleText,
+  translatedBackOracleText,
+}: Props) {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4 sm:p-6 flex items-center justify-center">
       <Card className="w-full max-w-5xl bg-gray-800 border-gray-700 shadow-xl rounded-xl overflow-hidden">
@@ -72,9 +78,8 @@ export default function CardDisplay({ card, isDoubleFaced, displayCard, translat
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Imagens da carta */}
             <div className="space-y-4">
-              
               <div>
-                <p className="text-sm text-gray-400 mb-2">{isDoubleFaced ? "Frente" : "Carta"}</p>
+                <p className="text-sm text-gray-400 mb-2">{isDoubleFaced ? 'Frente' : 'Carta'}</p>
                 {displayCard.image_uris?.normal ? (
                   <div className="relative group">
                     <Image
@@ -145,7 +150,9 @@ export default function CardDisplay({ card, isDoubleFaced, displayCard, translat
                           </TooltipTrigger>
                           <TooltipContent className="bg-gray-800 border-gray-700 text-white max-w-md p-4 shadow-lg rounded-md transition-opacity duration-200">
                             <h4 className="text-sm font-semibold mb-2">Texto Original (Inglês)</h4>
-                            <div className="text-sm">{renderOracleText(displayCard.oracle_text)}</div>
+                            <div className="text-sm">
+                              {renderOracleText(displayCard.oracle_text)}
+                            </div>
                             {isDoubleFaced && card.card_faces![1]?.oracle_text && (
                               <div className="text-sm border-t-gray-50 border-t-1 py-3 mt-3 text-gray-100">
                                 <strong>Verso: </strong>
@@ -157,7 +164,9 @@ export default function CardDisplay({ card, isDoubleFaced, displayCard, translat
                       </TooltipProvider>
                     )}
                   </div>
-                  <div className="text-lg text-gray-100">{renderOracleText(translatedOracleText)}</div>
+                  <div className="text-lg text-gray-100">
+                    {renderOracleText(translatedOracleText)}
+                  </div>
                   {isDoubleFaced && card.card_faces![1]?.oracle_text && (
                     <div className="text-lg border-t-gray-50 border-t-1 py-3 mt-3 text-gray-100">
                       <strong>Verso: </strong>

@@ -15,11 +15,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "@typescript-eslint",
-    "next"
-  ],
+  "plugins": ["react", "@typescript-eslint", "next"],
   "settings": {
     "react": {
       "version": "18.2"

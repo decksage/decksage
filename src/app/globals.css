@@ -117,25 +117,25 @@
   }
   body {
     @apply bg-background text-foreground;
-    
   }
   button,
-  [role="button"] {
+  [role='button'] {
     @apply cursor-pointer;
-    
   }
   /* ✨ ATUALIZAÇÃO: Efeito de hover e transição para botões E links (a) ✨ */
   button,
-  [role="button"],
+  [role='button'],
   a {
     @apply cursor-pointer transition-all duration-200 ease-in-out;
   }
-  
+
   /* Aplica o efeito de sombra ao passar o rato */
   button:hover,
-  [role="button"]:hover {
+  [role='button']:hover {
     @apply brightness-110; /* Mantém um brilho subtil no próprio elemento */
-    filter: drop-shadow(0 0 8px var(--button-gradient--dark, #eb2c06)) /* Efeito de glow com a cor primária */
+    filter: drop-shadow(
+      0 0 8px var(--button-gradient--dark, #eb2c06)
+    ); /* Efeito de glow com a cor primária */
   }
   /* Remove z-index e posicionamento problemático dos símbolos mana para o modal não ser coberto */
   .ms {
@@ -150,26 +150,43 @@
     z-index: 0 !important;
     position: static !important;
   }
-
 }
 
 /* --- Animações customizadas --- */
 @layer utilities {
   /* Animações de entrada que já tínhamos */
   @keyframes fade-in-down {
-    0% { opacity: 0; transform: translateY(-10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes fade-in-up {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* --- ADIÇÃO: Keyframes para a nova animação de brilho --- */
   @keyframes gradient-shine {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   /* Classes de utilitário que usaremos no nosso HTML */
@@ -179,7 +196,7 @@
   .animate-fade-in-up {
     animation: fade-in-up 0.6s ease-out forwards;
   }
-  
+
   /* --- ADIÇÃO: Nova classe para aplicar a animação de brilho --- */
   .animate-gradient-shine {
     animation: gradient-shine 5s linear infinite;

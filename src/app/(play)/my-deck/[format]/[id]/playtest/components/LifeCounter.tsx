@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,12 +17,22 @@ export default function LifeCounter({ initialLife = 40 }: { initialLife: number 
         </CardTitle>
       </CardHeader>
       <CardContent className="flex items-center justify-center gap-2">
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => setLife(l => l - 1)}>
-            <Minus size={16} />
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 rounded-full"
+          onClick={() => setLife((l) => l - 1)}
+        >
+          <Minus size={16} />
         </Button>
         <span className="text-3xl font-bold w-12 text-center">{life}</span>
-        <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => setLife(l => l + 1)}>
-            <Plus size={16} />
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 rounded-full"
+          onClick={() => setLife((l) => l + 1)}
+        >
+          <Plus size={16} />
         </Button>
       </CardContent>
     </Card>

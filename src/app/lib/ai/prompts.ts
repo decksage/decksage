@@ -8,14 +8,23 @@ interface PromptData {
 /**
  * Gera um prompt superdetalhado para a IA com base no formato e nas entradas do usuário.
  */
-export function createDeckPrompt({ format, commanderName, coreCardsList, userPrompt }: PromptData): string {
-  
+export function createDeckPrompt({
+  format,
+  commanderName,
+  coreCardsList,
+  userPrompt,
+}: PromptData): string {
   // AJUSTE: A descrição do output agora exige o idioma Português do Brasil.
-  const jsonOutputFormat = 'Você DEVE responder usando apenas um objeto JSON válido, sem nenhum texto, introdução ou explicação adicional. A estrutura do JSON deve ser: { "name": "string (um nome criativo e temático para o deck em Português do Brasil)", "description": "string (uma breve descrição da estratégia do deck em 2-3 frases concisas em Português do Brasil.)", "decklist": { "mainboard": [{"count": number, "name": "string"}], "sideboard": [{"count": number, "name": "string"}] } }.';
+  const jsonOutputFormat =
+    'Você DEVE responder usando apenas um objeto JSON válido, sem nenhum texto, introdução ou explicação adicional. A estrutura do JSON deve ser: { "name": "string (um nome criativo e temático para o deck em Português do Brasil)", "description": "string (uma breve descrição da estratégia do deck em 2-3 frases concisas em Português do Brasil.)", "decklist": { "mainboard": [{"count": number, "name": "string"}], "sideboard": [{"count": number, "name": "string"}] } }.';
 
-  const promptCore = coreCardsList ? `O núcleo de cartas fornecido pelo usuário é este (use estas cartas como base para a estratégia):\n${coreCardsList}` : 'O usuário não forneceu cartas base, então o deck deve ser construído do zero.';
-  
-  const promptInstructions = userPrompt ? `A instrução principal do usuário para o deck é: "${userPrompt}". A sinergia do deck deve girar em torno desta instrução.` : 'O usuário não deu instruções específicas, então construa um arquétipo popular, sinérgico e eficaz para o formato.';
+  const promptCore = coreCardsList
+    ? `O núcleo de cartas fornecido pelo usuário é este (use estas cartas como base para a estratégia):\n${coreCardsList}`
+    : 'O usuário não forneceu cartas base, então o deck deve ser construído do zero.';
+
+  const promptInstructions = userPrompt
+    ? `A instrução principal do usuário para o deck é: "${userPrompt}". A sinergia do deck deve girar em torno desta instrução.`
+    : 'O usuário não deu instruções específicas, então construa um arquétipo popular, sinérgico e eficaz para o formato.';
 
   let finalPrompt = '';
 
@@ -39,7 +48,7 @@ export function createDeckPrompt({ format, commanderName, coreCardsList, userPro
         Output:
         ${jsonOutputFormat}`;
       break;
-    
+
     case 'pauper':
       finalPrompt = `
         Você é um deckbuilder especialista em Magic: The Gathering, focado no formato Pauper.
@@ -113,6 +122,6 @@ export function createDeckPrompt({ format, commanderName, coreCardsList, userPro
         ${jsonOutputFormat}`;
       break;
   }
-  
+
   return finalPrompt;
 }

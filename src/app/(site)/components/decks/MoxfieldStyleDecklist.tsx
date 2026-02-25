@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
-'use client'
+'use client';
 
-import { useMemo } from "react";
-import type { ScryfallCard } from "@/app/lib/types";
-import DecklistRow from "./DecklistRow";
+import { useMemo } from 'react';
+import type { ScryfallCard } from '@/app/lib/types';
+import DecklistRow from './DecklistRow';
 
 interface Decklist {
-  commander?: { count: number, name: string }[];
-  mainboard: { count: number, name: string }[];
-  sideboard?: { count: number, name: string }[];
+  commander?: { count: number; name: string }[];
+  mainboard: { count: number; name: string }[];
+  sideboard?: { count: number; name: string }[];
 }
 
 interface MoxfieldStyleDecklistProps {
@@ -19,50 +19,68 @@ interface MoxfieldStyleDecklistProps {
 
 // Ordem em que os grupos serão exibidos
 const TYPE_ORDER = [
-    'Commander', 'Creature', 'Planeswalker', 'Instant', 'Sorcery', 
-    'Artifact', 'Enchantment', 'Battle', 'Land'
+  'Commander',
+  'Creature',
+  'Planeswalker',
+  'Instant',
+  'Sorcery',
+  'Artifact',
+  'Enchantment',
+  'Battle',
+  'Land',
 ];
 // Mapeia o tipo técnico para o nome de exibição em Português
 const TYPE_DISPLAY_NAMES: Record<string, string> = {
-    'Commander': 'Comandante', 'Creature': 'Criaturas', 'Planeswalker': 'Planeswalkers', 
-    'Instant': 'Mágicas Instantâneas', 'Sorcery': 'Feitiços', 'Artifact': 'Artefatos', 
-    'Enchantment': 'Encantamentos', 'Battle': 'Batalhas', 'Land': 'Terrenos', 'Other': 'Outros'
+  Commander: 'Comandante',
+  Creature: 'Criaturas',
+  Planeswalker: 'Planeswalkers',
+  Instant: 'Mágicas Instantâneas',
+  Sorcery: 'Feitiços',
+  Artifact: 'Artefatos',
+  Enchantment: 'Encantamentos',
+  Battle: 'Batalhas',
+  Land: 'Terrenos',
+  Other: 'Outros',
 };
 
-
-export default function MoxfieldStyleDecklist({ decklist, cardDataMap, onHoverCard }: MoxfieldStyleDecklistProps) {
-
+export default function MoxfieldStyleDecklist({
+  decklist,
+  cardDataMap,
+  onHoverCard,
+}: MoxfieldStyleDecklistProps) {
   // Agrupa todas as cartas do deck por tipo, usando o `useMemo` para eficiência
   const groupedCards = useMemo(() => {
     const allCards = [
-      ...(decklist.commander?.map(c => ({...c, type: 'Commander'})) || []),
-      ...(decklist.mainboard.map(c => ({...c, type: 'Mainboard'})) || []),
-      ...(decklist.sideboard?.map(c => ({...c, type: 'Sideboard'})) || []),
+      ...(decklist.commander?.map((c) => ({ ...c, type: 'Commander' })) || []),
+      ...(decklist.mainboard.map((c) => ({ ...c, type: 'Mainboard' })) || []),
+      ...(decklist.sideboard?.map((c) => ({ ...c, type: 'Sideboard' })) || []),
     ];
 
-    const groups: Record<string, { card: ScryfallCard, count: number }[]> = {};
+    const groups: Record<string, { card: ScryfallCard; count: number }[]> = {};
 
-    allCards.forEach(item => {
+    allCards.forEach((item) => {
       const card = cardDataMap.get(item.name);
       if (!card) return;
 
       let mainType = 'Other';
       if (item.type === 'Commander') mainType = 'Commander';
-      else if (card.type_line.includes("Creature")) mainType = "Creature";
-      else if (card.type_line.includes("Planeswalker")) mainType = "Planeswalker";
-      else if (card.type_line.includes("Instant")) mainType = "Instant";
-      else if (card.type_line.includes("Sorcery")) mainType = "Sorcery";
-      else if (card.type_line.includes("Artifact")) mainType = "Artifact";
-      else if (card.type_line.includes("Enchantment")) mainType = "Enchantment";
-      else if (card.type_line.includes("Battle")) mainType = "Battle";
-      else if (card.type_line.includes("Land")) mainType = "Land";
+      else if (card.type_line.includes('Creature')) mainType = 'Creature';
+      else if (card.type_line.includes('Planeswalker')) mainType = 'Planeswalker';
+      else if (card.type_line.includes('Instant')) mainType = 'Instant';
+      else if (card.type_line.includes('Sorcery')) mainType = 'Sorcery';
+      else if (card.type_line.includes('Artifact')) mainType = 'Artifact';
+      else if (card.type_line.includes('Enchantment')) mainType = 'Enchantment';
+      else if (card.type_line.includes('Battle')) mainType = 'Battle';
+      else if (card.type_line.includes('Land')) mainType = 'Land';
 
       if (!groups[mainType]) groups[mainType] = [];
       groups[mainType].push({ card, count: item.count });
     });
 
     // Ordena as cartas dentro de cada grupo por nome
-    Object.values(groups).forEach(group => group.sort((a,b) => a.card.name.localeCompare(b.card.name)));
+    Object.values(groups).forEach((group) =>
+      group.sort((a, b) => a.card.name.localeCompare(b.card.name)),
+    );
 
     return groups;
   }, [decklist, cardDataMap]);
@@ -70,10 +88,10 @@ export default function MoxfieldStyleDecklist({ decklist, cardDataMap, onHoverCa
   return (
     // A mágica do layout de colunas do CSS
     <div className="md:columns-2 lg:columns-3 xl:columns-4 gap-x-6">
-      {TYPE_ORDER.map(type => {
+      {TYPE_ORDER.map((type) => {
         const items = groupedCards[type];
         if (!items || items.length === 0) return null;
-        
+
         const count = items.reduce((sum, item) => sum + item.count, 0);
 
         return (
@@ -88,7 +106,7 @@ export default function MoxfieldStyleDecklist({ decklist, cardDataMap, onHoverCa
               ))}
             </ul>
           </div>
-        )
+        );
       })}
     </div>
   );

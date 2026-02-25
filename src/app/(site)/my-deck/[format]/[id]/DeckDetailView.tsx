@@ -5,7 +5,7 @@
 
 import { useMemo, useState } from 'react';
 import Image from 'next/image';
-import type { ScryfallCard } from '@/app/lib/types'; 
+import type { ScryfallCard } from '@/app/lib/types';
 import type { DeckDetailViewProps } from '@/app/lib/types';
 
 import CreatorHeader from './components/CreatorHeader';
@@ -14,7 +14,7 @@ import DeckListView from '@/app/(site)/components/deck/DeckListView';
 import DeckGridView from '@/app/(site)/components/deck/DeckGridView';
 import DeckMana from './components/DeckMana';
 import { Button } from '@/components/ui/button';
-import { List, LayoutGrid, Boxes } from 'lucide-react'; 
+import { List, LayoutGrid, Boxes } from 'lucide-react';
 import type { GridCardData } from '@/app/(site)/components/deck/DeckGridView';
 
 import { getCardPriceFromScryfall } from '@/app/lib/scryfall';
@@ -27,11 +27,14 @@ export default function DeckDetailView({
   currentUser,
   creatorProfile,
   isInitiallySaved,
-  userPhysicalCollection, 
+  userPhysicalCollection,
 }: DeckDetailViewProps) {
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
   const [showPhysicalCards, setShowPhysicalCards] = useState(false);
-  const scryfallCardMap = useMemo(() => new Map<string, ScryfallCard>(initialScryfallMapArray as any), [initialScryfallMapArray]);
+  const scryfallCardMap = useMemo(
+    () => new Map<string, ScryfallCard>(initialScryfallMapArray as any),
+    [initialScryfallMapArray],
+  );
 
   const {
     commanderCard,
@@ -45,39 +48,44 @@ export default function DeckDetailView({
     defaultPreviewImageUrl,
   } = useMemo(() => {
     let commander: GridCardData | null = null;
-    const featuredCardIds = new Set<string>(); 
+    const featuredCardIds = new Set<string>();
     const planeswalkersTemp: GridCardData[] = []; // Usar temp para deduplicar
     let previewUrl = initialDeck.representative_card_image_url;
 
     // Constrói uma lista completa de todas as cartas do deck com os dados Scryfall
     const allDeckCardsWithScryfallId = [
-      ...(initialDeck.decklist.commander || []), 
+      ...(initialDeck.decklist.commander || []),
       ...initialDeck.decklist.mainboard,
       ...(initialDeck.decklist.sideboard || []),
-    ].map(deckCard => {
-      const cardData = scryfallCardMap.get(deckCard.name);
-      if (!cardData) {
-        console.warn(`Card data not found for: ${deckCard.name}`);
-        return null;
-      }
-      return {
-        ...deckCard, 
-        scryfall_id: cardData.id, 
-        ...cardData,
-      } as GridCardData;
-    }).filter((card): card is GridCardData => card !== null);
+    ]
+      .map((deckCard) => {
+        const cardData = scryfallCardMap.get(deckCard.name);
+        if (!cardData) {
+          console.warn(`Card data not found for: ${deckCard.name}`);
+          return null;
+        }
+        return {
+          ...deckCard,
+          scryfall_id: cardData.id,
+          ...cardData,
+        } as GridCardData;
+      })
+      .filter((card): card is GridCardData => card !== null);
 
     // Lógica para Commander (prioriza decklist.commander, senão mainboard[0] para formato commander)
     if (initialDeck.format.toLowerCase() === 'commander') {
-      const potentialCommanderName = initialDeck.decklist.commander?.[0]?.name || initialDeck.decklist.mainboard[0]?.name;
+      const potentialCommanderName =
+        initialDeck.decklist.commander?.[0]?.name || initialDeck.decklist.mainboard[0]?.name;
       if (potentialCommanderName) {
-        const foundCommander = allDeckCardsWithScryfallId.find(c => c.name === potentialCommanderName && c.type_line.includes('Legendary Creature'));
+        const foundCommander = allDeckCardsWithScryfallId.find(
+          (c) => c.name === potentialCommanderName && c.type_line.includes('Legendary Creature'),
+        );
         if (foundCommander) {
           commander = foundCommander;
           if (commander.image_uris?.normal) {
             previewUrl = commander.image_uris.normal;
           }
-          featuredCardIds.add(commander.id); 
+          featuredCardIds.add(commander.id);
         }
       }
     }
@@ -86,24 +94,26 @@ export default function DeckDetailView({
     for (const c of allDeckCardsWithScryfallId) {
       if (c.type_line.includes('Planeswalker') && !featuredCardIds.has(c.id)) {
         planeswalkersTemp.push(c);
-        featuredCardIds.add(c.id); 
+        featuredCardIds.add(c.id);
       }
     }
-    
+
     // Filtra Mainboard para Grid View: Remove Commander e Planeswalkers já destacados
     const mainboardGridTemp = allDeckCardsWithScryfallId.filter(
-      (c) => initialDeck.decklist.mainboard.some((mc) => mc.name === c.name) && !featuredCardIds.has(c.id)
+      (c) =>
+        initialDeck.decklist.mainboard.some((mc) => mc.name === c.name) &&
+        !featuredCardIds.has(c.id),
     );
 
     // Sideboard Grid (não interage com featuredCardIds)
-    const sideboardGridTemp = allDeckCardsWithScryfallId.filter(
-      (c) => initialDeck.decklist.sideboard?.some((sc) => sc.name === c.name)
+    const sideboardGridTemp = allDeckCardsWithScryfallId.filter((c) =>
+      initialDeck.decklist.sideboard?.some((sc) => sc.name === c.name),
     );
 
     // Função auxiliar para agrupar cartas para o DeckListView
     const groupForListView = (cardsToGroup: GridCardData[]) => {
       const grouped: Record<string, { card: ScryfallCard; count: number }[]> = {};
-      for (const cardData of cardsToGroup) { 
+      for (const cardData of cardsToGroup) {
         let mainType = 'Outros';
         if (cardData.type_line.includes('Planeswalker')) mainType = 'Planeswalkers';
         else if (cardData.type_line.includes('Creature')) mainType = 'Criaturas';
@@ -113,38 +123,49 @@ export default function DeckDetailView({
         else if (cardData.type_line.includes('Enchantment')) mainType = 'Encantamentos';
         else if (cardData.type_line.includes('Land')) mainType = 'Terrenos';
         grouped[mainType] ||= [];
-        grouped[mainType].push({ card: cardData, count: cardData.count }); 
+        grouped[mainType].push({ card: cardData, count: cardData.count });
       }
-      const order = ['Planeswalkers', 'Criaturas', 'Mágicas Instantâneas', 'Feitiços', 'Encantamentos', 'Artefatos', 'Terrenos', 'Outros'];
+      const order = [
+        'Planeswalkers',
+        'Criaturas',
+        'Mágicas Instantâneas',
+        'Feitiços',
+        'Encantamentos',
+        'Artefatos',
+        'Terrenos',
+        'Outros',
+      ];
       return Object.fromEntries(order.map((type) => [type, grouped[type] || []]));
     };
 
     // Prepara as listas para o DeckListView, já filtradas
     const mainboardForListTemp = allDeckCardsWithScryfallId.filter(
-      (c) => initialDeck.decklist.mainboard.some((mc) => mc.name === c.name) && !featuredCardIds.has(c.id)
+      (c) =>
+        initialDeck.decklist.mainboard.some((mc) => mc.name === c.name) &&
+        !featuredCardIds.has(c.id),
     );
-    const sideboardForListTemp = allDeckCardsWithScryfallId.filter(
-      (c) => initialDeck.decklist.sideboard?.some((sc) => sc.name === c.name)
+    const sideboardForListTemp = allDeckCardsWithScryfallId.filter((c) =>
+      initialDeck.decklist.sideboard?.some((sc) => sc.name === c.name),
     );
 
     // FINAL DEDUPLICATION STEP: Ensure no duplicates in the final arrays
     // This is the last resort to ensure unique keys
     const seenIds = new Set<string>();
-    const planeswalkerCards = planeswalkersTemp.filter(card => {
+    const planeswalkerCards = planeswalkersTemp.filter((card) => {
       if (seenIds.has(card.id)) return false;
       seenIds.add(card.id);
       return true;
     });
 
     seenIds.clear(); // Clear for the next array
-    const mainboardGridCards = mainboardGridTemp.filter(card => {
+    const mainboardGridCards = mainboardGridTemp.filter((card) => {
       if (seenIds.has(card.id)) return false;
       seenIds.add(card.id);
       return true;
     });
 
     seenIds.clear(); // Clear for the next array
-    const sideboardGridCards = sideboardGridTemp.filter(card => {
+    const sideboardGridCards = sideboardGridTemp.filter((card) => {
       if (seenIds.has(card.id)) return false;
       seenIds.add(card.id);
       return true;
@@ -156,30 +177,29 @@ export default function DeckDetailView({
     // Vamos garantir a unicidade dentro de cada grupo para DeckListView também.
     const mainboardGroupedForList = groupForListView(mainboardForListTemp);
     for (const type in mainboardGroupedForList) {
-        if (mainboardGroupedForList.hasOwnProperty(type)) {
-            const groupCards = mainboardGroupedForList[type];
-            seenIds.clear();
-            mainboardGroupedForList[type] = groupCards.filter(item => {
-                if (seenIds.has(item.card.id)) return false;
-                seenIds.add(item.card.id);
-                return true;
-            });
-        }
+      if (mainboardGroupedForList.hasOwnProperty(type)) {
+        const groupCards = mainboardGroupedForList[type];
+        seenIds.clear();
+        mainboardGroupedForList[type] = groupCards.filter((item) => {
+          if (seenIds.has(item.card.id)) return false;
+          seenIds.add(item.card.id);
+          return true;
+        });
+      }
     }
 
     const sideboardGroupedForList = groupForListView(sideboardForListTemp);
     for (const type in sideboardGroupedForList) {
-        if (sideboardGroupedForList.hasOwnProperty(type)) {
-            const groupCards = sideboardGroupedForList[type];
-            seenIds.clear();
-            sideboardGroupedForList[type] = groupCards.filter(item => {
-                if (seenIds.has(item.card.id)) return false;
-                seenIds.add(item.card.id);
-                return true;
-            });
-        }
+      if (sideboardGroupedForList.hasOwnProperty(type)) {
+        const groupCards = sideboardGroupedForList[type];
+        seenIds.clear();
+        sideboardGroupedForList[type] = groupCards.filter((item) => {
+          if (seenIds.has(item.card.id)) return false;
+          seenIds.add(item.card.id);
+          return true;
+        });
+      }
     }
-
 
     return {
       commanderCard: commander,
@@ -197,7 +217,9 @@ export default function DeckDetailView({
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(defaultPreviewImageUrl);
   const isOwner = currentUser?.id === initialDeck.user_id;
 
-  const [selectedCardPrice, setSelectedCardPrice] = useState<{ usd: number; brl: number } | null>(null);
+  const [selectedCardPrice, setSelectedCardPrice] = useState<{ usd: number; brl: number } | null>(
+    null,
+  );
   const [isPriceLoading, setIsPriceLoading] = useState(false);
 
   const handlePriceFetch = async (card: ScryfallCard | null) => {
@@ -210,7 +232,7 @@ export default function DeckDetailView({
     setSelectedCardPrice(null);
     const [priceUsd, brlRate] = await Promise.all([
       getCardPriceFromScryfall(card.name),
-      getBRLRate()
+      getBRLRate(),
     ]);
     if (priceUsd) {
       setSelectedCardPrice({
@@ -223,14 +245,23 @@ export default function DeckDetailView({
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 p-4 sm:p-8">
-      
       <div className="max-w-screen-xl mx-auto">
         {!isOwner && <CreatorHeader profile={creatorProfile} />}
-        <DeckHeader deck={initialDeck} isOwner={isOwner} isInitiallySaved={isInitiallySaved} creatorProfile={creatorProfile} currentUser={currentUser} />
+        <DeckHeader
+          deck={initialDeck}
+          isOwner={isOwner}
+          isInitiallySaved={isInitiallySaved}
+          creatorProfile={creatorProfile}
+          currentUser={currentUser}
+        />
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
           <aside className="hidden lg:block lg:col-span-3 sticky top-24 self-start">
             <Image
-              src={previewImageUrl || defaultPreviewImageUrl || 'https://placehold.co/340x475/171717/EAB308?text=Deck'}
+              src={
+                previewImageUrl ||
+                defaultPreviewImageUrl ||
+                'https://placehold.co/340x475/171717/EAB308?text=Deck'
+              }
               alt="Pré-visualização da carta"
               width={340}
               height={475}
@@ -241,36 +272,59 @@ export default function DeckDetailView({
           </aside>
           <main className="lg:col-span-7 space-y-8">
             <div className="block lg:hidden w-full max-w-[280px] mx-auto">
-                 <Image
-                    src={previewImageUrl || defaultPreviewImageUrl || 'https://placehold.co/340x475/171717/EAB308?text=Deck'}
-                    alt="Pré-visualização da carta"
-                    width={280}
-                    height={390}
-                    unoptimized
-                    className="rounded-lg shadow-lg mx-auto"
-                />
-                <PriceDisplay priceData={selectedCardPrice} isLoading={isPriceLoading} />
+              <Image
+                src={
+                  previewImageUrl ||
+                  defaultPreviewImageUrl ||
+                  'https://placehold.co/340x475/171717/EAB308?text=Deck'
+                }
+                alt="Pré-visualização da carta"
+                width={280}
+                height={390}
+                unoptimized
+                className="rounded-lg shadow-lg mx-auto"
+              />
+              <PriceDisplay priceData={selectedCardPrice} isLoading={isPriceLoading} />
             </div>
             <div className="flex justify-end items-center gap-4">
               <span className="text-sm text-neutral-400">Visualizar como:</span>
               <div className="flex gap-1 bg-neutral-800 p-1 rounded-md">
-                {currentUser && userPhysicalCollection.size > 0 && ( 
-                    <Button 
-                        variant={showPhysicalCards ? 'secondary' : 'ghost'} 
-                        size="sm" 
-                        onClick={() => setShowPhysicalCards(!showPhysicalCards)}
-                        title="Mostrar Cartas Físicas"
-                    >
-                        <Boxes className="mr-2 h-4 w-4" />Coleção
-                    </Button>
+                {currentUser && userPhysicalCollection.size > 0 && (
+                  <Button
+                    variant={showPhysicalCards ? 'secondary' : 'ghost'}
+                    size="sm"
+                    onClick={() => setShowPhysicalCards(!showPhysicalCards)}
+                    title="Mostrar Cartas Físicas"
+                  >
+                    <Boxes className="mr-2 h-4 w-4" />
+                    Coleção
+                  </Button>
                 )}
-                <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="sm" onClick={() => setViewMode('list')}><List className="mr-2 h-4 w-4" />Lista</Button>
-                <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="sm" onClick={() => setViewMode('grid')}><LayoutGrid className="mr-2 h-4 w-4" />Grelha</Button>
+                <Button
+                  variant={viewMode === 'list' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                >
+                  <List className="mr-2 h-4 w-4" />
+                  Lista
+                </Button>
+                <Button
+                  variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                >
+                  <LayoutGrid className="mr-2 h-4 w-4" />
+                  Grelha
+                </Button>
               </div>
             </div>
             {viewMode === 'list' ? (
               <DeckListView
-                commanderCard={ commanderCard ? { card: scryfallCardMap.get(commanderCard.name)!, count: commanderCard.count } : null }
+                commanderCard={
+                  commanderCard
+                    ? { card: scryfallCardMap.get(commanderCard.name)!, count: commanderCard.count }
+                    : null
+                }
                 mainboardGrouped={mainboardGroupedForList}
                 mainboardTotalCount={mainboardListTotalCount}
                 sideboardGrouped={sideboardGroupedForList}
@@ -278,7 +332,7 @@ export default function DeckDetailView({
                 onCardHover={(url) => setPreviewImageUrl(url)}
                 onCardLeave={() => setPreviewImageUrl(defaultPreviewImageUrl)}
                 onPriceFetch={handlePriceFetch}
-                showPhysicalCards={showPhysicalCards} 
+                showPhysicalCards={showPhysicalCards}
                 userPhysicalCollection={userPhysicalCollection}
               />
             ) : (
@@ -290,7 +344,7 @@ export default function DeckDetailView({
                 onCardHover={(url) => setPreviewImageUrl(url)}
                 onCardLeave={() => setPreviewImageUrl(defaultPreviewImageUrl)}
                 onPriceFetch={handlePriceFetch}
-                showPhysicalCards={showPhysicalCards} 
+                showPhysicalCards={showPhysicalCards}
                 userPhysicalCollection={userPhysicalCollection}
               />
             )}
@@ -301,16 +355,16 @@ export default function DeckDetailView({
         <div className="container">
           <DeckMana
             decklist={{
-              mainboard: initialDeck.decklist.mainboard.map(card => ({
+              mainboard: initialDeck.decklist.mainboard.map((card) => ({
                 ...card,
                 id: scryfallCardMap.get(card.name)?.id || '',
-                scryfall_id: scryfallCardMap.get(card.name)?.id || ''
+                scryfall_id: scryfallCardMap.get(card.name)?.id || '',
               })),
-              sideboard: initialDeck.decklist.sideboard?.map(card => ({
+              sideboard: initialDeck.decklist.sideboard?.map((card) => ({
                 ...card,
                 id: scryfallCardMap.get(card.name)?.id || '',
-                scryfall_id: scryfallCardMap.get(card.name)?.id || ''
-              }))
+                scryfall_id: scryfallCardMap.get(card.name)?.id || '',
+              })),
             }}
             scryfallCardMap={scryfallCardMap}
             description={initialDeck.description}

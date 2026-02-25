@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
-import { fetchCardByName } from "@/app/lib/scryfall";
-import { translateCardText } from "@/app/actions/aiActions";
-import CardDetailPageLayout from "../components/CardDetailPageLayout";
-import CardImageDisplay from "../components/CardImageDisplay";
-import CardDetailsDisplay from "../components/CardDetailsDisplay";
-import CardHeaderInfo from "../components/CardHeaderInfo";
-import CardTypeLine from "../components/CardTypeLine";
-import { Separator } from "@/components/ui/separator";
-import CardTextDisplay from "../components/CardTextDisplay";
+import { fetchCardByName } from '@/app/lib/scryfall';
+import { translateCardText } from '@/app/actions/aiActions';
+import CardDetailPageLayout from '../components/CardDetailPageLayout';
+import CardImageDisplay from '../components/CardImageDisplay';
+import CardDetailsDisplay from '../components/CardDetailsDisplay';
+import CardHeaderInfo from '../components/CardHeaderInfo';
+import CardTypeLine from '../components/CardTypeLine';
+import { Separator } from '@/components/ui/separator';
+import CardTextDisplay from '../components/CardTextDisplay';
 
 interface PageProps {
   params: Promise<{ cardName: string }>;
@@ -42,9 +42,9 @@ export default async function CardPage(props: PageProps) {
     <CardDetailPageLayout>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
         <div className="md:col-span-2">
-          <CardImageDisplay 
-            imageUrl={displayCard?.image_uris?.normal} 
-            altText={displayCard?.name || ''} 
+          <CardImageDisplay
+            imageUrl={displayCard?.image_uris?.normal}
+            altText={displayCard?.name || ''}
           />
         </div>
         <div className="md:col-span-3">
@@ -52,9 +52,9 @@ export default async function CardPage(props: PageProps) {
             <CardHeaderInfo name={displayCard?.name || ''} manaCost={displayCard?.mana_cost} />
             <CardTypeLine typeLine={displayCard?.type_line} />
             <Separator className="my-4 bg-neutral-700" />
-            <CardTextDisplay 
-              originalText={displayCard?.oracle_text} 
-              translatedText={translatedText} 
+            <CardTextDisplay
+              originalText={displayCard?.oracle_text}
+              translatedText={translatedText}
             />
           </CardDetailsDisplay>
         </div>

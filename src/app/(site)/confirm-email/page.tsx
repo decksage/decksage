@@ -20,17 +20,16 @@ export default function ConfirmEmailPage() {
         </div>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-amber-500">
-            Verifique o seu e-mail
-          </h1>
+          <h1 className="text-4xl font-extrabold text-amber-500">Verifique o seu e-mail</h1>
           <p className="text-neutral-300 mt-3 text-lg">
             Enviámos um link de confirmação para a sua caixa de entrada.
           </p>
         </header>
-        
+
         <div className="text-neutral-400 space-y-4">
           <p>
-            Por favor, clique no link nesse e-mail para ativar a sua conta. Se não o encontrar, verifique a sua pasta de spam.
+            Por favor, clique no link nesse e-mail para ativar a sua conta. Se não o encontrar,
+            verifique a sua pasta de spam.
           </p>
           <p className="text-sm">
             Depois de confirmar, poderá fazer login e aceder a todas as funcionalidades.

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // app/components/deck/CardGridView.tsx
-'use client'
+'use client';
 
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
@@ -23,29 +23,41 @@ interface CardGridViewProps {
 
 export default function CardGridView({ cards, onCardHover, onCardLeave }: CardGridViewProps) {
   // Agrupa as cartas por tipo (Criaturas, Terrenos, etc.)
-  const groupedCards = cards.reduce((acc, card) => {
-    let mainType = "Outros"; // Categoria padrão
-    if (card.type_line.includes("Creature")) mainType = "Criaturas";
-    else if (card.type_line.includes("Land")) mainType = "Terrenos";
-    else if (card.type_line.includes("Instant")) mainType = "Mágicas Instantâneas";
-    else if (card.type_line.includes("Sorcery")) mainType = "Feitiços";
-    else if (card.type_line.includes("Artifact")) mainType = "Artefatos";
-    else if (card.type_line.includes("Enchantment")) mainType = "Encantamentos";
-    else if (card.type_line.includes("Planeswalker")) mainType = "Planeswalkers";
-    
-    if (!acc[mainType]) {
-      acc[mainType] = [];
-    }
-    acc[mainType].push(card);
-    return acc;
-  }, {} as Record<string, GridCardData[]>);
+  const groupedCards = cards.reduce(
+    (acc, card) => {
+      let mainType = 'Outros'; // Categoria padrão
+      if (card.type_line.includes('Creature')) mainType = 'Criaturas';
+      else if (card.type_line.includes('Land')) mainType = 'Terrenos';
+      else if (card.type_line.includes('Instant')) mainType = 'Mágicas Instantâneas';
+      else if (card.type_line.includes('Sorcery')) mainType = 'Feitiços';
+      else if (card.type_line.includes('Artifact')) mainType = 'Artefatos';
+      else if (card.type_line.includes('Enchantment')) mainType = 'Encantamentos';
+      else if (card.type_line.includes('Planeswalker')) mainType = 'Planeswalkers';
+
+      if (!acc[mainType]) {
+        acc[mainType] = [];
+      }
+      acc[mainType].push(card);
+      return acc;
+    },
+    {} as Record<string, GridCardData[]>,
+  );
 
   // Define uma ordem lógica para as categorias de cartas
-  const typeOrder = ["Criaturas", "Planeswalkers", "Mágicas Instantâneas", "Feitiços", "Encantamentos", "Artefatos", "Terrenos", "Outros"];
+  const typeOrder = [
+    'Criaturas',
+    'Planeswalkers',
+    'Mágicas Instantâneas',
+    'Feitiços',
+    'Encantamentos',
+    'Artefatos',
+    'Terrenos',
+    'Outros',
+  ];
 
   return (
     <div className="space-y-8">
-      {typeOrder.map(type => {
+      {typeOrder.map((type) => {
         const cardsOfType = groupedCards[type];
         if (!cardsOfType || cardsOfType.length === 0) return null;
 
@@ -61,7 +73,7 @@ export default function CardGridView({ cards, onCardHover, onCardLeave }: CardGr
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4">
               {cardsOfType
                 .sort((a, b) => a.name.localeCompare(b.name))
-                .map(card => (
+                .map((card) => (
                   <div
                     key={card.id}
                     className="relative"
@@ -70,14 +82,15 @@ export default function CardGridView({ cards, onCardHover, onCardLeave }: CardGr
                   >
                     <div className="relative cursor-pointer transition-transform duration-200 hover:-translate-y-2">
                       {card.count > 1 && (
-                        <Badge
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0"
-                        >
+                        <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0">
                           {card.count}
                         </Badge>
                       )}
                       <Image
-                        src={card.image_uris?.normal || `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`}
+                        src={
+                          card.image_uris?.normal ||
+                          `https://placehold.co/265x370/171717/EAB308?text=${encodeURIComponent(card.name)}`
+                        }
                         alt={card.name}
                         width={265}
                         height={370}

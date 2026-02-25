@@ -6,7 +6,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/app/utils/supabase/client';
 import Link from 'next/link';
-import { ArrowLeft, BookOpenText, BrainCircuit, MessageSquare, CheckCircle, XCircle } from 'lucide-react';
+import {
+  ArrowLeft,
+  BookOpenText,
+  BrainCircuit,
+  MessageSquare,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -38,7 +45,9 @@ export default function GenerationDetailPage() {
       if (data.was_saved && data.saved_deck_id) {
         const { data: deck, error: deckError } = await supabase
           .from('decks')
-          .select('name, description, format, decklist, social_posts, representative_card_image_url, deck_check, color_identity')
+          .select(
+            'name, description, format, decklist, social_posts, representative_card_image_url, deck_check, color_identity',
+          )
           .eq('id', data.saved_deck_id)
           .single();
 
@@ -60,7 +69,7 @@ export default function GenerationDetailPage() {
   const deck = generation.saved_deck || {};
   const deckCheck = deck.deck_check || generation.deck_check || {};
   const socialPosts = deck.social_posts || generation.social_posts || {};
-  const decklist = deck.decklist as { mainboard: any[]; sideboard?: any[] } || null;
+  const decklist = (deck.decklist as { mainboard: any[]; sideboard?: any[] }) || null;
   const inputCards = generation.input_cards || [];
 
   return (
@@ -125,8 +134,7 @@ export default function GenerationDetailPage() {
             </CardHeader>
             <CardContent className="text-sm space-y-4">
               <p>
-                <strong>Formato:</strong>{' '}
-                <Badge variant="secondary">{generation.format}</Badge>
+                <strong>Formato:</strong> <Badge variant="secondary">{generation.format}</Badge>
               </p>
               <div>
                 <strong>Instrução do Admin:</strong>
@@ -188,16 +196,28 @@ export default function GenerationDetailPage() {
                   <TabsTrigger value="x">X (Twitter)</TabsTrigger>
                   <TabsTrigger value="reddit">Reddit</TabsTrigger>
                 </TabsList>
-                <TabsContent value="facebook" className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap">
+                <TabsContent
+                  value="facebook"
+                  className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap"
+                >
                   {socialPosts.facebook ?? 'Não gerado.'}
                 </TabsContent>
-                <TabsContent value="instagram" className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap">
+                <TabsContent
+                  value="instagram"
+                  className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap"
+                >
                   {socialPosts.instagram ?? 'Não gerado.'}
                 </TabsContent>
-                <TabsContent value="x" className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap">
+                <TabsContent
+                  value="x"
+                  className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap"
+                >
                   {socialPosts.x ?? 'Não gerado.'}
                 </TabsContent>
-                <TabsContent value="reddit" className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap">
+                <TabsContent
+                  value="reddit"
+                  className="text-sm p-4 bg-neutral-950 rounded-b-md whitespace-pre-wrap"
+                >
                   {socialPosts.reddit ?? 'Não gerado.'}
                 </TabsContent>
               </Tabs>

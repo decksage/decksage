@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use server'
+'use server';
 
 import { createClient } from '@/app/utils/supabase/server';
 import { checkUserRole } from '@/lib/auth';
@@ -29,16 +29,15 @@ export async function createCategory(formData: FormData) {
   if (!categoryName || categoryName.trim().length < 2) {
     return { success: false, message: 'O nome da categoria precisa ter pelo menos 2 caracteres.' };
   }
-  
+
   const slug = generateCategorySlug(categoryName);
   const supabase = createClient();
 
-  const { error } = await supabase
-    .from('categories')
-    .insert({ name: categoryName.trim(), slug });
+  const { error } = await supabase.from('categories').insert({ name: categoryName.trim(), slug });
 
   if (error) {
-    if (error.code === '23505') { // Erro de violação de chave única
+    if (error.code === '23505') {
+      // Erro de violação de chave única
       return { success: false, message: 'Esta categoria já existe.' };
     }
     console.error('Erro ao criar categoria:', error);

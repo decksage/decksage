@@ -13,21 +13,18 @@ interface LatestSetItemProps {
 }
 
 export default function LatestSetItem({ set }: LatestSetItemProps) {
-    console.log('LatestSetItem renderizando:', {
+  console.log('LatestSetItem renderizando:', {
     code: set.code,
     name: set.name,
     iconUrl: set.iconUrl,
   });
 
   return (
-    <Link
-      href={`/collections/${set.code.toLowerCase()}`}
-      className="group block h-full"
-    >
+    <Link href={`/collections/${set.code.toLowerCase()}`} className="group block h-full">
       <Card
         className={cn(
-          "bg-neutral-800 border-neutral-700 h-full flex flex-col items-center justify-center text-center",
-          "p-6 transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800"
+          'bg-neutral-800 border-neutral-700 h-full flex flex-col items-center justify-center text-center',
+          'p-6 transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800',
         )}
       >
         {set.iconUrl ? (
@@ -40,7 +37,6 @@ export default function LatestSetItem({ set }: LatestSetItemProps) {
               unoptimized
               className="object-contain filter invert brightness-150"
             />
-
           </div>
         ) : (
           <p className="text-neutral-500 text-xs">Sem ícone</p>
@@ -49,9 +45,7 @@ export default function LatestSetItem({ set }: LatestSetItemProps) {
         <h3 className="text-base md:text-lg font-semibold text-neutral-100 group-hover:text-amber-500 transition-colors">
           {set.name}
         </h3>
-        <p className="text-xs text-neutral-500 uppercase mt-1">
-          {set.code}
-        </p>
+        <p className="text-xs text-neutral-500 uppercase mt-1">{set.code}</p>
       </Card>
     </Link>
   );

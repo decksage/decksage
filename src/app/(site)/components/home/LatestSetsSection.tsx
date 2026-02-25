@@ -49,8 +49,8 @@ export default function LatestSetsSection({ sets }: LatestSetsSectionProps) {
         <Link href="/collections" className="group block h-full">
           <Card
             className={cn(
-              "bg-neutral-800/50 border-2 border-dashed border-neutral-700 h-full flex flex-col items-center justify-center text-center p-6",
-              "transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800"
+              'bg-neutral-800/50 border-2 border-dashed border-neutral-700 h-full flex flex-col items-center justify-center text-center p-6',
+              'transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800',
             )}
           >
             <ArrowRight className="h-10 w-10 text-neutral-500 group-hover:text-amber-400 transition-colors group-hover:translate-x-1" />

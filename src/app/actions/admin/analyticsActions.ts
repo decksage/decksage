@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-undef */
-'use server'
+'use server';
 
 import { BetaAnalyticsDataClient } from '@google-analytics/data';
 import { checkUserRole } from '@/lib/auth';
@@ -10,12 +10,12 @@ import { checkUserRole } from '@/lib/auth';
  */
 export async function getAnalyticsSummary() {
   const isAdmin = await checkUserRole('admin');
-  if (!isAdmin) return { error: "Acesso negado." };
+  if (!isAdmin) return { error: 'Acesso negado.' };
 
   const propertyId = process.env.GA_PROPERTY_ID;
 
   if (!propertyId || !process.env.GA_CLIENT_EMAIL || !process.env.GA_PRIVATE_KEY) {
-      return { error: 'As credenciais do Google Analytics não estão configuradas no servidor.'}
+    return { error: 'As credenciais do Google Analytics não estão configuradas no servidor.' };
   }
 
   // A inicialização do cliente agora fica dentro da função para ser mais segura
@@ -43,7 +43,7 @@ export async function getAnalyticsSummary() {
         dimensions: [{ name: 'pagePath' }],
         orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
         limit: 5,
-      })
+      }),
     ]);
 
     // Extrai os dados da primeira resposta (Totais)
@@ -52,18 +52,18 @@ export async function getAnalyticsSummary() {
     const totalPageViews = totalsResponse[0]?.rows?.[0]?.metricValues?.[1]?.value ?? '0';
 
     // Extrai os dados da segunda resposta (Top Páginas)
-    const topPages = pagesResponse[0]?.rows?.map(row => ({
-      path: row?.dimensionValues?.[0]?.value,
-      views: row?.metricValues?.[1]?.value,
-    })) || [];
-    
-    return { 
-      success: true, 
-      totalUsers, 
-      totalPageViews, 
-      topPages 
-    };
+    const topPages =
+      pagesResponse[0]?.rows?.map((row) => ({
+        path: row?.dimensionValues?.[0]?.value,
+        views: row?.metricValues?.[1]?.value,
+      })) || [];
 
+    return {
+      success: true,
+      totalUsers,
+      totalPageViews,
+      topPages,
+    };
   } catch (error: any) {
     console.error('Erro na API do Google Analytics:', error.details || error.message);
     return { error: `Falha na API do Google: ${error.details || 'Verifique as permissões.'}` };

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-'use client'
+'use client';
 
 import Image from 'next/image';
 import { usePlaytestStore, type GameCard, type Zone } from '@/app/(play)/stores/playtest-store';
@@ -22,7 +22,7 @@ export default function PlaytestCard({ card, zone }: PlaytestCardProps) {
       actions.moveCard(card.instanceId, zone, 'battlefield');
       // Adiciona um feedback visual para o usuário
       toast.info(`${zone === 'commandZone' ? 'Conjurou o comandante' : 'Jogou'} ${card.name}`);
-    } 
+    }
     // Mantemos a funcionalidade de "matar" a criatura com duplo clique
     else if (zone === 'battlefield') {
       actions.moveCard(card.instanceId, 'battlefield', 'graveyard');
@@ -44,15 +44,15 @@ export default function PlaytestCard({ card, zone }: PlaytestCardProps) {
       className="w-28 flex-shrink-0 cursor-pointer hover:-translate-y-2 transition-transform duration-200"
       title={card.name}
     >
-      <Image 
+      <Image
         src={card.image_uris?.small || ''}
         alt={card.name}
         width={146}
         height={204}
         className={cn(
-          "rounded shadow-lg pointer-events-none transition-transform duration-300",
+          'rounded shadow-lg pointer-events-none transition-transform duration-300',
           // Aplica a rotação se a carta estiver virada no campo de batalha
-          card.tapped && zone === 'battlefield' && "rotate-90"
+          card.tapped && zone === 'battlefield' && 'rotate-90',
         )}
         unoptimized
       />

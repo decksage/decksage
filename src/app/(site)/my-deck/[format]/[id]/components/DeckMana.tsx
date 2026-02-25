@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import type { ScryfallCard } from '@/app/lib/types'; 
+import type { ScryfallCard } from '@/app/lib/types';
 import type { DeckCard, DeckFromDB } from '@/app/lib/types';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { BarChart } from 'lucide-react';
@@ -90,7 +90,7 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
       Object.entries(manaSymbols).map(([type, count]) => [
         type,
         totalSymbols > 0 ? ((count / totalSymbols) * 100).toFixed(2) : '0.00',
-      ])
+      ]),
     );
 
     const landManaPercentages = Object.fromEntries(
@@ -99,7 +99,7 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
         totalNonLandCards + landCount > 0
           ? ((count / (totalNonLandCards + landCount)) * 100).toFixed(1)
           : '0.0',
-      ])
+      ]),
     );
 
     const totalCards = totalNonLandCards + landCount;
@@ -108,18 +108,21 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
     const recommendations = Object.entries(manaPercentages)
       .filter(([_, percentage]) => parseFloat(percentage) > 0)
       .map(([type, percentage]) => {
-        const landType = { W: 'Planalto', U: 'Ilha', B: 'Pântano', R: 'Montanha', G: 'Floresta' }[type] || 'Terra Incolor';
+        const landType =
+          { W: 'Planalto', U: 'Ilha', B: 'Pântano', R: 'Montanha', G: 'Floresta' }[type] ||
+          'Terra Incolor';
         const landCount = Math.round((parseFloat(percentage) / 100) * recommendedLands);
         return { type, landType, count: landCount };
       });
 
-    const recommendationText = recommendations.length > 0
-      ? `Seu deck tem ${recommendations
-          .map(({ type }) => `${manaPercentages[type]}% de mana ${type.toLowerCase()}`)
-          .join(' e ')}, considere usar ${recommendations
-          .map(({ landType, count }) => `${count} ${landType}${count > 1 ? 's' : ''}`)
-          .join(' e ')}.`
-      : 'Seu deck não tem símbolos de mana significativos.';
+    const recommendationText =
+      recommendations.length > 0
+        ? `Seu deck tem ${recommendations
+            .map(({ type }) => `${manaPercentages[type]}% de mana ${type.toLowerCase()}`)
+            .join(' e ')}, considere usar ${recommendations
+            .map(({ landType, count }) => `${count} ${landType}${count > 1 ? 's' : ''}`)
+            .join(' e ')}.`
+        : 'Seu deck não tem símbolos de mana significativos.';
 
     return {
       manaSymbols,
@@ -182,7 +185,9 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-sm text-neutral-400">
-            <p>Terrenos: {manaStats.landCount} ({manaStats.landPercentage}% do deck)</p>
+            <p>
+              Terrenos: {manaStats.landCount} ({manaStats.landPercentage}% do deck)
+            </p>
             <p>Valor Total de Mana: {manaStats.totalManaValue}</p>
           </div>
 
@@ -193,12 +198,19 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
               const landPercentage = manaStats.landManaPercentages[symbol];
               return (
                 <div key={symbol} className="text-center">
-                  <ManaCost cost={`{${symbol}}`} fontSize="40px" className="w-[160px] justify-center h-[160px] mx-auto mb-2 p-0 m-0" />
+                  <ManaCost
+                    cost={`{${symbol}}`}
+                    fontSize="40px"
+                    className="w-[160px] justify-center h-[160px] mx-auto mb-2 p-0 m-0"
+                  />
                   <div className="text-neutral-300 font-medium">
                     {totalPercentage}% ({manaStats.manaSymbols[symbol]} símbolos)
                   </div>
                   <div className="w-full bg-neutral-700 h-2 rounded-full overflow-hidden mt-1">
-                    <div className="h-full bg-amber-500" style={{ width: `${totalPercentage}%` }}></div>
+                    <div
+                      className="h-full bg-amber-500"
+                      style={{ width: `${totalPercentage}%` }}
+                    ></div>
                   </div>
                   <div className="text-xs text-neutral-500 mt-1">Terrenos: {landPercentage}%</div>
                 </div>
@@ -229,7 +241,7 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
             </div>
           </CardContent>
         </Card>
-        
+
         <DeckAIAnalysis deck={deck} initialAnalysis={deck.ai_analysis} />
       </div>
     </div>
