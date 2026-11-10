@@ -242,12 +242,131 @@ export interface ScryfallSet {
   set_type: string;
   icon_svg_uri: string;
   digital: boolean;
+  card_count?: number;
+  uri?: string;
+  search_uri?: string;
 }
 
 export interface ScryfallApiListResponse<T> {
   object: 'list';
   has_more: boolean;
   data: T[];
+}
+
+const SCRYFALL_USER_AGENT = 'DeckSage/1.0 (https://decksage.com.br; set-collections)';
+
+/** Fetch helper with Scryfall-required User-Agent. */
+export async function scryfallFetch(url: string, init?: RequestInit): Promise<Response> {
+  return fetch(url, {
+    ...init,
+    headers: {
+      Accept: 'application/json',
+      'User-Agent': SCRYFALL_USER_AGENT,
+      ...(init?.headers ?? {}),
+    },
+  });
+}
+
+function isCollectibleSet(set: ScryfallSet): boolean {
+  return set.set_type !== 'funny' && set.set_type !== 'token' && set.digital === false;
+}
+
+export async function fetchAllScryfallSets(): Promise<ScryfallSet[]> {
+  const response = await scryfallFetch('https://api.scryfall.com/sets', {
+    next: { revalidate: 86400 },
+  });
+  if (!response.ok) {
+    throw new Error(`Erro na API Scryfall (sets): ${response.status}`);
+  }
+  const result: ScryfallApiListResponse<ScryfallSet> = await response.json();
+  return (result.data ?? [])
+    .filter(isCollectibleSet)
+    .sort((a, b) => (a.released_at < b.released_at ? 1 : -1));
+}
+
+export async function fetchScryfallSetByCode(code: string): Promise<ScryfallSet | null> {
+  const normalized = code.trim().toLowerCase();
+  if (!normalized) return null;
+
+  const response = await scryfallFetch(`https://api.scryfall.com/sets/${encodeURIComponent(normalized)}`, {
+    cache: 'no-store',
+  });
+  if (response.status === 404) return null;
+  if (!response.ok) {
+    throw new Error(`Erro ao buscar edição ${normalized}: ${response.status}`);
+  }
+  const payload = (await response.json()) as Record<string, unknown>;
+  if (
+    payload.object === 'error' ||
+    payload.digital === true ||
+    payload.set_type === 'funny' ||
+    payload.set_type === 'token'
+  ) {
+    return null;
+  }
+  return payload as unknown as ScryfallSet;
+}
+
+export async function searchScryfallSets(query: string, limit = 50): Promise<ScryfallSet[]> {
+  const q = query.trim().toLowerCase();
+
+  if (q && /^[a-z0-9]{2,6}$/.test(q)) {
+    const direct = await fetchScryfallSetByCode(q);
+    if (direct) return [direct];
+  }
+
+  const all = await fetchAllScryfallSets();
+  if (!q) return all.slice(0, limit);
+
+  return all
+    .filter(
+      (set) =>
+        set.name.toLowerCase().includes(q) ||
+        set.code.toLowerCase().includes(q) ||
+        set.set_type.toLowerCase().includes(q),
+    )
+    .slice(0, limit);
+}
+
+function scryfallSleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Fetches every printing in a set, following Scryfall pagination. */
+export async function fetchAllCardsInSet(
+  setCode: string,
+  searchUri?: string | null,
+): Promise<ScryfallCard[]> {
+  const cards: ScryfallCard[] = [];
+  let url: string | null =
+    searchUri ??
+    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(
+      `e:${setCode}`,
+    )}&order=set&unique=prints&include_extras=true&include_variations=true`;
+
+  while (url) {
+    const res = await scryfallFetch(url, { cache: 'no-store' });
+    if (res.status === 404) break;
+    if (!res.ok) {
+      throw new Error(`Falha ao buscar cartas do set ${setCode}: ${res.status}`);
+    }
+    const json = (await res.json()) as {
+      object?: string;
+      data?: ScryfallCard[];
+      has_more?: boolean;
+      next_page?: string;
+      details?: string;
+      code?: string;
+    };
+    if (json.object === 'error') {
+      throw new Error(json.details || `Scryfall: ${json.code}`);
+    }
+    cards.push(...(json.data ?? []));
+    url = json.has_more ? (json.next_page ?? null) : null;
+    if (url) await scryfallSleep(100);
+  }
+
+  return cards;
 }
 
 export interface SetData {
@@ -260,7 +379,9 @@ const VALID_SET_TYPES = ['expansion', 'core', 'masters', 'draft_innovation', 'co
 
 export async function fetchLatestSets(count: number = 5): Promise<SetData[]> {
   try {
-    const response = await fetch('https://api.scryfall.com/sets');
+    const response = await scryfallFetch('https://api.scryfall.com/sets', {
+      next: { revalidate: 86400 },
+    });
     if (!response.ok) {
       throw new Error(`Erro na API Scryfall (sets): ${response.statusText}`);
     }

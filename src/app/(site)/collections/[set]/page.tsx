@@ -1,3 +1,7 @@
+import { notFound } from 'next/navigation';
+import { createClient } from '@/app/utils/supabase/server';
+import { fetchScryfallSetByCode, scryfallFetch } from '@/app/lib/scryfall';
+import { getMyCollectionForSet } from '@/app/actions/setCollectionActions';
 import CollectionDetailView from './CollectionDetailView';
 
 interface PageProps {
@@ -6,16 +10,39 @@ interface PageProps {
 
 export default async function SetPage({ params }: PageProps) {
   const { set } = await params;
+  const setCode = set.trim().toLowerCase();
 
-  // Fetch Set Info
-  const setInfoRes = await fetch(`https://api.scryfall.com/sets/${set}`);
-  const setInfo = await setInfoRes.json();
+  const setInfo = await fetchScryfallSetByCode(setCode);
+  if (!setInfo) {
+    notFound();
+  }
 
-  // Fetch Initial Cards (default query)
-  const cardsRes = await fetch(`https://api.scryfall.com/cards/search?q=e:${set}&order=set`);
-  const cardsData = await cardsRes.json();
+  const cardsRes = await scryfallFetch(
+    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(`e:${setCode}`)}&order=set`,
+    { next: { revalidate: 3600 } },
+  );
+  const cardsData = cardsRes.ok ? await cardsRes.json() : { data: [] };
+
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { collectionId } = await getMyCollectionForSet(setCode);
 
   return (
-    <CollectionDetailView setInfo={setInfo} initialCards={cardsData.data || []} setCode={set} />
+    <CollectionDetailView
+      setInfo={{
+        name: setInfo.name,
+        released_at: setInfo.released_at,
+        card_count: setInfo.card_count ?? 0,
+        icon_svg_uri: setInfo.icon_svg_uri,
+        uri: setInfo.uri,
+        search_uri: setInfo.search_uri,
+      }}
+      initialCards={cardsData.data || []}
+      setCode={setCode}
+      existingCollectionId={collectionId}
+      isAuthenticated={!!user}
+    />
   );
 }

@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Image from 'next/image';
 import DeckSageLogo from '../../../../public/decksage.png';
 import { createClient } from '@/app/utils/supabase/client';
+import NotificationBell from './NotificationBell';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -66,6 +67,7 @@ export default function Header() {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            {isAuthenticated && <NotificationBell />}
             <Link href="/my-deck/create">
               <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold shadow-[0_0_15px_-3px_rgba(245,158,11,0.3)] hover:shadow-[0_0_20px_-3px_rgba(245,158,11,0.5)] transition-all">
                 <PlusCircle className="mr-2 h-4 w-4" />
@@ -76,6 +78,7 @@ export default function Header() {
           </div>
 
           <div className="md:hidden flex items-center gap-3">
+            {isAuthenticated && <NotificationBell />}
             {isAuthenticated && (
               <Link href="/profile" onClick={handleLinkClick}>
                 <Avatar className="h-10 w-10 border-2 border-neutral-600">
@@ -149,6 +152,13 @@ export default function Header() {
                   className="hover:text-amber-500 transition-colors text-lg py-2"
                 >
                   Meus Decks
+                </Link>
+                <Link
+                  href="/my-collection"
+                  onClick={handleLinkClick}
+                  className="hover:text-amber-500 transition-colors text-lg py-2"
+                >
+                  Minhas Coleções
                 </Link>
                 <Link
                   href="/favorites"

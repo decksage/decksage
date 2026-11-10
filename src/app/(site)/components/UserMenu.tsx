@@ -22,7 +22,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, User, LogOut, Swords, ShieldCheck, Gift, Wand2, Library } from 'lucide-react';
+import { Heart, User, LogOut, Swords, ShieldCheck, Gift, Wand2, Library, Layers } from 'lucide-react';
 import { createClient } from '@/app/utils/supabase/client';
 import ReferralLink from '@/app/(site)/components/ui/ReferralLink';
 import UserPointsDisplay from '@/app/(site)/components/ui/UserPointsDisplay';
@@ -156,6 +156,12 @@ export default function UserMenu() {
                 <Link href="/my-decks" className="flex items-center w-full">
                   <Swords className="mr-2 h-4 w-4" />
                   <span>Meus Decks</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/my-collection" className="flex items-center w-full">
+                  <Layers className="mr-2 h-4 w-4" />
+                  <span>Minhas Coleções</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>

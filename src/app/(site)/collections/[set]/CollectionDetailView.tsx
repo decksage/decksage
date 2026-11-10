@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, ArrowLeft, FilterX, Layers, Calendar, ChevronDown } from 'lucide-react';
+import { Search, ArrowLeft, FilterX, Layers, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,28 +14,31 @@ import {
 } from '@/components/ui/select';
 import { CardItem } from './components/CardItem';
 import { SkeletonCard } from './components/SkeletonCard';
-import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
+import StartSetCollectionButton from './components/StartSetCollectionButton';
 
 interface SetInfo {
   name: string;
   released_at: string;
   card_count: number;
   icon_svg_uri: string;
-  uri: string;
-  search_uri: string;
+  uri?: string;
+  search_uri?: string;
 }
 
 interface CollectionDetailViewProps {
   setInfo: SetInfo;
   initialCards: any[];
   setCode: string;
+  existingCollectionId?: string | null;
+  isAuthenticated?: boolean;
 }
 
 export default function CollectionDetailView({
   setInfo,
   initialCards,
   setCode,
+  existingCollectionId = null,
+  isAuthenticated = false,
 }: CollectionDetailViewProps) {
   const [cards, setCards] = useState<any[]>(initialCards);
   const [nextPage, setNextPage] = useState<string | null>(null);
@@ -167,6 +170,13 @@ export default function CollectionDetailView({
                 <span className="flex items-center gap-1.5 bg-neutral-800/50 px-3 py-1 rounded-full border border-neutral-700/50 uppercase font-mono tracking-wider">
                   {setCode}
                 </span>
+              </div>
+              <div className="pt-3 flex justify-center md:justify-start">
+                <StartSetCollectionButton
+                  setCode={setCode}
+                  existingCollectionId={existingCollectionId}
+                  isAuthenticated={isAuthenticated}
+                />
               </div>
             </div>
           </div>
