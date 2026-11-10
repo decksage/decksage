@@ -110,14 +110,23 @@ export async function GET(request: NextRequest) {
   const hasFilters =
     types.length || colors.length || rarity.length || formats.length || set || cmc.length || artist;
 
+  const phrase = (term: string) => `"${term.replace(/["\\]/g, '').trim()}"`;
+  const original = query.trim();
+  const translated = translatedQuery.trim();
+  const parts = original ? [phrase(original)] : [];
+  if (translated && translated.toLowerCase() !== original.toLowerCase()) {
+    parts.push(`o:${phrase(translated)}`);
+  }
+  const searchQuery = parts.length > 1 ? `(${parts.join(' or ')})` : parts[0] || '';
+
   try {
     const result = hasFilters
       ? await fetchFilteredSearchResults(
-          translatedQuery,
+          searchQuery,
           { types, colors, rarity, formats, set, cmc, artist },
           page,
         )
-      : await fetchSearchResults(translatedQuery, page);
+      : await fetchSearchResults(searchQuery, page);
     return NextResponse.json(
       {
         data: result.data,

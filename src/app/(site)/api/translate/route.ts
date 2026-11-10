@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     if (type === 'query') {
       // ... (seu prompt PT-BR para EN - sem alterações) ...
       prompt = `
-        Você é um tradutor especializado em Magic: The Gathering. Traduza o termo de busca do português brasileiro para o inglês, focando em termos que aparecem no texto de regras das cartas (oracle text), como habilidades ou efeitos (ex: "Descarte" → "Discard", "Voar" → "Flying", "Fogo" → "Fire"). Para termos compostos, traduza cada palavra separadamente (ex: "Criatura Voadora" → "Creature Flying"). Forneça apenas a tradução, sem explicações. Se o termo for ambíguo, escolha o mais comum no contexto de Magic.
+        Você é um tradutor especializado em Magic: The Gathering. Traduza o termo de busca do português brasileiro para o inglês, focando em termos que aparecem no texto de regras das cartas (oracle text), como habilidades ou efeitos (ex: "Descarte" → "Discard", "Voar" → "Flying", "Fogo" → "Fire"). Para termos compostos, traduza cada palavra separadamente (ex: "Criatura Voadora" → "Creature Flying"). Se o termo já estiver em inglês, for um nome próprio ou parecer o nome de uma carta, devolva exatamente o texto original. Forneça apenas a tradução, sem explicações. Se o termo for ambíguo, escolha o mais comum no contexto de Magic.
 
         Termo:
         ${text}

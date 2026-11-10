@@ -130,11 +130,13 @@ export async function fetchSearchResults(
     throw new Error('Query de busca inválida');
   }
 
-  const formattedQuery = `o:"${query}"`;
-
   const res = await scryfallFetch(
-    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(formattedQuery)}&page=${page}`,
+    `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&page=${page}`,
   );
+
+  if (res.status === 404) {
+    return { data: [], has_more: false };
+  }
 
   if (!res.ok) {
     throw new Error(`Erro na busca: ${res.status} - ${res.statusText}`);
@@ -160,7 +162,7 @@ export async function fetchFilteredSearchResults(
     throw new Error('Query de busca inválida');
   }
 
-  let scryfallQuery = query.trim() ? `oracle:"${query}"` : '';
+  let scryfallQuery = query.trim();
 
   if (filters.types?.length) {
     scryfallQuery += ` ${filters.types.map((t) => `t:${t.toLowerCase()}`).join(' ')}`;
