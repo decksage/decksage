@@ -92,9 +92,15 @@ export default function EditAdForm({ formAction, adSlot }: EditAdFormProps) {
               disabled={isEditing}
               className="bg-neutral-800 border-neutral-700 font-mono disabled:opacity-50"
             />
-            {isEditing && (
+            {isEditing ? (
               <p className="text-xs text-neutral-500">
                 O nome do slot não pode ser alterado após a criação.
+              </p>
+            ) : (
+              <p className="text-xs text-neutral-500">
+                Nomes usados pelo site: banner_home, banner_search, banner_card,
+                banner_collection, banner_glossary, banner_blog, banner_blog_post, banner_deck,
+                banner_decks. Sem slot próprio, a página usa o anúncio da home.
               </p>
             )}
           </div>
@@ -124,7 +130,7 @@ export default function EditAdForm({ formAction, adSlot }: EditAdFormProps) {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="adsense_slot_id">Slot ID</Label>
+                <Label htmlFor="adsense_slot_id">Slot ID (só números, ex: 7605474883)</Label>
                 <Input
                   name="adsense_slot_id"
                   defaultValue={adSlot?.adsense_slot_id || ''}

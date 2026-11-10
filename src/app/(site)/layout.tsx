@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
+import Script from 'next/script';
 import Header from '@/app/(site)/components/Header';
 import Footer from '@/app/(site)/components/Footer';
 import { createClient } from '@/app/utils/supabase/server';
 import FloatingFeedback from './components/FloatingFeedback';
 import StickyFooterAd from '@/app/(site)/components/ads/StickyFooterAd';
 import EngagementWidgets from './components/EngagementWidgets';
+import { ADSENSE_CLIENT } from './components/ads/adConfig';
 import type { Viewer } from './components/viewer';
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -43,6 +45,12 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <div className="flex min-h-screen flex-col">
+      <Script
+        id="adsbygoogle"
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`}
+        crossOrigin="anonymous"
+        strategy="afterInteractive"
+      />
       <Header viewer={viewer} />
       <main id="conteudo" className="flex-grow">
         {children}

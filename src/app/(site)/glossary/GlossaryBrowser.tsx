@@ -1,6 +1,6 @@
 'use client';
 
-import { useDeferredValue, useMemo, useState } from 'react';
+import { Fragment, useDeferredValue, useMemo, useState, type ReactNode } from 'react';
 import { Search, SearchX, X } from 'lucide-react';
 import EmptyState from '../components/page/EmptyState';
 
@@ -18,7 +18,15 @@ const normalize = (text: string) =>
 
 const letterOf = (term: string) => normalize(term).charAt(0).toUpperCase();
 
-export default function GlossaryBrowser({ terms }: { terms: GlossaryTerm[] }) {
+const AD_AFTER_GROUP = 3;
+
+export default function GlossaryBrowser({
+  terms,
+  ad,
+}: {
+  terms: GlossaryTerm[];
+  ad?: ReactNode;
+}) {
   const [query, setQuery] = useState('');
   const deferred = useDeferredValue(query);
 
@@ -112,9 +120,10 @@ export default function GlossaryBrowser({ terms }: { terms: GlossaryTerm[] }) {
         />
       ) : (
         <div className="mt-6">
-          {groups.map(([letter, list]) => (
+          {groups.map(([letter, list], index) => (
+            <Fragment key={letter}>
+            {index === AD_AFTER_GROUP && ad && <div className="border-b border-white/5 py-10">{ad}</div>}
             <section
-              key={letter}
               id={`letra-${letter}`}
               aria-labelledby={`h-letra-${letter}`}
               className="grid scroll-mt-[calc(var(--header-offset)+9rem)] gap-x-10 border-b border-white/5 py-10 md:grid-cols-[5rem_1fr] md:scroll-mt-[calc(var(--header-offset)+6rem)]"
@@ -148,6 +157,7 @@ export default function GlossaryBrowser({ terms }: { terms: GlossaryTerm[] }) {
                 ))}
               </dl>
             </section>
+            </Fragment>
           ))}
         </div>
       )}

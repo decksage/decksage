@@ -4,6 +4,7 @@ import { createClient } from '@/app/utils/supabase/server';
 import { fetchScryfallSetByCode, scryfallFetch } from '@/app/lib/scryfall';
 import { getMyCollectionForSet } from '@/app/actions/setCollectionActions';
 import CollectionDetailView from './CollectionDetailView';
+import AdSlot from '@/app/(site)/components/ads/AdSlot';
 
 interface PageProps {
   params: Promise<{ set: string }>;
@@ -54,6 +55,7 @@ export default async function SetPage({ params }: PageProps) {
       setCode={setCode}
       existingCollectionId={mine.collectionId}
       isAuthenticated={!!auth.data.user}
+      ad={<AdSlot placement="collection" />}
     />
   );
 }

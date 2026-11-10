@@ -3,6 +3,7 @@ import { BookOpen } from 'lucide-react';
 import glossaryTerms from '@/app/(site)/data/glossaryTerms.json';
 import PageHeader, { MetaChip } from '../components/page/PageHeader';
 import GlossaryBrowser, { type GlossaryTerm } from './GlossaryBrowser';
+import AdSlot from '../components/ads/AdSlot';
 
 export const metadata: Metadata = {
   title: 'Glossário de Termos | MTG Translate',
@@ -45,7 +46,7 @@ export default function GlossaryPage() {
         }
         className="border-b-0"
       />
-      <GlossaryBrowser terms={terms} />
+      <GlossaryBrowser terms={terms} ad={<AdSlot placement="glossary" />} />
     </>
   );
 }

@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, FilterX, Layers, Search, SearchX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,10 @@ interface CollectionDetailViewProps {
   setCode: string;
   existingCollectionId?: string | null;
   isAuthenticated?: boolean;
+  ad?: React.ReactNode;
 }
+
+const AD_AFTER_CARD = 20;
 
 const RARITIES = [
   ['common', 'Comum'],
@@ -107,6 +110,7 @@ export default function CollectionDetailView({
   setCode,
   existingCollectionId = null,
   isAuthenticated = false,
+  ad,
 }: CollectionDetailViewProps) {
   const [cards, setCards] = useState<any[]>(initialCards);
   const [nextPage, setNextPage] = useState<string | null>(initialNextPage);
@@ -306,7 +310,10 @@ export default function CollectionDetailView({
             aria-busy={!!loading}
           >
             {cards.map((card, i) => (
-              <CardTile key={card.id} card={card} eager={i < 5} />
+              <Fragment key={card.id}>
+                {i === AD_AFTER_CARD && ad && <div className="col-span-full py-4">{ad}</div>}
+                <CardTile card={card} eager={i < 5} />
+              </Fragment>
             ))}
             {loading === 'append' &&
               Array.from({ length: 10 }, (_, i) => <CardTileSkeleton key={`s-${i}`} />)}

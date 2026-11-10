@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink, Layers, Paintbrush } from 'lucide-react';
+import AdSlot from '@/app/(site)/components/ads/AdSlot';
 import type { ScryfallCard } from '@/app/lib/types';
 import { translateCardText } from '@/app/actions/aiActions';
 import ManaCost from '@/components/ui/ManaCost';
@@ -161,6 +162,8 @@ export default function CardDetailView({ card }: { card: ScryfallCard }) {
               ))}
 
               <CardLegalities legalities={card.legalities} />
+
+              <AdSlot placement="card" />
 
               <section aria-labelledby="edicao" className="border-t border-white/10 pt-8">
                 <h2 id="edicao" className="kicker mb-4">

@@ -13,6 +13,7 @@ import HowToPlayGuide from '../components/HowToPlayGuide';
 import DeckCommentsSection from '../components/DeckCommentsSection';
 import DeckLikeButton from '../components/DeckLikeButton';
 import ReportDialog from '@/app/(site)/components/ReportDialog';
+import AdSlot from '@/app/(site)/components/ads/AdSlot';
 
 export const dynamic = 'force-dynamic';
 
@@ -126,6 +127,7 @@ export default async function SiteDeckPage(props: PageProps) {
 
         <div className="mt-10 space-y-16">
           <DecklistVisualizer deck={deck} scryfallData={scryfallCards} />
+          {deck.is_public && <AdSlot placement="deck" />}
           <DeckAnalysis deckCheck={deck.deck_check} />
           <HowToPlayGuide guideText={deck.how_to_play_guide} />
           <DeckCommentsSection

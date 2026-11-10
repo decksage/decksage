@@ -8,6 +8,7 @@ import DeckCard, { DeckGrid } from './components/DeckCard';
 import PageHeader from '../components/page/PageHeader';
 import Pagination from '../components/page/Pagination';
 import EmptyState from '../components/page/EmptyState';
+import AdSlot from '../components/ads/AdSlot';
 
 export const metadata = {
   title: 'Biblioteca de Decks | MTG Deck Builder',
@@ -152,6 +153,8 @@ export default async function DecksPage({ searchParams }: PageProps) {
             />
           )}
         </section>
+
+        <AdSlot placement="decks_list" />
 
         {currentPage === 1 && (
           <section aria-labelledby="decks-comunidade">

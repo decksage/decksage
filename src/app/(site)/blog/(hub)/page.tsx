@@ -7,6 +7,7 @@ import BlogSidebar from '../../components/blog/BlogSidebar';
 import PageHeader from '../../components/page/PageHeader';
 import Pagination from '../../components/page/Pagination';
 import EmptyState from '../../components/page/EmptyState';
+import AdSlot from '../../components/ads/AdSlot';
 
 export const metadata = {
   title: 'Hub de Conteúdo | MTG Translate',
@@ -72,6 +73,7 @@ export default async function BlogHubPage({
                   <PostCard post={featuredPost} variant="feature" />
                 </div>
               )}
+              <AdSlot placement="blog_hub" className="mb-8" />
               {regularPosts.length > 0 && (
                 <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                   {regularPosts.map((post: any) => (

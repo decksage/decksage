@@ -1,18 +1,10 @@
+/* eslint-disable no-undef */
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import AdSenseBanner from './AdSenseBanner';
-
-type AdConfig = {
-  ad_type: 'adsense' | 'custom';
-  adsense_client_id?: string | null;
-  adsense_slot_id?: string | null;
-  custom_image_url?: string | null;
-  custom_link_url?: string | null;
-  custom_alt_text?: string | null;
-  slot_name?: string | null;
-};
+import { isUsableAd, type AdConfig } from './adConfig';
 
 export default function DynamicAdSlot({
   adConfig,
@@ -23,8 +15,7 @@ export default function DynamicAdSlot({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  // Se não houver configuração ou estiver inativo, não renderiza nada
-  if (!adConfig) {
+  if (!isUsableAd(adConfig)) {
     return null;
   }
 

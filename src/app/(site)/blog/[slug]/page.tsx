@@ -14,6 +14,25 @@ import styles from './PostStyles.module.scss';
 import BlogEngagement from './BlogEngagement';
 import PostCommentsSection from './PostCommentsSection';
 import { isOptimizableImage } from '@/lib/images';
+import AdSlot from '@/app/(site)/components/ads/AdSlot';
+
+const MIN_PARAGRAPHS_FOR_IN_ARTICLE_AD = 6;
+
+function splitForInArticleAd(html: string): [string, string] {
+  const ends: number[] = [];
+  const closing = /<\/p>/gi;
+  for (let match = closing.exec(html); match; match = closing.exec(html)) {
+    ends.push(match.index + match[0].length);
+  }
+  if (ends.length < MIN_PARAGRAPHS_FOR_IN_ARTICLE_AD) return [html, ''];
+
+  const cut = ends[Math.floor(ends.length / 2) - 1];
+  const before = html.slice(0, cut);
+  const isTopLevel =
+    (before.match(/<(blockquote|ul|ol|table|div)\b/gi) ?? []).length ===
+    (before.match(/<\/(blockquote|ul|ol|table|div)>/gi) ?? []).length;
+  return isTopLevel ? [before, html.slice(cut)] : [html, ''];
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -82,6 +101,7 @@ export default async function PostPage({ params }: PageProps) {
     .filter(Boolean).length;
   const readingMinutes = Math.max(1, Math.round(words / 220));
   const authorName = post.full_name || post.username || 'Equipe';
+  const [firstHalf, secondHalf] = splitForInArticleAd(cleanContent);
 
   return (
     <article>
@@ -165,7 +185,18 @@ export default async function PostPage({ params }: PageProps) {
       </header>
 
       <div className="mx-auto max-w-3xl px-6 pb-20 pt-12 sm:pt-16">
-        <div className={styles.articleContent} dangerouslySetInnerHTML={{ __html: cleanContent }} />
+        <div className={styles.articleContent} dangerouslySetInnerHTML={{ __html: firstHalf }} />
+        {secondHalf ? (
+          <>
+            <AdSlot placement="blog_post" className="my-10" />
+            <div
+              className={styles.articleContent}
+              dangerouslySetInnerHTML={{ __html: secondHalf }}
+            />
+          </>
+        ) : (
+          <AdSlot placement="blog_post" className="mt-12" />
+        )}
         {postRow?.id && <PostCommentsSection postId={postRow.id} />}
       </div>
     </article>
