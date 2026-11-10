@@ -99,7 +99,7 @@ export default function EditAdForm({ formAction, adSlot }: EditAdFormProps) {
             ) : (
               <p className="text-xs text-neutral-500">
                 Nomes usados pelo site: banner_home, banner_search, banner_card,
-                banner_collection, banner_glossary, banner_blog, banner_blog_post, banner_deck,
+                banner_collection, banner_glossary, banner_blog, banner_blog_post, banner_blog_post_end, banner_deck,
                 banner_decks. Sem slot próprio, a página usa o anúncio da home.
               </p>
             )}

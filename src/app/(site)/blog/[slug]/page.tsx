@@ -194,9 +194,8 @@ export default async function PostPage({ params }: PageProps) {
               dangerouslySetInnerHTML={{ __html: secondHalf }}
             />
           </>
-        ) : (
-          <AdSlot placement="blog_post" className="mt-12" />
-        )}
+        ) : null}
+        <AdSlot placement="blog_post_end" className="mt-12" />
         {postRow?.id && <PostCommentsSection postId={postRow.id} />}
       </div>
     </article>

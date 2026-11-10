@@ -12,6 +12,7 @@ export const AD_PLACEMENTS = {
   glossary: 'banner_glossary',
   blog_hub: 'banner_blog',
   blog_post: 'banner_blog_post',
+  blog_post_end: 'banner_blog_post_end',
   deck: 'banner_deck',
   decks_list: 'banner_decks',
 } as const;
