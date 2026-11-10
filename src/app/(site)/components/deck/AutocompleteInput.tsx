@@ -114,7 +114,7 @@ export default function AutocompleteInput({
           onFocus={() => query.length > 2 && suggestions.length > 0 && setShowSuggestions(true)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="bg-neutral-800/50 border-neutral-700/50 focus:ring-amber-500 focus:border-amber-500/50 h-12 pr-10 text-lg placeholder:text-neutral-600"
+          className="bg-white/[0.04] border-white/15/50 focus:ring-amber-500 focus:border-amber-500/50 h-12 pr-10 text-lg placeholder:text-neutral-600"
         />
         <Button
           type="button"
@@ -133,19 +133,19 @@ export default function AutocompleteInput({
       </div>
 
       {showSuggestions && (
-        <ul className="absolute z-10 w-full bg-neutral-800 border border-neutral-700 rounded-md mt-1 shadow-lg max-h-80 overflow-y-auto">
+        <ul className="absolute z-10 w-full bg-white/[0.04] border border-white/15 rounded-md mt-1 shadow-lg max-h-80 overflow-y-auto">
           {suggestions.length > 0 ? (
             suggestions.map((card) => (
               <li
                 key={card.id}
-                className="px-3 py-2 flex items-center gap-3 cursor-pointer hover:bg-amber-500/10"
+                className="px-3 py-2 flex items-center gap-3 cursor-pointer hover:bg-primary/10"
                 onClick={() => handleSelectSuggestion(card)}
                 onMouseDown={(e) => e.preventDefault()}
               >
                 <div className="flex-grow">
-                  <div className="text-sm font-medium text-neutral-100">{card.name}</div>
-                  <div className="text-xs text-neutral-400">{card.type_line}</div>
-                  <div className="text-xs text-neutral-500 mt-1">
+                  <div className="text-sm font-medium text-foreground">{card.name}</div>
+                  <div className="text-xs text-muted-foreground">{card.type_line}</div>
+                  <div className="text-xs text-muted-foreground mt-1">
                     {card.set_name} ({card.set.toUpperCase()})
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function AutocompleteInput({
               </li>
             ))
           ) : (
-            <li className="px-3 py-2 text-sm text-neutral-400 text-center">
+            <li className="px-3 py-2 text-sm text-muted-foreground text-center">
               Nenhuma carta encontrada.
             </li>
           )}

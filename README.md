@@ -1,36 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Decksage
 
-## Getting Started
+Plataforma web para jogadores de **Magic: The Gathering**: construção e análise de decks, playtest, blog e recursos de **comunidade** (comentários, roadmap, feed, moderação).
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Next.js](https://nextjs.org) (App Router) + React + TypeScript  
+- [Supabase](https://supabase.com) (Auth, Postgres, RLS)  
+- [Resend](https://resend.com) para e-mail transacional / digest  
+- [PostHog](https://posthog.com) para analytics de produto (opcional)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Começar
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Copie variáveis de ambiente: `cp .env.example .env.local` e preencha os valores.  
+2. Instale dependências: `npm install`  
+3. Aplique migrações no projeto Supabase (pasta `supabase/migrations`).  
+4. Rode o dev server: `npm run dev` e abra [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Comando       | Descrição        |
+| ------------- | ---------------- |
+| `npm run dev` | Servidor de dev  |
+| `npm run build` | Build de produção |
+| `npm run start` | Servidor produção |
+| `npm run lint`  | ESLint           |
 
-To learn more about Next.js, take a look at the following resources:
+## Documentação extra
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Entrevistas com power users](docs/interviews-power-users.md) — SQL sugerido e roteiro curto.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Licença
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Privado — ver repositório / equipe.

@@ -187,7 +187,7 @@ export default function SetCollectionDetailClient({
     if (switchingMode) {
       const confirmMsg =
         newScope === 'regular_only'
-          ? 'Artes especiais serão ocultadas nesta coleção. Seu progresso nelas é mantido — você pode voltar a "Todas as versões" a qualquer momento. Continuar?'
+          ? 'Artes especiais serão ocultadas nesta coleção. Seu progresso nelas é mantido — você pode voltar a"Todas as versões" a qualquer momento. Continuar?'
           : 'Todas as variantes da edição serão exibidas novamente. Continuar?';
       if (!confirm(confirmMsg)) return;
     }
@@ -233,11 +233,11 @@ export default function SetCollectionDetailClient({
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen  text-foreground">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <Link
           href="/my-collection"
-          className="inline-flex items-center text-sm text-neutral-400 hover:text-amber-400 mb-6"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Minhas coleções
@@ -246,7 +246,6 @@ export default function SetCollectionDetailClient({
         <div className="flex flex-col lg:flex-row lg:items-start gap-6 mb-8">
           <div className="flex items-start gap-4 flex-1 min-w-0">
             {collection.set_icon_svg_uri && (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={collection.set_icon_svg_uri}
                 alt=""
@@ -254,24 +253,24 @@ export default function SetCollectionDetailClient({
               />
             )}
             <div className="min-w-0">
-              <h1 className="text-3xl font-bold text-amber-400 truncate">{collection.set_name}</h1>
-              <p className="text-neutral-500 uppercase tracking-wide text-sm mt-1">
+              <h1 className="truncate font-display text-3xl font-bold uppercase tracking-tight">{collection.set_name}</h1>
+              <p className="text-muted-foreground uppercase tracking-wide text-sm mt-1">
                 {collection.set_code}
                 {collection.released_at ? ` · ${collection.released_at}` : ''}
               </p>
-              <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400 border border-neutral-700">
+              <span className="inline-block mt-2 text-xs px-2 py-0.5 rounded-full bg-white/[0.04] text-muted-foreground border border-white/15">
                 {collectionScopeLabel(collection.collection_scope)}
               </span>
               <div className="mt-4 max-w-md space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-neutral-400">Progresso</span>
-                  <span className="font-medium text-amber-400">
+                  <span className="text-muted-foreground">Progresso</span>
+                  <span className="font-medium text-primary">
                     {ownedCount}/{collection.total_cards} ({pct}%)
                   </span>
                 </div>
-                <div className="h-2.5 rounded-full bg-neutral-800 overflow-hidden">
+                <div className="h-2.5 rounded-full bg-white/[0.04] overflow-hidden">
                   <div
-                    className="h-full rounded-full bg-amber-500"
+                    className="h-full rounded-full bg-primary"
                     style={{ width: `${pct}%` }}
                   />
                 </div>
@@ -280,13 +279,13 @@ export default function SetCollectionDetailClient({
           </div>
 
           {isOwner && (
-            <div className="flex flex-col gap-3 rounded-xl border border-neutral-800 bg-neutral-900/50 p-4 min-w-[240px]">
+            <div className="flex flex-col gap-3 rounded-xl border border-white/10 bg-card/50 p-4 min-w-[240px]">
               <div className="flex items-center justify-between gap-3">
                 <Label htmlFor="public-toggle" className="flex items-center gap-2 text-sm">
                   {collection.is_public ? (
                     <Globe className="h-4 w-4 text-emerald-400" />
                   ) : (
-                    <Lock className="h-4 w-4 text-neutral-400" />
+                    <Lock className="h-4 w-4 text-muted-foreground" />
                   )}
                   {collection.is_public ? 'Pública' : 'Privada'}
                 </Label>
@@ -297,17 +296,17 @@ export default function SetCollectionDetailClient({
                   disabled={visPending}
                 />
               </div>
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-muted-foreground">
                 Coleções públicas aparecem no seu perfil.
               </p>
-              <div className="space-y-2 pt-1 border-t border-neutral-800">
-                <Label className="text-sm text-neutral-300">Tipo de coleção</Label>
+              <div className="space-y-2 pt-1 border-t border-white/10">
+                <Label className="text-sm text-foreground/80">Tipo de coleção</Label>
                 <Select
                   value={collection.collection_scope}
                   onValueChange={(v) => handleScopeChange(v as CollectionScope)}
                   disabled={scopePending || syncPending}
                 >
-                  <SelectTrigger className="bg-neutral-950 border-neutral-700 text-sm h-9">
+                  <SelectTrigger className="border-white/15 text-sm h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -315,7 +314,7 @@ export default function SetCollectionDetailClient({
                     <SelectItem value="all_printings">{collectionScopeLabel('all_printings')}</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-neutral-500">
+                <p className="text-xs text-muted-foreground">
                   {collectionScopeDescription(collection.collection_scope)}
                 </p>
               </div>
@@ -324,7 +323,7 @@ export default function SetCollectionDetailClient({
                 size="sm"
                 onClick={handleRestore}
                 disabled={restorePending || syncPending}
-                className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
+                className="border-primary/40 text-primary hover:bg-primary/10"
               >
                 {restorePending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -361,7 +360,7 @@ export default function SetCollectionDetailClient({
             <Button
               onClick={handleRestore}
               disabled={restorePending}
-              className="bg-amber-500 hover:bg-amber-600 text-black font-semibold shrink-0"
+              className="shrink-0"
             >
               {restorePending ? (
                 <>
@@ -376,7 +375,7 @@ export default function SetCollectionDetailClient({
         )}
 
         {cardsMismatch && (
-          <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-200 text-sm">
+          <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-primary text-sm">
             <span>
               {syncPending
                 ? 'Sincronizando cartas faltantes com o Scryfall…'
@@ -386,7 +385,7 @@ export default function SetCollectionDetailClient({
               <Button
                 size="sm"
                 variant="outline"
-                className="border-amber-500/40 text-amber-300 shrink-0"
+                className="border-primary/40 text-primary shrink-0"
                 onClick={() => {
                   startSyncTransition(async () => {
                     const result = await resyncSetCollectionCards(collection.id);
@@ -411,26 +410,26 @@ export default function SetCollectionDetailClient({
         )}
 
         {message && (
-          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-200 text-sm">
+          <div className="mb-4 rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-primary text-sm">
             {message}
           </div>
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Buscar por nome ou número…"
-              className="pl-10 bg-neutral-900 border-neutral-700"
+              className="pl-10 bg-card border-white/15"
             />
           </div>
           <Select
             value={ownershipFilter}
             onValueChange={(v) => setOwnershipFilter(v as typeof ownershipFilter)}
           >
-            <SelectTrigger className="w-full sm:w-[160px] bg-neutral-900 border-neutral-700">
+            <SelectTrigger className="w-full sm:w-[160px] bg-card border-white/15">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -440,7 +439,7 @@ export default function SetCollectionDetailClient({
             </SelectContent>
           </Select>
           <Select value={rarityFilter} onValueChange={setRarityFilter}>
-            <SelectTrigger className="w-full sm:w-[160px] bg-neutral-900 border-neutral-700">
+            <SelectTrigger className="w-full sm:w-[160px] bg-card border-white/15">
               <SelectValue placeholder="Raridade" />
             </SelectTrigger>
             <SelectContent>
@@ -455,7 +454,7 @@ export default function SetCollectionDetailClient({
           </Select>
         </div>
 
-        <p className="text-sm text-neutral-500 mb-4">
+        <p className="text-sm text-muted-foreground mb-4">
           Mostrando {filtered.length} de {scopedCards.length} cartas
           {!isOwner && ' · visualização somente leitura'}
         </p>
@@ -468,13 +467,12 @@ export default function SetCollectionDetailClient({
               <div
                 key={card.id}
                 className={cn(
-                  'rounded-xl border bg-neutral-900/60 overflow-hidden transition-colors',
-                  owned ? 'border-amber-500/40' : 'border-neutral-800',
+                  'rounded-xl border bg-card/60 overflow-hidden transition-colors',
+                  owned ? 'border-primary/40' : 'border-white/10',
                 )}
               >
-                <div className="relative aspect-[63/88] bg-neutral-950">
+                <div className="relative aspect-[63/88]">
                   {card.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={card.image_url}
                       alt={card.card_name}
@@ -485,7 +483,7 @@ export default function SetCollectionDetailClient({
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-neutral-500 p-4 text-center">
+                    <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground p-4 text-center">
                       {card.card_name}
                     </div>
                   )}
@@ -493,7 +491,7 @@ export default function SetCollectionDetailClient({
                     #{card.collector_number}
                   </div>
                   {owned && (
-                    <div className="absolute top-2 right-2 rounded bg-amber-500 text-black px-2 py-0.5 text-[10px] font-bold">
+                    <div className="absolute top-2 right-2 rounded bg-primary text-black px-2 py-0.5 text-[10px] font-bold">
                       ×{totalQty(card.quantities)}
                     </div>
                   )}
@@ -503,11 +501,11 @@ export default function SetCollectionDetailClient({
                   <div>
                     <Link
                       href={`/card/cardId/${card.card_scryfall_id}`}
-                      className="font-medium text-sm hover:text-amber-400 line-clamp-1"
+                      className="font-medium text-sm hover:text-primary line-clamp-1"
                     >
                       {card.card_name}
                     </Link>
-                    <p className="text-[11px] text-neutral-500 capitalize">{card.rarity}</p>
+                    <p className="text-[11px] text-muted-foreground capitalize">{card.rarity}</p>
                   </div>
 
                   <div className="space-y-1.5">
@@ -518,7 +516,7 @@ export default function SetCollectionDetailClient({
                           key={finish}
                           className="flex items-center justify-between gap-2 text-xs"
                         >
-                          <span className="text-neutral-400 truncate">{finishLabel(finish)}</span>
+                          <span className="text-muted-foreground truncate">{finishLabel(finish)}</span>
                           {isOwner ? (
                             <div className="flex items-center gap-1">
                               <Button
@@ -557,7 +555,7 @@ export default function SetCollectionDetailClient({
         </div>
 
         {filtered.length === 0 && (
-          <div className="text-center py-16 text-neutral-500">
+          <div className="text-center py-16 text-muted-foreground">
             Nenhuma carta corresponde aos filtros.
           </div>
         )}

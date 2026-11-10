@@ -6,7 +6,6 @@ import { getDailyDecks } from '@/app/lib/daily-deck';
 export async function GET() {
   try {
     const decks = await getDailyDecks(new Date());
-    console.log('Decks retornados pela API:', decks);
     return NextResponse.json(decks);
   } catch (error) {
     console.error('Erro na API /daily-decks:', error);

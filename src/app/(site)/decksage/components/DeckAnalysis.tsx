@@ -1,8 +1,4 @@
-/* eslint-disable no-undef */
-'use client';
-
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BookOpenText, ThumbsUp, ThumbsDown, Trophy, BarChart3, Swords } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, BarChart3, Swords } from 'lucide-react';
 
 interface DeckAnalysisProps {
   deckCheck: {
@@ -14,101 +10,89 @@ interface DeckAnalysisProps {
   } | null;
 }
 
-const DifficultyMeter = ({ level }: { level: string }) => {
-  const levels = ['Fácil', 'Médio', 'Difícil'];
-  const currentLevelIndex = levels.indexOf(level);
-  const levelColors = ['bg-green-500', 'bg-yellow-500', 'bg-red-500'];
+const LEVELS = ['Fácil', 'Médio', 'Difícil'];
+const LEVEL_COLORS = ['bg-green-500', 'bg-yellow-500', 'bg-red-500'];
+
+function DifficultyMeter({ level }: { level: string }) {
+  const current = LEVELS.indexOf(level);
   return (
-    <div className="flex gap-1.5 mt-1">
-      {Array.from({ length: 3 }).map((_, index) => (
+    <div className="mt-3 flex gap-1.5">
+      {LEVELS.map((name, index) => (
         <div
-          key={index}
-          className={`h-2 w-full rounded-full ${index <= currentLevelIndex ? levelColors[currentLevelIndex] : 'bg-neutral-700'}`}
+          key={name}
+          className={`h-1.5 flex-1 rounded-full ${index <= current && current >= 0 ? LEVEL_COLORS[current] : 'bg-white/10'}`}
         />
       ))}
     </div>
   );
-};
+}
 
-const StatCard = ({
+function Points({
   title,
-  value,
-  Icon,
+  items,
+  tone,
 }: {
   title: string;
-  value: string;
-  Icon: React.ElementType;
-}) => (
-  <div className="p-4 bg-neutral-950 rounded-lg border border-neutral-800">
-    <div className="flex items-center gap-2 text-neutral-400 text-sm font-semibold mb-1">
-      <Icon className="h-4 w-4" />
-      <span>{title}</span>
+  items?: string[];
+  tone: 'good' | 'bad';
+}) {
+  const good = tone === 'good';
+  return (
+    <div
+      className={`rounded-lg border p-5 ${good ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'}`}
+    >
+      <h3 className={`flex items-center gap-2 font-display text-sm uppercase tracking-wide ${good ? 'text-green-400' : 'text-red-400'}`}>
+        {good ? <ThumbsUp className="h-4 w-4" /> : <ThumbsDown className="h-4 w-4" />}
+        {title}
+      </h3>
+      <ul className="mt-3 space-y-2 text-sm leading-relaxed">
+        {items && items.length > 0 ? items.map((item) => <li key={item}>{item}</li>) : <li>N/A</li>}
+      </ul>
     </div>
-    <p className="text-neutral-100 font-bold text-base truncate">{value}</p>
-  </div>
-);
+  );
+}
 
 export default function DeckAnalysis({ deckCheck }: DeckAnalysisProps) {
   if (!deckCheck) return null;
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <BookOpenText size={20} /> Análise Estratégica (Deck Check)
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <StatCard title="Estilo de Jogo" value={deckCheck.playstyle ?? 'N/A'} Icon={Swords} />
-          <StatCard
-            title="Condição de Vitória"
-            value={deckCheck.win_condition ?? 'N/A'}
-            Icon={Trophy}
-          />
-          <div>
-            <div className="p-4 bg-neutral-950 rounded-lg border border-neutral-800 h-full">
-              <div className="flex items-center gap-2 text-neutral-400 text-sm font-semibold mb-1">
-                <BarChart3 className="h-4 w-4" />
-                <span>Dificuldade</span>
-              </div>
-              <p className="text-neutral-100 font-bold text-base">
-                {deckCheck.difficulty ?? 'N/A'}
-              </p>
-              {deckCheck.difficulty && <DifficultyMeter level={deckCheck.difficulty} />}
-            </div>
-          </div>
-        </div>
+    <section id="analysis" className="scroll-mt-32">
+      <p className="kicker">Deck check</p>
+      <h2 className="mt-2 font-display text-2xl font-bold uppercase tracking-tight">
+        Análise estratégica
+      </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-4 bg-green-900/10 rounded-lg border border-green-500/20 space-y-2">
-            <h4 className="font-semibold text-green-400 flex items-center gap-2">
-              <ThumbsUp size={16} /> Pontos Fortes
-            </h4>
-            {/* AJUSTE: Aumentado o tamanho da fonte e o espaçamento entre linhas */}
-            <ul className="list-disc list-inside text-neutral-200 text-base space-y-1 leading-relaxed">
-              {deckCheck.strengths && deckCheck.strengths.length > 0 ? (
-                deckCheck.strengths.map((item, i) => <li key={i}>{item}</li>)
-              ) : (
-                <li>N/A</li>
-              )}
-            </ul>
-          </div>
-          <div className="p-4 bg-red-900/10 rounded-lg border border-red-500/20 space-y-2">
-            <h4 className="font-semibold text-red-400 flex items-center gap-2">
-              <ThumbsDown size={16} /> Pontos Fracos
-            </h4>
-            {/* AJUSTE: Aumentado o tamanho da fonte e o espaçamento entre linhas */}
-            <ul className="list-disc list-inside text-neutral-200 text-base space-y-1 leading-relaxed">
-              {deckCheck.weaknesses && deckCheck.weaknesses.length > 0 ? (
-                deckCheck.weaknesses.map((item, i) => <li key={i}>{item}</li>)
-              ) : (
-                <li>N/A</li>
-              )}
-            </ul>
-          </div>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="rounded-lg border border-white/10 bg-card p-5">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Swords className="h-4 w-4" />
+            Estilo de jogo
+          </p>
+          <p className="mt-2 font-display text-xl uppercase tracking-wide">
+            {deckCheck.playstyle ?? 'N/A'}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+        <div className="rounded-lg border border-white/10 bg-card p-5">
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <BarChart3 className="h-4 w-4" />
+            Dificuldade
+          </p>
+          <p className="mt-2 font-display text-xl uppercase tracking-wide">
+            {deckCheck.difficulty ?? 'N/A'}
+          </p>
+          {deckCheck.difficulty && <DifficultyMeter level={deckCheck.difficulty} />}
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-white/10 bg-card p-5">
+        <p className="kicker">Condição de vitória</p>
+        <p className="mt-3 max-w-3xl leading-relaxed">{deckCheck.win_condition ?? 'N/A'}</p>
+      </div>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <Points title="Pontos fortes" items={deckCheck.strengths} tone="good" />
+        <Points title="Pontos fracos" items={deckCheck.weaknesses} tone="bad" />
+      </div>
+    </section>
   );
 }

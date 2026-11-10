@@ -29,7 +29,7 @@ function SubmitButton() {
     <Button
       type="submit"
       disabled={pending}
-      className="w-full bg-amber-500 text-black hover:bg-amber-600"
+      className="w-full "
     >
       {pending ? (
         <>
@@ -63,21 +63,21 @@ export default function FloatingFeedback({ user }: { user: User | null }) {
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button className="fixed bottom-5 right-5 h-16 w-16 rounded-full bg-amber-500 shadow-lg hover:bg-amber-600 z-50 transform transition-transform hover:scale-110">
+        <Button className="fixed bottom-5 right-5 h-16 w-16 rounded-full bg-primary shadow-lg hover:bg-amber-600 z-50 transform transition-transform hover:scale-110">
           <MessageSquarePlus className="h-8 w-8 text-black" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
         side="top"
         align="end"
-        className="w-96 bg-neutral-900 border-neutral-700 text-neutral-100 p-6 rounded-xl shadow-2xl mr-4"
+        className="w-96 bg-card border-white/15 text-foreground p-6 rounded-xl shadow-2xl mr-4"
       >
         <div className="space-y-4">
           <div className="space-y-1">
-            <h4 className="font-medium leading-none text-amber-500 text-lg">
+            <h4 className="font-medium leading-none text-primary text-lg">
               Envie o seu Feedback
             </h4>
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm text-muted-foreground">
               Sua opinião é muito importante! Ajude-nos a melhorar.
             </p>
           </div>
@@ -98,7 +98,7 @@ export default function FloatingFeedback({ user }: { user: User | null }) {
                       id="user_name"
                       name="user_name"
                       placeholder="Opcional"
-                      className="bg-neutral-800 border-neutral-700"
+                      className="bg-white/[0.04] border-white/15"
                     />
                   </div>
                   <div className="space-y-1">
@@ -108,7 +108,7 @@ export default function FloatingFeedback({ user }: { user: User | null }) {
                       name="user_email"
                       type="email"
                       placeholder="Opcional"
-                      className="bg-neutral-800 border-neutral-700"
+                      className="bg-white/[0.04] border-white/15"
                     />
                   </div>
                 </div>
@@ -118,10 +118,10 @@ export default function FloatingFeedback({ user }: { user: User | null }) {
             <div className="space-y-1">
               <Label htmlFor="feedback_type">Tipo de Feedback</Label>
               <Select name="feedback_type" required>
-                <SelectTrigger className="bg-neutral-800 border-neutral-700 focus:ring-amber-500">
+                <SelectTrigger className="bg-white/[0.04] border-white/15 focus:ring-amber-500">
                   <SelectValue placeholder="Selecione uma opção..." />
                 </SelectTrigger>
-                <SelectContent className="bg-neutral-800 border-neutral-700 text-neutral-100">
+                <SelectContent className="bg-white/[0.04] border-white/15 text-foreground">
                   <SelectItem value="bug">Reportar um Bug</SelectItem>
                   <SelectItem value="suggestion">Sugestão de Funcionalidade</SelectItem>
                   <SelectItem value="praise">Elogio</SelectItem>
@@ -139,7 +139,7 @@ export default function FloatingFeedback({ user }: { user: User | null }) {
                 minLength={10}
                 placeholder="Descreva o bug que encontrou ou a sua ideia..."
                 rows={6}
-                className="bg-neutral-800 border-neutral-700 focus:ring-amber-500"
+                className="bg-white/[0.04] border-white/15 focus:ring-amber-500"
               />
             </div>
             <div className="flex justify-end pt-2">

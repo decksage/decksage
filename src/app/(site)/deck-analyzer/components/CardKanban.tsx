@@ -37,7 +37,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
 
   if (!cards.length) {
     return (
-      <Card className="bg-neutral-800 border-neutral-700">
+      <Card className="bg-white/[0.04] border-white/15">
         <CardHeader>
           <Skeleton className="h-6 w-48 bg-neutral-600" />
         </CardHeader>
@@ -56,7 +56,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
   }
 
   return (
-    <Card className="bg-neutral-800 border-neutral-700">
+    <Card className="bg-white/[0.04] border-white/15">
       <CardHeader>
         <CardTitle className="text-xl font-bold">Visualização do Deck</CardTitle>
       </CardHeader>
@@ -69,7 +69,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
               </h3>
               <div className="relative h-[600px]">
                 {groupedCards[column].length === 0 ? (
-                  <p className="text-neutral-400 text-center pt-4">Nenhuma carta</p>
+                  <p className="text-muted-foreground text-center pt-4">Nenhuma carta</p>
                 ) : (
                   groupedCards[column].map((card, index) => (
                     <div
@@ -79,7 +79,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
                     >
                       <div className="relative">
                         {card.quantity > 1 && (
-                          <Badge className="absolute w-[20px] h-[20px] -top-2 -right-0 bg-amber-500 rounded-[20px] text-white text-[9px] font-bold z-10 flex items-center justify-center">
+                          <Badge className="absolute w-[20px] h-[20px] -top-2 -right-0 bg-primary rounded-[20px] text-white text-[9px] font-bold z-10 flex items-center justify-center">
                             {card.quantity}
                           </Badge>
                         )}
@@ -95,7 +95,7 @@ export default function CardKanban({ cards }: CardKanbanProps) {
                           />
                         ) : (
                           <Skeleton className="w-full h-[240px] bg-neutral-600 flex items-center justify-center rounded-md">
-                            <span className="text-neutral-400 text-sm">Sem imagem</span>
+                            <span className="text-muted-foreground text-sm">Sem imagem</span>
                           </Skeleton>
                         )}
                       </div>

@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import UpdateStatusForm from './components/UpdateStatusForm';
 import AddCommentForm from './components/AddCommentForm';
+import UpdateRoadmapVisibilityForm from './components/UpdateRoadmapVisibilityForm';
 import { Label } from '@radix-ui/react-label';
 
 // O tipo das props para referência interna
@@ -37,6 +38,7 @@ export default async function FeedbackDetailPage(props: any) {
   interface FeedbackDetails {
     id: string;
     status: string;
+    is_public?: boolean;
     content: string;
     created_at: string;
     page_url?: string;
@@ -131,6 +133,7 @@ export default async function FeedbackDetailPage(props: any) {
               <CardTitle>Ações</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <UpdateRoadmapVisibilityForm feedbackId={feedback.id} initialPublic={!!feedback.is_public} />
               <div>
                 <Label>Mudar Status</Label>
                 <UpdateStatusForm feedbackId={feedback.id} currentStatus={feedback.status} />

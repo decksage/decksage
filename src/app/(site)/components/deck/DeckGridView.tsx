@@ -57,7 +57,7 @@ function GridCardDisplay({
     >
       <div className="relative cursor-pointer transition-transform duration-200 hover:-translate-y-2">
         {card.count > 1 && (
-          <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0">
+          <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0">
             {card.count}
           </Badge>
         )}
@@ -110,7 +110,7 @@ function CardGridSection({
 
   return (
     <div>
-      <h3 className="text-xl font-bold text-amber-500 mb-4 border-b border-neutral-800 pb-2 flex items-center gap-2">
+      <h3 className="text-xl font-bold text-primary mb-4 border-b border-white/10 pb-2 flex items-center gap-2">
         {icon} {title} ({totalCount})
       </h3>
       <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-3">
@@ -210,7 +210,7 @@ export default function DeckGridView({
       <div className="flex flex-col xl:flex-row gap-8 items-start">
         {commanderCard && (
           <div className="flex-shrink-0">
-            <h3 className="text-xl font-bold text-amber-500 mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
               <Crown /> Comandante
             </h3>
             <div className="w-[150px]">
@@ -228,7 +228,7 @@ export default function DeckGridView({
         )}
         {planeswalkerCards.length > 0 && (
           <div className="flex-1">
-            <h3 className="text-xl font-bold text-amber-500 mb-4 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-primary mb-4 flex items-center gap-2">
               <Star /> Planeswalkers ({planeswalkerCards.reduce((sum, card) => sum + card.count, 0)}
               )
             </h3>
@@ -253,9 +253,9 @@ export default function DeckGridView({
         )}
       </div>
       {(commanderCard || planeswalkerCards.length > 0) && (
-        <div className="border-b border-neutral-700"></div>
+        <div className="border-b border-white/15"></div>
       )}
-      <h2 className="text-2xl font-bold text-amber-500 mt-8">Deck Principal</h2>
+      <h2 className="text-2xl font-bold text-primary mt-8">Deck Principal</h2>
       {typeOrder.map((type) => {
         const cardsOfType = mainboardGrouped[type];
         if (!cardsOfType || cardsOfType.length === 0) return null;
@@ -275,7 +275,7 @@ export default function DeckGridView({
       })}
       {sideboardCards.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-2xl font-bold text-amber-500">Sideboard</h2>
+          <h2 className="text-2xl font-bold text-primary">Sideboard</h2>
           {typeOrder.map((type) => {
             const cardsOfType = sideboardGrouped[type];
             if (!cardsOfType || cardsOfType.length === 0) return null;

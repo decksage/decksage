@@ -59,8 +59,9 @@ export async function fetchAutocomplete(query: string): Promise<{ data: string[]
   if (!query || typeof query !== 'string') {
     throw new Error('Query de autocomplete inválida');
   }
-  const res = await fetch(
+  const res = await scryfallFetch(
     `https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`,
+    { cache: 'no-store' },
   );
   if (!res.ok) {
     throw new Error(`Erro no autocomplete: ${res.status} - ${res.statusText}`);
@@ -75,7 +76,7 @@ export async function fetchCardById(scryfallId: string): Promise<ScryfallCard | 
   if (!scryfallId || scryfallId === 'undefined') return null;
 
   try {
-    const response = await fetch(`https://api.scryfall.com/cards/${scryfallId}`);
+    const response = await scryfallFetch(`https://api.scryfall.com/cards/${scryfallId}`);
 
     if (!response.ok) {
       console.error(`Erro Scryfall ID: ${response.status}`);
@@ -102,7 +103,7 @@ export async function fetchCardByName(
   const url = `https://api.scryfall.com/cards/named?${param}=${encodeURIComponent(name)}`;
 
   try {
-    const res = await fetch(url);
+    const res = await scryfallFetch(url, { cache: 'no-store' });
 
     if (res.status === 404) {
       if (exact) {
@@ -131,7 +132,7 @@ export async function fetchSearchResults(
 
   const formattedQuery = `o:"${query}"`;
 
-  const res = await fetch(
+  const res = await scryfallFetch(
     `https://api.scryfall.com/cards/search?q=${encodeURIComponent(formattedQuery)}&page=${page}`,
   );
 
@@ -155,11 +156,11 @@ export async function fetchFilteredSearchResults(
   },
   page: number = 1,
 ): Promise<{ data: ScryfallCard[]; has_more: boolean; next_page?: string }> {
-  if (!query || typeof query !== 'string' || query.trim() === '') {
+  if (typeof query !== 'string') {
     throw new Error('Query de busca inválida');
   }
 
-  let scryfallQuery = `oracle:"${query}"`;
+  let scryfallQuery = query.trim() ? `oracle:"${query}"` : '';
 
   if (filters.types?.length) {
     scryfallQuery += ` ${filters.types.map((t) => `t:${t.toLowerCase()}`).join(' ')}`;
@@ -204,7 +205,7 @@ export async function fetchFilteredSearchResults(
   }
 
   try {
-    const res = await fetch(
+    const res = await scryfallFetch(
       `https://api.scryfall.com/cards/search?q=${encodeURIComponent(scryfallQuery)}&page=${page}`,
     );
 
@@ -288,9 +289,12 @@ export async function fetchScryfallSetByCode(code: string): Promise<ScryfallSet 
   const normalized = code.trim().toLowerCase();
   if (!normalized) return null;
 
-  const response = await scryfallFetch(`https://api.scryfall.com/sets/${encodeURIComponent(normalized)}`, {
-    cache: 'no-store',
-  });
+  const response = await scryfallFetch(
+    `https://api.scryfall.com/sets/${encodeURIComponent(normalized)}`,
+    {
+      cache: 'no-store',
+    },
+  );
   if (response.status === 404) return null;
   if (!response.ok) {
     throw new Error(`Erro ao buscar edição ${normalized}: ${response.status}`);
@@ -422,7 +426,7 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
 
   for (const batch of batches) {
     try {
-      const res = await fetch('https://api.scryfall.com/cards/collection', {
+      const res = await scryfallFetch('https://api.scryfall.com/cards/collection', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifiers: batch.map((name) => ({ name })) }),
@@ -474,7 +478,7 @@ export async function fetchCardsByNames(names: string[]): Promise<ScryfallCard[]
 // Em app/lib/scryfall.ts
 export async function searchCards(query: string, filters: { type_line?: string } = {}) {
   const params = new URLSearchParams({ q: `${query} ${filters.type_line || ''}` });
-  const response = await fetch(`https://api.scryfall.com/cards/search?${params}`);
+  const response = await scryfallFetch(`https://api.scryfall.com/cards/search?${params}`);
   return response.json();
 }
 
@@ -519,8 +523,9 @@ export async function updateDeckName(deckId: string, newName: string): Promise<v
 export async function fetchAutocompleteNames(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
   try {
-    const res = await fetch(
+    const res = await scryfallFetch(
       `https://api.scryfall.com/cards/autocomplete?q=${encodeURIComponent(query)}`,
+      { cache: 'no-store' },
     );
     if (!res.ok) return [];
     const data = await res.json();
@@ -546,7 +551,9 @@ export async function searchScryfallCards(query: string): Promise<ScryfallCard[]
   });
 
   try {
-    const response = await fetch(`https://api.scryfall.com/cards/search?${params.toString()}`);
+    const response = await scryfallFetch(
+      `https://api.scryfall.com/cards/search?${params.toString()}`,
+    );
     if (!response.ok) {
       if (response.status === 404) return [];
       const errorDetails = await response.json().catch(() => ({}));
@@ -573,7 +580,7 @@ export async function getCardPriceFromScryfall(cardName: string): Promise<number
     // A API do Scryfall tem um endpoint para buscar pelo nome exato
     const url = `https://api.scryfall.com/cards/named?exact=${encodeURIComponent(cardName)}`;
 
-    const response = await fetch(url);
+    const response = await scryfallFetch(url, { cache: 'no-store' });
 
     if (!response.ok) {
       // Se a carta não for encontrada (404) ou houver outro erro, retorna null

@@ -39,7 +39,7 @@ export default function DeckInfoForm({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
+    <Card className="bg-card border-white/10">
       <CardHeader>
         <CardTitle>Informações Gerais</CardTitle>
       </CardHeader>
@@ -70,7 +70,7 @@ export default function DeckInfoForm({
             </div>
           )}
           <div className="pt-2 space-y-2">
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-muted-foreground">
               Escolha uma arte de carta ou carregue a sua própria imagem.
             </p>
             <AutocompleteInput

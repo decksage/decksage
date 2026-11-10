@@ -43,9 +43,9 @@ function CardListSection({
   if (cards.length === 0) return null;
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800 mb-4">
+    <Card className="bg-card border-white/10 mb-4">
       <CardHeader>
-        <CardTitle className="text-amber-500">
+        <CardTitle className="text-primary">
           {title} ({totalCount})
         </CardTitle>
       </CardHeader>
@@ -213,9 +213,9 @@ export default function DeckListViewEdit({
   return (
     <div>
       {commanderCard && (
-        <Card className="bg-neutral-900 border-neutral-800 mb-4">
+        <Card className="bg-card border-white/10 mb-4">
           <CardHeader>
-            <CardTitle className="text-amber-500">Comandante</CardTitle>
+            <CardTitle className="text-primary">Comandante</CardTitle>
           </CardHeader>
           <CardContent>
             <div
@@ -241,7 +241,7 @@ export default function DeckListViewEdit({
       ))}
       {sideboard.length > 0 && (
         <>
-          <h3 className="text-xl font-bold text-amber-500 mb-4">Sideboard</h3>
+          <h3 className="text-xl font-bold text-primary mb-4">Sideboard</h3>
           {Object.entries(updatedSideboardGrouped).map(([type, cards]) => (
             <CardListSection
               key={`sideboard-${type}`}

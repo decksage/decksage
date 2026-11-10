@@ -99,9 +99,11 @@ export default function DeckAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen  text-foreground">
       <div className="container mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6">Analisador de Deck</h1>
+        <h1 className="mb-6 font-display text-4xl font-bold uppercase tracking-tight">
+          Analisador de Deck
+        </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Formulário */}
           <DeckForm

@@ -28,8 +28,8 @@ export default function DeckCard({ deck }: DeckCardProps) {
   return (
     <Link href={`/my-deck/${deck.format}/${deck.id}`} className="group block">
       <Card
-        className="bg-neutral-900 border-neutral-800 h-full overflow-hidden transition-all duration-300 
-                   hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-900/30 hover:-translate-y-1"
+        className="bg-card border-white/10 h-full overflow-hidden transition-all duration-300 
+                   hover:border-primary/50 hover:shadow-lg hover:shadow-amber-900/30 hover:-translate-y-1"
       >
         {/* Imagem de Capa do Deck */}
         <div className="relative w-full aspect-[16/9]" style={gradientStyle}>
@@ -50,7 +50,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
           <Badge variant="secondary" className="capitalize">
             {deck.format}
           </Badge>
-          <h3 className="mt-2 font-bold text-lg text-neutral-100 group-hover:text-amber-400 transition-colors line-clamp-2">
+          <h3 className="mt-2 font-bold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {deck.name}
           </h3>
         </div>

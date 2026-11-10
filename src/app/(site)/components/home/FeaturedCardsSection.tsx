@@ -21,9 +21,9 @@ export default function FeaturedCardsSection({ cards }: FeaturedCardsSectionProp
   }
 
   return (
-    <section className="py-12 md:py-20 bg-neutral-950">
+    <section className="py-12 md:py-20 bg-background">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center text-amber-500 mb-12">Cartas em Destaque</h2>
+        <h2 className="text-3xl font-bold text-center text-primary mb-12">Cartas em Destaque</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {cards.map((card) => (
             // Removido legacyBehavior e a tag <a> interna.
@@ -33,7 +33,7 @@ export default function FeaturedCardsSection({ cards }: FeaturedCardsSectionProp
               key={card.id}
               className="block group" // A classe 'block group' agora está no Link, que passará para o Card se ele aceitar, ou aplicamos no Card
             >
-              <Card className="bg-neutral-800 border-neutral-700 hover:border-amber-500 transition-all duration-300 overflow-hidden h-full flex flex-col">
+              <Card className="bg-white/[0.04] border-white/15 hover:border-primary transition-all duration-300 overflow-hidden h-full flex flex-col">
                 <CardContent className="p-0 relative aspect-[5/7]">
                   <Image
                     src={card.imageUrl}
@@ -44,11 +44,11 @@ export default function FeaturedCardsSection({ cards }: FeaturedCardsSectionProp
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </CardContent>
-                <div className="p-4 bg-neutral-800">
-                  <h3 className="text-lg font-semibold text-amber-500 group-hover:text-amber-300 truncate">
+                <div className="p-4 bg-white/[0.04]">
+                  <h3 className="text-lg font-semibold text-primary group-hover:text-primary truncate">
                     {card.name}
                   </h3>
-                  <p className="text-sm text-neutral-400 uppercase">{card.set}</p>
+                  <p className="text-sm text-muted-foreground uppercase">{card.set}</p>
                 </div>
               </Card>
             </Link>
@@ -58,7 +58,7 @@ export default function FeaturedCardsSection({ cards }: FeaturedCardsSectionProp
           <Link href="/search?sort=popularity">
             <Button
               variant="outline"
-              className="text-amber-500 border-amber-400 hover:bg-amber-400 hover:text-black"
+              className="border-white/15"
             >
               Ver Mais Cartas Populares
             </Button>

@@ -12,7 +12,7 @@ export default function MagicTextRenderer({ text }: MagicTextRendererProps) {
   const paragraphs = text.split('\n');
 
   return (
-    <div className="space-y-3 font-serif text-lg leading-relaxed text-neutral-300">
+    <div className="space-y-3 font-serif text-lg leading-relaxed text-foreground/80">
       {paragraphs.map((paragraph, pIndex) => {
         const parts = paragraph.split(/(\{[^}]+\})/g);
 

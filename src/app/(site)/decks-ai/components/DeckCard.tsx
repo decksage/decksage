@@ -1,78 +1,95 @@
+/* eslint-disable no-undef */
 import Image from 'next/image';
 import Link from 'next/link';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-// import { Swords } from 'lucide-react';
+import { isOptimizableImage } from '@/lib/images';
 
-// Tipagem para os dados que o card espera receber
 type DeckCardProps = {
   deck: {
     id: string;
     name: string;
     format: string;
     representative_card_image_url: string | null;
-    color_identity: string[];
-    user_profiles?: {
-      username: string | null;
-      avatar_url: string | null;
-    } | null;
+    color_identity: string[] | null;
+    creator?: { username: string | null; avatar_url: string | null } | null;
   };
+  showCreator?: boolean;
+  badge?: string;
 };
 
-export default function DeckCard({ deck }: DeckCardProps) {
-  // Gera um gradiente sutil com base na identidade de cor do deck
-  const colorStops =
-    deck.color_identity && deck.color_identity.length > 0
-      ? deck.color_identity.map((color) => `var(--mana-${color.toLowerCase()})`).join(', ')
-      : 'var(--mana-c)'; // Cor para decks incolores
-  const gradientStyle = {
-    backgroundImage: `radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent), linear-gradient(to bottom right, ${colorStops})`,
-  };
-
-  const creatorName = deck.user_profiles?.username || 'Anônimo';
-  const creatorAvatar = deck.user_profiles?.avatar_url;
+export default function DeckCard({ deck, showCreator = false, badge }: DeckCardProps) {
+  const colors = deck.color_identity?.length ? deck.color_identity : ['C'];
+  const strip =
+    colors.length === 1
+      ? `var(--mana-${colors[0].toLowerCase()})`
+      : `linear-gradient(90deg, ${colors.map((c) => `var(--mana-${c.toLowerCase()})`).join(', ')})`;
+  const creatorName = deck.creator?.username || 'Anônimo';
 
   return (
-    <Link href={`/decks/${deck.id}`} className="group block">
-      <Card className="bg-neutral-900 py-0 border-neutral-800 h-full flex flex-col group transition-all duration-300 hover:border-amber-500 overflow-hidden relative">
-        {/* Imagem de Capa do Deck */}
-        <div className="relative w-full aspect-[16/9]" style={gradientStyle}>
-          {deck.representative_card_image_url && (
-            <Image
-              src={deck.representative_card_image_url}
-              alt={`Arte do deck ${deck.name}`}
-              fill
-              unoptimized
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+    <Link
+      href={`/decksage/${deck.id}`}
+      className="frame group flex h-full flex-col [--cut:16px] hover:-translate-y-0.5 hover:[--frame-border:color-mix(in_oklch,var(--primary)_70%,transparent)]"
+    >
+      <div className="chamfer-tl relative m-px aspect-[16/10] overflow-hidden bg-secondary [--cut:15px]">
+        {deck.representative_card_image_url ? (
+          <Image
+            src={deck.representative_card_image_url}
+            alt=""
+            fill
+            unoptimized={!isOptimizableImage(deck.representative_card_image_url)}
+            quality={60}
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover object-[center_22%] transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+          />
+        ) : (
+          <div aria-hidden className="absolute inset-0 opacity-30" style={{ background: strip }} />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+        {badge && (
+          <span className="absolute left-3 top-3 rounded-full border border-white/10 bg-background/80 px-2.5 py-1 font-display text-[11px] font-semibold uppercase tracking-wider backdrop-blur">
+            {badge}
+          </span>
+        )}
+        <span
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-0.5 opacity-80"
+          style={{ background: strip }}
+        />
+      </div>
 
-          {/* Avatar do Criador sobreposto na imagem (canto inferior esquerdo) */}
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 z-10">
-            <Avatar className="h-8 w-8 border-2 border-neutral-900">
-              <AvatarImage src={creatorAvatar || ''} alt={creatorName} />
-              <AvatarFallback className="bg-neutral-800 text-xs text-neutral-400">
-                {creatorName.substring(0, 2).toUpperCase()}
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-center justify-between gap-3">
+          <span className="kicker">{deck.format}</span>
+          <span className="flex items-center gap-0.5" aria-label={`Cores: ${colors.join(', ')}`}>
+            {colors.map((c) => (
+              <i
+                key={c}
+                className={`ms ms-${c.toLowerCase()} ms-cost`}
+                style={{ fontSize: '0.95rem' }}
+                aria-hidden
+              />
+            ))}
+          </span>
+        </div>
+        <h3 className="mt-2 line-clamp-2 text-lg font-semibold leading-snug group-hover:text-primary">
+          {deck.name}
+        </h3>
+        {showCreator && (
+          <div className="mt-auto flex items-center gap-2 pt-5 text-xs text-muted-foreground">
+            <Avatar className="h-6 w-6 border border-white/10">
+              <AvatarImage src={deck.creator?.avatar_url || undefined} alt="" />
+              <AvatarFallback className="text-[10px]">
+                {creatorName.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="text-xs font-medium text-white/90 shadow-black drop-shadow-md">
-              {creatorName}
-            </span>
+            {creatorName}
           </div>
-        </div>
-
-        {/* Informações do Deck */}
-        <div className="p-4 pt-10 -mt-6 relative z-0">
-          <Badge variant="secondary" className="capitalize mb-2">
-            {deck.format}
-          </Badge>
-          <h3 className="font-bold text-lg text-neutral-100 group-hover:text-amber-400 transition-colors line-clamp-2 leading-tight">
-            {deck.name}
-          </h3>
-        </div>
-      </Card>
+        )}
+      </div>
     </Link>
   );
+}
+
+export function DeckGrid({ children }: { children: React.ReactNode }) {
+  return <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{children}</ul>;
 }

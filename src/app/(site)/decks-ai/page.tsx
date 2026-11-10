@@ -1,9 +1,13 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-console */
+import Link from 'next/link';
+import { Bot, Users } from 'lucide-react';
 import { createClient } from '@/app/utils/supabase/server';
 import DeckFilters from './components/DeckFilters';
-import DeckCard from './components/DeckCard';
-import PaginationControls from './components/PaginationControls';
+import DeckCard, { DeckGrid } from './components/DeckCard';
+import PageHeader from '../components/page/PageHeader';
+import Pagination from '../components/page/Pagination';
+import EmptyState from '../components/page/EmptyState';
 
 export const metadata = {
   title: 'Biblioteca de Decks | MTG Deck Builder',
@@ -13,127 +17,169 @@ export const metadata = {
 
 export const dynamic = 'force-dynamic';
 
+const ITEMS_PER_PAGE = 12;
+
 interface PageProps {
-  searchParams?: { format?: string; page?: string };
+  searchParams: Promise<{ format?: string; page?: string }>;
 }
 
-export default async function DecksPage(props: any) {
-  const { searchParams } = props as PageProps;
-  const supabase = createClient();
-
-  const formatFilter = searchParams?.format || '';
-  const currentPage = Number(searchParams?.page) || 1;
-  const ITEMS_PER_PAGE = 12;
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-
-  const { data: decks, error } = await supabase.rpc('search_public_site_decks', {
-    format_filter: formatFilter,
-    page_size: ITEMS_PER_PAGE,
-    page_offset: offset,
-  });
-
-  if (error) {
-    console.error('Erro ao buscar decks do site:', error);
-  }
-
-  // Busca decks da comunidade (públicos e com perfil do usuário)
-  /* O filtro de formato será aplicado aqui também se necessário.
-     Considerando que o RPC já traz os dados formatados, vamos tentar manter a estrutura.
-     Mas para a comunidade, vamos buscar direto da tabela 'decks'.
-  */
-
+async function fetchCommunityDecks(supabase: ReturnType<typeof createClient>, format: string) {
   let query = supabase
     .from('decks')
-    .select(
-      `
-      id,
-      name,
-      format,
-      representative_card_image_url,
-      color_identity,
-      user_profiles:user_id (
-        username,
-        avatar_url
-      )
-    `,
-    )
+    .select('id, name, format, representative_card_image_url, color_identity, user_id')
     .eq('is_public', true)
     .order('created_at', { ascending: false })
-    .limit(ITEMS_PER_PAGE); // Por enquanto limitamos a home
+    .limit(ITEMS_PER_PAGE);
+  if (format) query = query.eq('format', format);
 
-  if (formatFilter) {
-    query = query.eq('format', formatFilter);
+  const { data: decks, error } = await query;
+  if (error) {
+    console.error('Erro ao buscar decks da comunidade:', error);
+    return [];
   }
+  if (!decks?.length) return [];
 
-  const { data: communityDecks, error: communityError } = await query;
+  const userIds = [...new Set(decks.map((d) => d.user_id).filter(Boolean))];
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, username, avatar_url')
+    .in('id', userIds);
+  const byId = new Map((profiles ?? []).map((p) => [p.id, p]));
 
-  if (communityError) {
-    console.error('Erro ao buscar decks da comunidade:', communityError);
-  }
+  return decks.map((d) => ({ ...d, creator: byId.get(d.user_id) ?? null }));
+}
 
-  const totalItems = decks?.[0]?.total_count || 0;
+function SectionTitle({
+  id,
+  icon: Icon,
+  title,
+  description,
+}: {
+  id: string;
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="mb-8 flex items-start gap-4">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-md border border-primary/30 bg-primary/10 text-primary">
+        <Icon className="h-5 w-5" />
+      </span>
+      <div>
+        <h2
+          id={id}
+          className="font-display text-2xl font-bold uppercase tracking-tight sm:text-3xl"
+        >
+          {title}
+        </h2>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+export default async function DecksPage({ searchParams }: PageProps) {
+  const { format = '', page } = await searchParams;
+  const currentPage = Math.max(1, Number(page) || 1);
+  const supabase = createClient();
+
+  const [{ data: decks, error }, communityDecks] = await Promise.all([
+    supabase.rpc('search_public_site_decks', {
+      format_filter: format,
+      page_size: ITEMS_PER_PAGE,
+      page_offset: (currentPage - 1) * ITEMS_PER_PAGE,
+    }),
+    currentPage === 1 ? fetchCommunityDecks(supabase, format) : Promise.resolve([]),
+  ]);
+
+  if (error) console.error('Erro ao buscar decks do site:', error);
+
+  const totalItems = Number(decks?.[0]?.total_count) || 0;
   const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white">
-      <div className="container mx-auto px-6 py-12">
-        <header className="text-center mb-10">
-          <h1 className="text-5xl font-extrabold text-amber-500 tracking-tight">
-            Biblioteca de Decks
-          </h1>
-          <p className="text-lg text-neutral-400 mt-2 max-w-2xl mx-auto">
-            Explore dezenas de decks para todos os formatos, criados pela nossa IA e pela
-            comunidade.
-          </p>
-        </header>
+    <>
+      <PageHeader
+        kicker="Biblioteca"
+        title="Decks prontos"
+        description="Listas montadas pela nossa IA e pela comunidade, para todos os formatos. Abra, analise e jogue."
+        actions={
+          <Link
+            href="/ai-deck-builder"
+            className="inline-flex h-11 items-center rounded-md bg-primary px-5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Gerar deck com IA
+          </Link>
+        }
+        className="border-b-0"
+      >
+        <div className="rise mt-8 [--delay:200ms]">
+          <DeckFilters activeFormat={format} />
+        </div>
+      </PageHeader>
 
-        <DeckFilters />
-
-        <div className="space-y-16">
-          {/* Seção Decks da IA */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-amber-500">🤖</span> Decks da IA
-            </h2>
-            {decks && decks.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="mx-auto max-w-7xl space-y-20 px-6 pb-20 pt-4">
+        <section aria-labelledby="decks-ia">
+          <SectionTitle
+            id="decks-ia"
+            icon={Bot}
+            title="Decks da IA"
+            description="Gerados e revisados pelo nosso construtor de decks."
+          />
+          {decks && decks.length > 0 ? (
+            <>
+              <DeckGrid>
                 {decks.map((deck: any) => (
-                  <DeckCard key={deck.id} deck={deck} />
+                  <li key={deck.id}>
+                    <DeckCard deck={deck} />
+                  </li>
                 ))}
-              </div>
+              </DeckGrid>
+              <Pagination
+                basePath="/decks-ai"
+                currentPage={currentPage}
+                totalPages={totalPages}
+                params={{ format: format || undefined }}
+                className="mt-12"
+              />
+            </>
+          ) : (
+            <EmptyState
+              icon={Bot}
+              title="Nenhum deck da IA neste formato"
+              description="Tente outro formato ou gere um deck novo agora mesmo."
+              action={{ href: '/ai-deck-builder', label: 'Gerar deck com IA' }}
+            />
+          )}
+        </section>
+
+        {currentPage === 1 && (
+          <section aria-labelledby="decks-comunidade">
+            <SectionTitle
+              id="decks-comunidade"
+              icon={Users}
+              title="Da comunidade"
+              description="Os decks públicos mais recentes dos jogadores."
+            />
+            {communityDecks.length > 0 ? (
+              <DeckGrid>
+                {communityDecks.map((deck) => (
+                  <li key={deck.id}>
+                    <DeckCard deck={deck} showCreator />
+                  </li>
+                ))}
+              </DeckGrid>
             ) : (
-              <div className="text-center py-12 px-6 bg-neutral-900/50 rounded-lg border border-neutral-800">
-                <p className="text-neutral-400">Nenhum deck da IA encontrado para este filtro.</p>
-              </div>
+              <EmptyState
+                icon={Users}
+                title="Nenhum deck da comunidade ainda"
+                description="Seja o primeiro a publicar um deck neste formato."
+                action={{ href: '/my-deck/create', label: 'Criar um deck' }}
+              />
             )}
           </section>
-
-          {/* Seção Decks da Comunidade */}
-          <section>
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <span className="text-amber-500">👥</span> Decks da Comunidade
-            </h2>
-
-            {communityDecks && communityDecks.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {communityDecks.map((deck: any) => (
-                  <DeckCard key={deck.id} deck={deck} />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-12 px-6 bg-neutral-900/50 rounded-lg border border-neutral-800">
-                <p className="text-neutral-400">
-                  Nenhum deck da comunidade encontrado ainda. Seja o primeiro a publicar!
-                </p>
-              </div>
-            )}
-          </section>
-        </div>
-
-        <div className="mt-12">
-          <PaginationControls totalPages={totalPages} currentPage={currentPage} />
-        </div>
+        )}
       </div>
-    </div>
+    </>
   );
 }

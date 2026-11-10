@@ -1,64 +1,43 @@
-/* eslint-disable no-console */
+import { cache } from 'react';
+import type { Metadata } from 'next';
+import { SearchX } from 'lucide-react';
 import { fetchCardByName } from '@/app/lib/scryfall';
-import { translateCardText } from '@/app/actions/aiActions';
-import CardDetailPageLayout from '../components/CardDetailPageLayout';
-import CardImageDisplay from '../components/CardImageDisplay';
-import CardDetailsDisplay from '../components/CardDetailsDisplay';
-import CardHeaderInfo from '../components/CardHeaderInfo';
-import CardTypeLine from '../components/CardTypeLine';
-import { Separator } from '@/components/ui/separator';
-import CardTextDisplay from '../components/CardTextDisplay';
+import EmptyState from '@/app/(site)/components/page/EmptyState';
+import CardDetailView from '../components/CardDetailView';
 
 interface PageProps {
   params: Promise<{ cardName: string }>;
 }
 
-export default async function CardPage(props: PageProps) {
-  const resolvedParams = await props.params;
-  const decodedCardName = decodeURIComponent(resolvedParams.cardName);
+const getCard = cache((name: string) => fetchCardByName(name));
 
-  const card = await fetchCardByName(decodedCardName);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { cardName } = await params;
+  const card = await getCard(decodeURIComponent(cardName));
+  if (!card) return { title: 'Carta não encontrada' };
+  return { title: `${card.name} | MTG Deck Builder` };
+}
+
+export default async function CardPage({ params }: PageProps) {
+  const { cardName } = await params;
+  const decodedCardName = decodeURIComponent(cardName);
+  const card = await getCard(decodedCardName);
 
   if (!card) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-950 text-white">
-        <h1 className="text-xl">Carta não encontrada: {decodedCardName}</h1>
+      <div className="container mx-auto px-4 py-20">
+        <EmptyState
+          icon={SearchX}
+          title="Carta não encontrada"
+          description={`Não encontramos nenhuma carta chamada “${decodedCardName}”.`}
+          action={{
+            href: `/search?q=${encodeURIComponent(decodedCardName)}`,
+            label: 'Buscar parecidas',
+          }}
+        />
       </div>
     );
   }
 
-  const isDoubleFaced = Array.isArray(card.card_faces) && card.card_faces.length > 0;
-  const displayCard = isDoubleFaced ? card.card_faces?.[0] : card;
-  const backCard = isDoubleFaced ? card.card_faces?.[1] : null;
-
-  // Tradução
-  let translatedText = '';
-  if (displayCard?.oracle_text) {
-    const res = await translateCardText(card.id, displayCard.name, displayCard.oracle_text);
-    translatedText = res.translatedText || displayCard.oracle_text;
-  }
-
-  return (
-    <CardDetailPageLayout>
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-        <div className="md:col-span-2">
-          <CardImageDisplay
-            imageUrl={displayCard?.image_uris?.normal}
-            altText={displayCard?.name || ''}
-          />
-        </div>
-        <div className="md:col-span-3">
-          <CardDetailsDisplay>
-            <CardHeaderInfo name={displayCard?.name || ''} manaCost={displayCard?.mana_cost} />
-            <CardTypeLine typeLine={displayCard?.type_line} />
-            <Separator className="my-4 bg-neutral-700" />
-            <CardTextDisplay
-              originalText={displayCard?.oracle_text}
-              translatedText={translatedText}
-            />
-          </CardDetailsDisplay>
-        </div>
-      </div>
-    </CardDetailPageLayout>
-  );
+  return <CardDetailView card={card} />;
 }

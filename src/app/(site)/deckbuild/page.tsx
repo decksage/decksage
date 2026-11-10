@@ -53,7 +53,7 @@ function DecklistDisplay({
   commander?: ScryfallCard | null;
 }) {
   return (
-    <pre className="text-sm bg-neutral-800 p-4 rounded-md max-h-96 overflow-auto whitespace-pre-wrap font-mono">
+    <pre className="text-sm bg-white/[0.04] p-4 rounded-md max-h-96 overflow-auto whitespace-pre-wrap font-mono">
       {commander && `Comandante\n1 ${commander.name}\n\n`}
       {decklist.mainboard.map((c) => `${c.count} ${c.name}`).join('\n')}
       {decklist.sideboard &&
@@ -141,13 +141,13 @@ export default function DeckBuildPage() {
     return (
       <div className="container mx-auto max-w-4xl py-8 animate-in fade-in">
         <header className="mb-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-amber-400 mt-4 mb-2">
+          <h1 className="mt-4 mb-2 font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl">
             {state.deck.name}
           </h1>
-          <p className="text-lg text-neutral-300">{state.deck.description}</p>
+          <p className="text-lg text-foreground/80">{state.deck.description}</p>
         </header>
         <div className="space-y-6">
-          <Card className="bg-neutral-900 border-neutral-800">
+          <Card className="bg-card border-white/10">
             <CardHeader>
               <CardTitle>Decklist Gerada ({totalGeneratedCards} cartas)</CardTitle>
             </CardHeader>
@@ -178,20 +178,20 @@ export default function DeckBuildPage() {
 
   // Mostra o formulário inicial de geração
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
+    <div className="min-h-screen  text-foreground py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-2xl">
         <header className="mb-10 text-center">
-          <Wand2 className="h-12 w-12 mx-auto text-amber-400" />
-          <h1 className="text-4xl md:text-5xl font-extrabold text-amber-400 mt-4 mb-2">
+          <Wand2 className="h-12 w-12 mx-auto text-primary" />
+          <h1 className="mt-4 mb-2 font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl">
             Construtor de Decks
           </h1>
-          <p className="text-lg text-neutral-300">
+          <p className="text-lg text-foreground/80">
             Dê uma ideia, escolha o formato e deixe a IA fazer o trabalho pesado.
           </p>
         </header>
 
         <form action={formAction} key={resetKey}>
-          <Card className="bg-neutral-900 border-neutral-800">
+          <Card className="bg-card border-white/10">
             <CardHeader>
               <CardTitle>1. Defina sua Ideia</CardTitle>
               <CardDescription>Escolha o formato e dê uma direção para a IA.</CardDescription>
@@ -208,7 +208,7 @@ export default function DeckBuildPage() {
                   }}
                   value={format}
                 >
-                  <SelectTrigger className="bg-neutral-800">
+                  <SelectTrigger className="bg-white/[0.04]">
                     <SelectValue placeholder="Selecione um formato..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -230,13 +230,13 @@ export default function DeckBuildPage() {
                       placeholder="Digite o nome de um comandante..."
                     />
                   ) : (
-                    <div className="flex items-center justify-between p-3 bg-neutral-800/50 border border-neutral-700 rounded-md">
-                      <p className="font-semibold text-amber-400">{commander.name}</p>
+                    <div className="flex items-center justify-between p-3 bg-white/[0.04] border border-white/15 rounded-md">
+                      <p className="font-semibold text-primary">{commander.name}</p>
                       <Button
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 text-neutral-400 hover:text-white"
+                        className="h-7 w-7 text-muted-foreground hover:text-white"
                         onClick={() => setCommander(null)}
                         aria-label="Remover comandante"
                       >
@@ -254,14 +254,14 @@ export default function DeckBuildPage() {
                   name="user_prompt"
                   placeholder="Ex: Um deck tribal de goblins, muito rápido e agressivo."
                   rows={3}
-                  className="bg-neutral-800 border-neutral-700"
+                  className="bg-white/[0.04] border-white/15"
                   value={userPrompt}
                   onChange={(e) => setUserPrompt(e.target.value)}
                 />
               </div>
             </CardContent>
             <CardFooter className="flex-col items-start gap-4 pt-6">
-              <p className="text-xs text-neutral-500">
+              <p className="text-xs text-muted-foreground">
                 Para melhores resultados, forneça uma instrução clara. Para Commander, você pode
                 escolher um comandante ou deixar a IA escolher com base nas suas instruções.
               </p>

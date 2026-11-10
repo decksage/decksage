@@ -96,6 +96,8 @@ export interface ScryfallCard {
   textless: boolean;
   booster: boolean;
   story_spotlight: boolean;
+  frame_effects?: string[];
+  promo_types?: string[];
   edhrec_rank?: number;
   prices: {
     usd: string | null;

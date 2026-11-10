@@ -45,10 +45,22 @@ export default async function AdminUsersPage(props: any) {
 
   if (error) console.error('Erro ao buscar usuários:', error);
 
+  const userRows = users ?? [];
+  const ids = userRows.map((u: { id: string }) => u.id);
+  let enrichedUsers = userRows;
+  if (ids.length > 0) {
+    const { data: ambassadorRows } = await supabase.from('profiles').select('id, is_ambassador').in('id', ids);
+    const ambassadorMap = new Map((ambassadorRows ?? []).map((r) => [r.id, Boolean(r.is_ambassador)]));
+    enrichedUsers = userRows.map((u: Record<string, unknown>) => ({
+      ...u,
+      is_ambassador: ambassadorMap.get(u.id as string) ?? false,
+    }));
+  }
+
   const { count: absoluteTotalUsers } = await supabase
     .from('profiles')
     .select('*', { count: 'exact', head: true });
-  const filteredTotalUsers = users?.[0]?.total_count || 0;
+  const filteredTotalUsers = enrichedUsers?.[0]?.total_count || 0;
   const totalPages = Math.ceil(filteredTotalUsers / USERS_PER_PAGE);
 
   return (
@@ -82,8 +94,8 @@ export default async function AdminUsersPage(props: any) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users && users.length > 0 ? (
-              users.map((user: any) => (
+            {enrichedUsers && enrichedUsers.length > 0 ? (
+              enrichedUsers.map((user: any) => (
                 <TableRow key={user.id} className="border-neutral-800">
                   <TableCell>
                     <div className="flex items-center gap-3">

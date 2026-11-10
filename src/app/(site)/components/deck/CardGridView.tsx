@@ -66,7 +66,7 @@ export default function CardGridView({ cards, onCardHover, onCardLeave }: CardGr
 
         return (
           <div key={type}>
-            <h3 className="text-xl font-bold text-amber-500 mb-4 border-b border-neutral-800 pb-2">
+            <h3 className="text-xl font-bold text-primary mb-4 border-b border-white/10 pb-2">
               {type} ({totalCount})
             </h3>
             {/* Grelha responsiva para as imagens das cartas */}
@@ -82,7 +82,7 @@ export default function CardGridView({ cards, onCardHover, onCardLeave }: CardGr
                   >
                     <div className="relative cursor-pointer transition-transform duration-200 hover:-translate-y-2">
                       {card.count > 1 && (
-                        <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0">
+                        <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full text-black text-xs font-bold z-10 flex items-center justify-center p-0">
                           {card.count}
                         </Badge>
                       )}

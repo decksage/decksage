@@ -8,6 +8,8 @@ import { z } from 'zod';
 import { headers } from 'next/headers';
 import { checkUserRole } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
+import { captureServer } from '@/lib/analytics/posthog-server';
+import { AnalyticsEvents } from '@/lib/analytics/events';
 
 // Schema de validação base, para campos que sempre existem
 const BaseFeedbackSchema = z.object({
@@ -80,6 +82,10 @@ export async function submitFeedback(prevState: FormState, formData: FormData): 
   if (dbError) {
     console.error('Erro ao guardar feedback no Supabase:', dbError);
     return { message: 'Não foi possível guardar o seu feedback. Tente novamente.', success: false };
+  }
+
+  if (user) {
+    captureServer(user.id, AnalyticsEvents.FEEDBACK_SUBMITTED, { feedback_type });
   }
 
   try {

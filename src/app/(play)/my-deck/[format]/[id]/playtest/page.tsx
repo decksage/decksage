@@ -5,17 +5,17 @@ import PlaytestView from './PlaytestView';
 import type { DeckFromDB, ScryfallCard } from '@/app/lib/types';
 
 interface PageProps {
-  params: { id: string; format: string };
+  params: Promise<{ id: string; format: string }>;
 }
 
-export default async function PlaytestPage(props: any) {
-  const { params } = props as PageProps;
+export default async function PlaytestPage({ params }: PageProps) {
+  const { id } = await params;
   const supabase = createClient();
 
   const { data: deckData } = await supabase
     .from('decks')
     .select<'*', DeckFromDB>('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (!deckData) {

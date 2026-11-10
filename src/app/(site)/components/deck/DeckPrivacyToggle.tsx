@@ -40,7 +40,7 @@ export function DeckPrivacyToggle({ deckId, initialIsPublic }: DeckPrivacyToggle
         onCheckedChange={handleToggle}
         disabled={isLoading}
       />
-      <Label htmlFor="privacy-mode" className="text-neutral-300">
+      <Label htmlFor="privacy-mode" className="text-foreground/80">
         {isLoading ? 'A guardar...' : isPublic ? 'Público' : 'Privado'}
       </Label>
     </div>

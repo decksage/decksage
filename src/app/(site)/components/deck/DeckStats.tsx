@@ -68,16 +68,16 @@ export default function DeckStats({ cards }: DeckStatsProps) {
   const maxCurveCount = Math.max(...Object.values(manaCurve), 1); // Evita divisão por zero
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
+    <Card className="bg-card border-white/10">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-amber-500">
+        <CardTitle className="flex items-center gap-2 text-primary">
           <BarChart /> Estatísticas
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Gráfico da Curva de Mana */}
         <div>
-          <h4 className="text-sm font-semibold text-neutral-300 mb-2">
+          <h4 className="text-sm font-semibold text-foreground/80 mb-2">
             Curva de Mana (CMC Médio: {averageCMC})
           </h4>
           <div className="flex items-end justify-between gap-2 h-24">
@@ -88,11 +88,11 @@ export default function DeckStats({ cards }: DeckStatsProps) {
                 title={`${count} carta(s) com custo ${cmc}`}
               >
                 <div
-                  className="w-full bg-amber-500/20 rounded-t-sm hover:bg-amber-500/40 transition-colors"
+                  className="w-full bg-primary/20 rounded-t-sm hover:bg-primary/40 transition-colors"
                   style={{ height: `${(count / maxCurveCount) * 100}%` }}
                 />
-                <div className="text-xs text-neutral-400 mt-1">{count}</div>
-                <div className="text-xs font-bold text-neutral-200">{cmc}</div>
+                <div className="text-xs text-muted-foreground mt-1">{count}</div>
+                <div className="text-xs font-bold text-foreground">{cmc}</div>
               </div>
             ))}
           </div>
@@ -100,14 +100,14 @@ export default function DeckStats({ cards }: DeckStatsProps) {
 
         {/* Distribuição de Cores */}
         <div>
-          <h4 className="text-sm font-semibold text-neutral-300 mb-2">Símbolos de Mana</h4>
+          <h4 className="text-sm font-semibold text-foreground/80 mb-2">Símbolos de Mana</h4>
           <div className="flex items-center gap-4 flex-wrap">
             {Object.entries(colorDistribution).map(([color, count]) => {
               if (count === 0) return null;
               return (
                 <div key={color} className="flex items-center gap-1.5">
                   <ManaCost cost={`{${color}}`} />
-                  <span className="text-sm font-medium text-neutral-200">{count}</span>
+                  <span className="text-sm font-medium text-foreground">{count}</span>
                 </div>
               );
             })}

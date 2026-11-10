@@ -32,7 +32,7 @@ export default function StartSetCollectionButton({
 
   if (existingCollectionId) {
     return (
-      <Button asChild className="bg-amber-500 hover:bg-amber-600 text-black font-semibold">
+      <Button asChild>
         <Link href={`/my-collection/${existingCollectionId}`}>
           <Layers className="mr-2 h-4 w-4" />
           Abrir minha coleção
@@ -43,7 +43,7 @@ export default function StartSetCollectionButton({
 
   if (!isAuthenticated) {
     return (
-      <Button asChild variant="outline" className="border-amber-500/40 text-amber-400">
+      <Button asChild variant="outline" className="border-primary/40 text-primary">
         <Link href={`/login?next=/collections/${setCode}`}>
           <Layers className="mr-2 h-4 w-4" />
           Entrar para colecionar
@@ -69,10 +69,7 @@ export default function StartSetCollectionButton({
   return (
     <div className="flex flex-col items-center md:items-start gap-3 w-full max-w-md">
       {!showOptions ? (
-        <Button
-          onClick={() => setShowOptions(true)}
-          className="bg-amber-500 hover:bg-amber-600 text-black font-semibold"
-        >
+        <Button onClick={() => setShowOptions(true)}>
           <Layers className="mr-2 h-4 w-4" />
           Iniciar minha coleção
         </Button>
@@ -87,20 +84,16 @@ export default function StartSetCollectionButton({
                 className={cn(
                   'rounded-lg border p-3 text-left text-xs transition-colors',
                   scope === option
-                    ? 'border-amber-500/60 bg-amber-500/10'
-                    : 'border-neutral-700 bg-neutral-900/50 hover:border-neutral-600',
+                    ? 'border-primary/60 bg-primary/10'
+                    : 'border-white/15 bg-card/50 hover:border-white/30',
                 )}
               >
-                <p className="font-medium text-neutral-200">{collectionScopeLabel(option)}</p>
-                <p className="text-neutral-500 mt-1">{collectionScopeDescription(option)}</p>
+                <p className="font-medium text-foreground">{collectionScopeLabel(option)}</p>
+                <p className="text-muted-foreground mt-1">{collectionScopeDescription(option)}</p>
               </button>
             ))}
           </div>
-          <Button
-            onClick={handleCreate}
-            disabled={pending}
-            className="bg-amber-500 hover:bg-amber-600 text-black font-semibold w-full sm:w-auto"
-          >
+          <Button onClick={handleCreate} disabled={pending} className="w-full sm:w-auto">
             {pending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

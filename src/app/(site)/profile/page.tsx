@@ -22,6 +22,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'; // Importa ToggleGroup
 import ManaCost from '@/components/ui/ManaCost';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 type Profile = {
   id: string;
@@ -33,6 +40,9 @@ type Profile = {
   cover_position_y: number | null;
   favorite_colors: string[] | null;
   favorite_formats: string[] | null;
+  favorite_format: string | null;
+  website_url: string | null;
+  notification_digest: string | null;
   points: number | null;
   referral_code: string | null;
 };
@@ -99,6 +109,9 @@ export default function ProfilePage() {
         cover_position_y: profile.cover_position_y,
         favorite_colors: profile.favorite_colors,
         favorite_formats: profile.favorite_formats,
+        favorite_format: profile.favorite_format,
+        website_url: profile.website_url,
+        notification_digest: profile.notification_digest ?? 'off',
         updated_at: new Date().toISOString(),
         // AJUSTE CRÍTICO: Incluímos o referral_code para que ele não seja perdido.
         referral_code: profile.referral_code,
@@ -194,16 +207,16 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-950">
-        <Loader2 className="h-12 w-12 animate-spin text-amber-500" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen  text-foreground">
       <div
-        className={`group relative h-48 sm:h-64 bg-neutral-800 select-none ${profile?.cover_image_url ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : ''}`}
+        className={`group relative h-48 sm:h-64 bg-white/[0.04] select-none ${profile?.cover_image_url ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : ''}`}
         onMouseDown={handleDragStart}
         onMouseMove={handleDragMove}
         onMouseUp={handleDragEnd}
@@ -288,30 +301,30 @@ export default function ProfilePage() {
       <div className="max-w-4xl mx-auto pt-24 pb-12 px-4 space-y-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold">{profile?.full_name || 'Nome do Usuário'}</h1>
-          <p className="text-amber-500">@{profile?.username || 'username'}</p>
+          <p className="text-primary">@{profile?.username || 'username'}</p>
         </div>
 
-        <Card className="bg-neutral-900 border-neutral-800">
+        <Card className="bg-card border-white/10">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold text-amber-500">
+            <CardTitle className="text-xl font-semibold text-primary">
               Gamificação e Recompensas
             </CardTitle>
             <CardDescription>Seus pontos e seu link para convidar amigos.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <Label className="text-sm text-neutral-400">Seus Pontos</Label>
+              <Label className="text-sm text-muted-foreground">Seus Pontos</Label>
               <UserPointsDisplay points={profile?.points} />
             </div>
             <div>
-              <Label className="text-sm text-neutral-400">Seu Link de Convite</Label>
+              <Label className="text-sm text-muted-foreground">Seu Link de Convite</Label>
               <ReferralLink referralCode={profile?.referral_code || null} />
             </div>
           </CardContent>
         </Card>
 
-        <div className="p-8 bg-neutral-900 rounded-lg border border-neutral-800 space-y-6">
-          <h2 className="text-xl font-semibold text-amber-500 border-b border-neutral-700 pb-2">
+        <div className="p-8 bg-card rounded-lg border border-white/10 space-y-6">
+          <h2 className="text-xl font-semibold text-primary border-b border-white/15 pb-2">
             Informações do Perfil
           </h2>
 
@@ -348,7 +361,7 @@ export default function ProfilePage() {
             />
           </div>
 
-          <h2 className="text-xl font-semibold text-amber-500 border-b border-neutral-700 pb-2 pt-4">
+          <h2 className="text-xl font-semibold text-primary border-b border-white/15 pb-2 pt-4">
             Preferências de Magic
           </h2>
 
@@ -370,12 +383,71 @@ export default function ProfilePage() {
                   key={color}
                   value={color}
                   aria-label={`Selecionar cor ${color}`}
-                  className="w-12 h-12 data-[state=on]:bg-amber-500/20 data-[state=on]:border-amber-400"
+                  className="w-12 h-12 data-[state=on]:bg-primary/20 data-[state=on]:border-amber-400"
                 >
                   <ManaCost cost={`{${color}}`} />
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="website_url">Link externo (opcional)</Label>
+              <Input
+                id="website_url"
+                value={profile?.website_url || ''}
+                onChange={(e) =>
+                  setProfile((p) => (p ? { ...p, website_url: e.target.value } : null))
+                }
+                placeholder="https://"
+                disabled={updating}
+              />
+            </div>
+            <div>
+              <Label>Formato principal (perfil público)</Label>
+              <Select
+                value={profile?.favorite_format ?? '__none__'}
+                onValueChange={(v) =>
+                  setProfile((p) =>
+                    p ? { ...p, favorite_format: v === '__none__' ? null : v } : null,
+                  )
+                }
+                disabled={updating}
+              >
+                <SelectTrigger className="bg-white/[0.04] border-white/15">
+                  <SelectValue placeholder="Escolher…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__none__">—</SelectItem>
+                  {ALL_FORMATS.map((f) => (
+                    <SelectItem key={f} value={f.toLowerCase()}>
+                      {f}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Resumo por email (changelog & novidades)</Label>
+            <Select
+              value={profile?.notification_digest || 'off'}
+              onValueChange={(v) =>
+                setProfile((p) => (p ? { ...p, notification_digest: v } : null))
+              }
+              disabled={updating}
+            >
+              <SelectTrigger className="bg-white/[0.04] border-white/15 max-w-md">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="off">Desligado</SelectItem>
+                <SelectItem value="weekly">Semanal</SelectItem>
+                <SelectItem value="daily">Diário (experimental)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-3">

@@ -29,7 +29,7 @@ function CardListSection({
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-amber-500 mb-4">
+      <h2 className="text-2xl font-bold text-primary mb-4">
         {title} ({totalCount})
       </h2>
       <div className="columns-1 sm:columns-2 lg:columns-3 gap-x-6">
@@ -37,7 +37,7 @@ function CardListSection({
           ([type, cardList]) =>
             cardList.length > 0 && (
               <div key={type} className="break-inside-avoid mb-6">
-                <h3 className="text-lg font-semibold text-neutral-300 mb-2">
+                <h3 className="text-lg font-semibold text-foreground/80 mb-2">
                   {type} ({cardList.reduce((acc, c) => acc + c.count, 0)})
                 </h3>
                 <ul className="space-y-1">
@@ -55,8 +55,8 @@ function CardListSection({
                         <li
                           key={card.id} // ✅ Key correta aqui
                           className={`
-                      text-neutral-200 p-1 rounded-md cursor-pointer flex justify-between items-center text-sm relative
-                      ${showPhysicalCards && !hasSomeCopies ? 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100' : 'hover:bg-neutral-800'}
+                      text-foreground p-1 rounded-md cursor-pointer flex justify-between items-center text-sm relative
+                      ${showPhysicalCards && !hasSomeCopies ? 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100' : 'hover:bg-white/[0.06]'}
                     `}
                           onMouseEnter={() => {
                             onCardHover(card.image_uris?.normal || '');
@@ -123,7 +123,7 @@ export default function DeckListView({
     <div className="space-y-12">
       {commanderCard && (
         <div>
-          <h2 className="text-2xl font-bold text-amber-500 mb-4 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-primary mb-4 flex items-center gap-2">
             <Crown /> Comandante
           </h2>
           <ul className="space-y-1">
@@ -136,8 +136,8 @@ export default function DeckListView({
                 <li
                   key={commanderCard.card.id} // ✅ Key correta aqui
                   className={`
-                        text-neutral-200 p-1 rounded-md cursor-pointer flex justify-between items-center text-sm relative
-                        ${showPhysicalCards && !hasSomeCopies ? 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100' : 'hover:bg-neutral-800'}
+                        text-foreground p-1 rounded-md cursor-pointer flex justify-between items-center text-sm relative
+                        ${showPhysicalCards && !hasSomeCopies ? 'grayscale opacity-60 hover:grayscale-0 hover:opacity-100' : 'hover:bg-white/[0.06]'}
                       `}
                   onMouseEnter={() => {
                     onCardHover(commanderCard.card.image_uris?.normal || '');

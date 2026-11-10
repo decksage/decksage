@@ -20,7 +20,7 @@ interface AnalysisResultProps {
 export default function AnalysisResult({ result, loading }: AnalysisResultProps) {
   if (loading) {
     return (
-      <Card className="bg-neutral-800 border-neutral-700">
+      <Card className="bg-white/[0.04] border-white/15">
         <CardHeader>
           <Skeleton className="h-6 w-48 bg-neutral-600" />
         </CardHeader>
@@ -36,7 +36,7 @@ export default function AnalysisResult({ result, loading }: AnalysisResultProps)
   if (!result) return null;
 
   return (
-    <Card className="bg-neutral-800 border-neutral-700">
+    <Card className="bg-white/[0.04] border-white/15">
       <CardHeader>
         <CardTitle className="text-xl font-bold flex items-center gap-2">
           Resultado da Análise
@@ -53,11 +53,11 @@ export default function AnalysisResult({ result, loading }: AnalysisResultProps)
           <p className="text-red-500">{result.error}</p>
         ) : (
           <>
-            <p className="text-neutral-200">{result.explanation}</p>
+            <p className="text-foreground">{result.explanation}</p>
             {result.strengths && (
               <div>
                 <h3 className="text-lg font-semibold text-green-400">Forças</h3>
-                <ul className="list-disc pl-5 text-neutral-300">
+                <ul className="list-disc pl-5 text-foreground/80">
                   {result.strengths.map((strength, i) => (
                     <li key={i}>{strength}</li>
                   ))}
@@ -67,7 +67,7 @@ export default function AnalysisResult({ result, loading }: AnalysisResultProps)
             {result.weaknesses && (
               <div>
                 <h3 className="text-lg font-semibold text-red-400">Fraquezas</h3>
-                <ul className="list-disc pl-5 text-neutral-300">
+                <ul className="list-disc pl-5 text-foreground/80">
                   {result.weaknesses.map((weakness, i) => (
                     <li key={i}>{weakness}</li>
                   ))}
@@ -77,7 +77,7 @@ export default function AnalysisResult({ result, loading }: AnalysisResultProps)
             {result.suggestions && (
               <div>
                 <h3 className="text-lg font-semibold text-blue-400">Sugestões de Melhorias</h3>
-                <ul className="list-disc pl-5 text-neutral-300">
+                <ul className="list-disc pl-5 text-foreground/80">
                   {result.suggestions.map((suggestion, i) => (
                     <li key={i}>{suggestion}</li>
                   ))}

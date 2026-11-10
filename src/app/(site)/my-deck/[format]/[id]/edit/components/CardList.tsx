@@ -100,7 +100,7 @@ function CardRow({
 
   return (
     <div
-      className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 px-2 rounded-md hover:bg-neutral-800/50"
+      className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-2 px-2 rounded-md hover:bg-white/[0.04]"
       onMouseEnter={(e) => onCardHover(e, cardImage)}
       onMouseLeave={onCardLeave}
     >
@@ -230,7 +230,7 @@ function CardSection({
 
     return (
       <div key={type}>
-        <h4 className="font-semibold text-amber-500/80 mt-2">
+        <h4 className="font-semibold text-primary/80 mt-2">
           {type} ({typeCount})
         </h4>
         {cardsOfType
@@ -276,12 +276,12 @@ export default function CardList({
   }, [cards, commanderName]);
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
+    <Card className="bg-card border-white/10">
       <CardHeader>
         <CardTitle>Lista de Cartas</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <h3 className="text-xl font-bold text-amber-500 mb-2">Mainboard ({mainboardCount})</h3>
+        <h3 className="text-xl font-bold text-primary mb-2">Mainboard ({mainboardCount})</h3>
         <CardSection
           cardList={mainboardCards}
           collection={collection}
@@ -292,8 +292,8 @@ export default function CardList({
         />
 
         {sideboardCards.length > 0 && (
-          <div className="mt-6 pt-4 border-t border-neutral-700">
-            <h3 className="text-xl font-bold text-amber-500 mb-2">Sideboard ({sideboardCount})</h3>
+          <div className="mt-6 pt-4 border-t border-white/15">
+            <h3 className="text-xl font-bold text-primary mb-2">Sideboard ({sideboardCount})</h3>
             <CardSection
               cardList={sideboardCards}
               collection={collection}

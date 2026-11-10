@@ -88,12 +88,12 @@ export function EditDecklistModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] bg-neutral-900 text-neutral-100 border-neutral-800">
+      <DialogContent className="sm:max-w-[600px] bg-card text-foreground border-white/10">
         <DialogHeader>
-          <DialogTitle className="text-amber-500 flex items-center gap-2">
+          <DialogTitle className="text-primary flex items-center gap-2">
             <TextIcon /> Editar Lista de Cartas
           </DialogTitle>
-          <DialogDescription className="text-neutral-300">
+          <DialogDescription className="text-foreground/80">
             Cole a sua lista de cartas aqui. O formato esperado é &quot;Quantidade Nome da
             Carta&quot; por linha. Use &quot;Sideboard&quot; para separar.
           </DialogDescription>
@@ -102,7 +102,7 @@ export function EditDecklistModal({
           <input type="hidden" name="deckId" value={deckId} />{' '}
           {/* Garantir que o deckId seja enviado */}
           <div className="space-y-2">
-            <Label htmlFor="decklistText" className="text-neutral-300">
+            <Label htmlFor="decklistText" className="text-foreground/80">
               Lista de Cartas:
             </Label>
             <Textarea
@@ -112,7 +112,7 @@ export function EditDecklistModal({
               placeholder={`Exemplo:\n1 Sol Ring\n4 Swords to Plowshares\n\nSideboard\n1 Rest in Peace`}
               value={decklistTextInput}
               onChange={(e) => setDecklistTextInput(e.target.value)}
-              className="bg-neutral-800 border-neutral-700 font-mono text-sm"
+              className="bg-white/[0.04] border-white/15 font-mono text-sm"
             />
           </div>
           {/* {state.message && (
@@ -122,7 +122,7 @@ export function EditDecklistModal({
             </Alert>
           )}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onClose} className="bg-neutral-700 text-neutral-100 hover:bg-neutral-600 border-neutral-600">
+            <Button type="button" variant="outline" onClick={onClose} className="bg-neutral-700 text-foreground hover:bg-neutral-600 border-neutral-600">
               Cancelar
             </Button>
             <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">

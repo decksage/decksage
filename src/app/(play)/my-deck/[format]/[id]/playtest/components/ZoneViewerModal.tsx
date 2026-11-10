@@ -26,9 +26,9 @@ export default function ZoneViewerModal({
 }: ZoneViewerModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-neutral-900 border-neutral-800 text-white max-w-4xl h-[90vh]">
+      <DialogContent className="bg-card border-white/10 text-white max-w-4xl h-[90vh]">
         <DialogHeader>
-          <DialogTitle className="text-2xl text-amber-400">{zoneName}</DialogTitle>
+          <DialogTitle className="text-2xl text-primary">{zoneName}</DialogTitle>
           <DialogDescription>
             {cards.length} carta(s) nesta zona. A carta mais recente está à esquerda.
           </DialogDescription>
@@ -50,7 +50,7 @@ export default function ZoneViewerModal({
               ))}
             </div>
           ) : (
-            <p className="text-center text-neutral-500 py-10">Esta zona está vazia.</p>
+            <p className="text-center text-muted-foreground py-10">Esta zona está vazia.</p>
           )}
         </div>
       </DialogContent>

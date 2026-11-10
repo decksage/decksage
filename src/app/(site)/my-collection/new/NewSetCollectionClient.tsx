@@ -77,29 +77,29 @@ export default function NewSetCollectionClient() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen  text-foreground">
       <div className="container mx-auto px-4 py-10 max-w-3xl">
         <Link
           href="/my-collection"
-          className="inline-flex items-center text-sm text-neutral-400 hover:text-amber-400 mb-6"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar
         </Link>
 
-        <h1 className="text-3xl font-bold text-amber-400 mb-2">Nova coleção por edição</h1>
-        <p className="text-neutral-400 mb-8">
+        <h1 className="mb-2 font-display text-3xl font-bold uppercase tracking-tight">Nova coleção por edição</h1>
+        <p className="text-muted-foreground mb-8">
           Selecione uma edição. Todas as cartas serão vinculadas automaticamente; depois você marca
           quantidade por acabamento (normal, foil, etched, etc.).
         </p>
 
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar por nome ou código (ex.: Modern Horizons, mh3, dsk)"
-            className="pl-10 bg-neutral-900 border-neutral-700"
+            className="pl-10 bg-card border-white/15"
           />
         </div>
 
@@ -110,9 +110,9 @@ export default function NewSetCollectionClient() {
           </div>
         )}
 
-        <div className="rounded-xl border border-neutral-800 divide-y divide-neutral-800 max-h-[420px] overflow-y-auto mb-6">
+        <div className="rounded-xl border border-white/10 divide-y divide-neutral-800 max-h-[420px] overflow-y-auto mb-6">
           {loadingSets ? (
-            <div className="flex items-center justify-center gap-2 px-4 py-12 text-neutral-400">
+            <div className="flex items-center justify-center gap-2 px-4 py-12 text-muted-foreground">
               <Loader2 className="h-5 w-5 animate-spin" />
               Buscando edições…
             </div>
@@ -127,15 +127,14 @@ export default function NewSetCollectionClient() {
                     onClick={() => setSelected(set)}
                     className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
                       isSelected
-                        ? 'bg-amber-500/10 border-l-2 border-l-amber-500'
-                        : 'hover:bg-neutral-900'
+                        ? 'bg-primary/10 border-l-2 border-l-amber-500'
+                        : 'hover:bg-card'
                     }`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={set.icon_svg_uri} alt="" className="h-8 w-8 invert opacity-80" />
                     <div className="min-w-0 flex-1">
                       <p className="font-medium truncate">{set.name}</p>
-                      <p className="text-xs text-neutral-500">
+                      <p className="text-xs text-muted-foreground">
                         {set.code.toUpperCase()} · {set.card_count ?? '?'} cartas ·{' '}
                         {set.released_at}
                       </p>
@@ -144,7 +143,7 @@ export default function NewSetCollectionClient() {
                 );
               })}
               {sets.length === 0 && !loadError && (
-                <p className="px-4 py-8 text-center text-neutral-500">
+                <p className="px-4 py-8 text-center text-muted-foreground">
                   {query.trim()
                     ? 'Nenhuma edição encontrada. Tente o código exato (ex.: mh3).'
                     : 'Nenhuma edição disponível.'}
@@ -155,7 +154,7 @@ export default function NewSetCollectionClient() {
         </div>
 
         <div className="mb-6 space-y-3">
-          <p className="text-sm font-medium text-neutral-300">Tipo de coleção</p>
+          <p className="text-sm font-medium text-foreground/80">Tipo de coleção</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(['all_printings', 'regular_only'] as CollectionScope[]).map((option) => {
               const active = scope === option;
@@ -167,12 +166,12 @@ export default function NewSetCollectionClient() {
                   className={cn(
                     'rounded-xl border p-4 text-left transition-colors',
                     active
-                      ? 'border-amber-500/60 bg-amber-500/10'
-                      : 'border-neutral-800 bg-neutral-900/40 hover:border-neutral-700',
+                      ? 'border-amber-500/60 bg-primary/10'
+                      : 'border-white/10 bg-card/40 hover:border-white/15',
                   )}
                 >
                   <p className="font-medium text-sm">{collectionScopeLabel(option)}</p>
-                  <p className="text-xs text-neutral-500 mt-1">{collectionScopeDescription(option)}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{collectionScopeDescription(option)}</p>
                 </button>
               );
             })}
@@ -188,7 +187,7 @@ export default function NewSetCollectionClient() {
         <Button
           onClick={handleCreate}
           disabled={!selected || pending}
-          className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-black font-semibold"
+          className="w-full sm:w-auto"
         >
           {pending ? (
             <>
@@ -200,7 +199,7 @@ export default function NewSetCollectionClient() {
           )}
         </Button>
         {pending && (
-          <p className="text-xs text-neutral-500 mt-3">
+          <p className="text-xs text-muted-foreground mt-3">
             Sets grandes podem levar alguns segundos enquanto buscamos todas as cartas no Scryfall.
           </p>
         )}

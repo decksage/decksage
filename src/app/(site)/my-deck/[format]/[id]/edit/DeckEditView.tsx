@@ -288,7 +288,7 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
         <DeckActions deckId={initialDeck.id} deckName={name} onNameChange={setName} />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-24">
+          <aside className="lg:col-span-1 space-y-6 lg:sticky lg:top-[calc(var(--header-offset)+1rem)]">
             <DeckInfoForm
               description={description}
               onDescriptionChange={setDescription}
@@ -302,11 +302,11 @@ export default function DeckEditView({ initialDeck, initialScryfallCards }: Deck
 
             <ExportMissingCards missingCards={missingCards} deckName={name} />
 
-            <Card className="bg-neutral-900/60 backdrop-blur-md border-neutral-800/50 shadow-xl">
+            <Card className="bg-card/60 backdrop-blur-md border-white/10/50 shadow-xl">
               <CardHeader className="pb-3">
-                <CardTitle className="text-xl text-neutral-100">Adicionar Cartas</CardTitle>
-                <p className="text-xs text-neutral-500 mt-1.5 px-1 flex items-center gap-1.5 bg-neutral-800/50 p-2 rounded-md">
-                  <Info size={14} className="text-amber-500 shrink-0" />
+                <CardTitle className="text-xl text-foreground">Adicionar Cartas</CardTitle>
+                <p className="text-xs text-muted-foreground mt-1.5 px-1 flex items-center gap-1.5 bg-white/[0.04] p-2 rounded-md">
+                  <Info size={14} className="text-primary shrink-0" />
                   <span>Dica: Nomes em português podem falhar na busca.</span>
                 </p>
               </CardHeader>

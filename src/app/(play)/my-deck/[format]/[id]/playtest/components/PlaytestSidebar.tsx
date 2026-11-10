@@ -61,11 +61,11 @@ function DroppableZone({
           <div
             ref={setNodeRef}
             className={cn(
-              'w-full block p-2 bg-neutral-800/50 border border-neutral-700 rounded-lg cursor-pointer transition-all duration-200 hover:border-amber-500/50',
+              'w-full block p-2 bg-white/[0.04] border border-white/15 rounded-lg cursor-pointer transition-all duration-200 hover:border-primary/50',
               isOver && 'border-2 border-amber-400 shadow-lg shadow-amber-500/20',
             )}
           >
-            <p className="text-sm font-medium text-amber-400 flex items-center justify-center gap-1 mb-1">
+            <p className="text-sm font-medium text-primary flex items-center justify-center gap-1 mb-1">
               <Icon size={16} /> {title} ({count})
             </p>
             <div className="h-24 w-full flex items-center justify-center rounded-md">
@@ -85,7 +85,7 @@ function DroppableZone({
           </div>
         </ContextMenuTrigger>
 
-        <ContextMenuContent className="w-60 bg-neutral-900 border-neutral-700 text-neutral-200">
+        <ContextMenuContent className="w-60 bg-card border-white/15 text-foreground">
           <ContextMenuItem className="cursor-pointer" onSelect={() => onViewZone(title, cards)}>
             <Eye className="mr-2 h-4 w-4" /> Ver Todas as Cartas
           </ContextMenuItem>
@@ -132,15 +132,15 @@ export default function PlaytestSidebar({
   const isCommander = deckFormat === 'commander';
 
   return (
-    <aside className="w-56 bg-neutral-900 p-2 border-l border-neutral-800 flex flex-col gap-2 overflow-y-auto">
-      <h2 className="text-lg font-bold text-center text-amber-500">Zonas</h2>
+    <aside className="w-56 bg-card p-2 border-l border-white/10 flex flex-col gap-2 overflow-y-auto">
+      <h2 className="text-lg font-bold text-center text-primary">Zonas</h2>
       <LifeCounter initialLife={isCommander ? 40 : 20} />
 
       <div className="text-center">
         <ContextMenu>
           <ContextMenuTrigger className="w-full relative group" aria-label="Grimório">
             <button onClick={() => actions.drawCard()} className="w-full appearance-none">
-              <p className="text-sm font-medium text-amber-400 flex items-center justify-center gap-2 mb-1">
+              <p className="text-sm font-medium text-primary flex items-center justify-center gap-2 mb-1">
                 <Library size={16} /> Grimório ({library.length})
               </p>
               <Image
@@ -153,7 +153,7 @@ export default function PlaytestSidebar({
               />
             </button>
           </ContextMenuTrigger>
-          <ContextMenuContent className="w-56 bg-neutral-900 border-neutral-700 text-neutral-200">
+          <ContextMenuContent className="w-56 bg-card border-white/15 text-foreground">
             <ContextMenuItem onSelect={() => actions.shuffleLibrary()} className="cursor-pointer">
               <Shuffle className="mr-2 h-4 w-4" /> Embaralhar
             </ContextMenuItem>
@@ -167,7 +167,7 @@ export default function PlaytestSidebar({
               <ContextMenuSubTrigger>
                 <ArrowDownToLine className="mr-2 h-4 w-4" /> Millar Cartas
               </ContextMenuSubTrigger>
-              <ContextMenuSubContent className="bg-neutral-900 border-neutral-700 text-neutral-200">
+              <ContextMenuSubContent className="bg-card border-white/15 text-foreground">
                 <ContextMenuItem onSelect={() => actions.millCards(1)} className="cursor-pointer">
                   Millar 1
                 </ContextMenuItem>
@@ -215,12 +215,12 @@ export default function PlaytestSidebar({
         </CardContent>
       </div>
 
-      <Card className="bg-neutral-800/50 border-neutral-700">
+      <Card className="bg-white/[0.04] border-white/15">
         <CardHeader className="">
-          <CardTitle className="text-sm font-medium text-amber-400">Mecânicas</CardTitle>
+          <CardTitle className="text-sm font-medium text-primary">Mecânicas</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col">
-          <p className="text-neutral-500 text-sm">Nenhuma mecânica disponível no momento.</p>
+          <p className="text-muted-foreground text-sm">Nenhuma mecânica disponível no momento.</p>
         </CardContent>
       </Card>
 

@@ -22,7 +22,6 @@ export default function AdSenseBanner({
     try {
       // Esta linha "empurra" o anúncio para o slot após a página carregar
       if (typeof window !== 'undefined') {
-        console.log('AdSenseBanner: pushing adsbygoogle for slot', dataAdSlot);
         ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
       }
     } catch (err) {

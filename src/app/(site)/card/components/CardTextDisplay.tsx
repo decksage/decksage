@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import MagicTextRenderer from '@/app/(site)/components/ui/MagicTextRenderer';
 import { Languages } from 'lucide-react';
+import MagicTextRenderer from '@/app/(site)/components/ui/MagicTextRenderer';
+import { cn } from '@/lib/utils';
 
 interface CardTextDisplayProps {
   originalText: string | null | undefined;
@@ -13,27 +13,56 @@ interface CardTextDisplayProps {
 export default function CardTextDisplay({ originalText, translatedText }: CardTextDisplayProps) {
   const [showOriginal, setShowOriginal] = useState(false);
 
-  // Se não houver texto original, não renderiza nada.
-  if (!originalText) {
-    return null;
-  }
+  if (!originalText) return null;
 
-  // Determina qual texto exibir com base no estado 'showOriginal'
-  const textToDisplay = showOriginal ? originalText : translatedText || originalText;
-  const buttonText = showOriginal ? 'Ver Tradução' : 'Ver Original';
+  const hasTranslation = !!translatedText && translatedText !== originalText;
+  const textToDisplay = showOriginal || !hasTranslation ? originalText : translatedText;
 
   return (
-    <div className="space-y-4">
-      {/* Renderiza o texto da carta usando nosso componente que formata os símbolos de mana */}
-      <MagicTextRenderer text={textToDisplay} />
-
-      {/* O botão só aparece se houver uma tradução disponível e diferente da original */}
-      {translatedText && translatedText !== originalText && (
-        <Button variant="outline" size="sm" onClick={() => setShowOriginal(!showOriginal)}>
-          <Languages className="mr-2 h-4 w-4" />
-          {buttonText}
-        </Button>
+    <div>
+      {hasTranslation && (
+        <div
+          role="tablist"
+          aria-label="Idioma do texto"
+          className="mb-4 inline-flex rounded-full border border-white/10 p-0.5"
+        >
+          {[
+            { label: 'Português', value: false },
+            { label: 'Original', value: true },
+          ].map((opt) => (
+            <button
+              key={opt.label}
+              type="button"
+              role="tab"
+              aria-selected={showOriginal === opt.value}
+              onClick={() => setShowOriginal(opt.value)}
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-[0.14em]',
+                showOriginal === opt.value
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              {!opt.value && <Languages className="h-3.5 w-3.5" />}
+              {opt.label}
+            </button>
+          ))}
+        </div>
       )}
+      <div key={String(showOriginal)} className="animate-in fade-in-0 duration-300">
+        <MagicTextRenderer text={textToDisplay} />
+      </div>
+    </div>
+  );
+}
+
+export function CardTextSkeleton() {
+  return (
+    <div aria-label="Traduzindo o texto da carta" className="space-y-3">
+      <div className="h-7 w-44 animate-pulse rounded-full bg-white/[0.05]" />
+      <div className="h-4 w-full animate-pulse rounded bg-white/[0.05]" />
+      <div className="h-4 w-11/12 animate-pulse rounded bg-white/[0.05]" />
+      <div className="h-4 w-3/5 animate-pulse rounded bg-white/[0.05]" />
     </div>
   );
 }

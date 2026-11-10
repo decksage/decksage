@@ -44,11 +44,11 @@ const BattlefieldSubZone = ({
   return (
     <div
       className={cn(
-        'relative bg-neutral-900/30 border border-neutral-700/50 rounded-md p-2',
+        'relative bg-card/30 border border-white/15/50 rounded-md p-2',
         heightClass,
       )}
     >
-      <h3 className="absolute top-1 left-2 font-bold text-xs text-amber-400">
+      <h3 className="absolute top-1 left-2 font-bold text-xs text-primary">
         {zoneName} ({cards.length})
       </h3>
       <div
@@ -56,12 +56,12 @@ const BattlefieldSubZone = ({
         className={cn(
           'flex flex-nowrap gap-2 pt-6 h-full overflow-x-auto',
           isOver && 'bg-amber-900/20',
-          cards.length === 0 && 'bg-neutral-800/10',
+          cards.length === 0 && 'bg-white/[0.04]/10',
         )}
       >
         {cards.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-neutral-500 text-sm opacity-50">{zoneName}</span>
+            <span className="text-muted-foreground text-sm opacity-50">{zoneName}</span>
           </div>
         )}
         {cards.map((card) => (
@@ -179,7 +179,7 @@ export default function PlaytestView({
       onDragStart={(event) => setActiveCard(event.active.data.current?.cardObject)}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex h-screen max-h-screen bg-neutral-950 text-white">
+      <div className="flex h-screen max-h-screen bg-background text-white">
         <main className="flex-1 flex flex-col p-4 gap-2">
           <div className="grid grid-cols-3 h-[calc(100%-240px)]">
             <BattlefieldSubZone
@@ -216,10 +216,10 @@ export default function PlaytestView({
               ref={handRef}
               className={cn(
                 'flex-grow bg-black/20 rounded-lg p-4 border transition-colors',
-                isOverHand ? 'border-amber-400' : 'border-neutral-800',
+                isOverHand ? 'border-amber-400' : 'border-white/10',
               )}
             >
-              <h2 className="font-bold mb-2 text-sm text-neutral-300">
+              <h2 className="font-bold mb-2 text-sm text-foreground/80">
                 Mão: {playtestState.hand.length} cartas
               </h2>
               <div className="flex flex-nowrap gap-2 h-full pb-4 overflow-x-auto">
@@ -239,10 +239,10 @@ export default function PlaytestView({
                 ref={commandZoneRef}
                 className={cn(
                   'w-44 flex-shrink-0 bg-black/20 rounded-lg p-2 border transition-colors',
-                  isOverCommandZone ? 'border-amber-400' : 'border-neutral-800',
+                  isOverCommandZone ? 'border-amber-400' : 'border-white/10',
                 )}
               >
-                <h2 className="font-bold text-xs text-center text-neutral-300 mb-1 flex items-center justify-center gap-1">
+                <h2 className="font-bold text-xs text-center text-foreground/80 mb-1 flex items-center justify-center gap-1">
                   <Crown size={14} /> Comando
                 </h2>
                 <div className="flex flex-col items-center justify-center gap-2 h-full">

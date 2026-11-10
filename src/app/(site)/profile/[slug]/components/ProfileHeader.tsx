@@ -2,19 +2,37 @@
 
 import Image from 'next/image';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import ProfileFollowButton from './ProfileFollowButton';
+import DiscordCta from '@/app/(site)/components/DiscordCta';
 
 // Tipagem para os dados que o componente espera
 type ProfileHeaderProps = {
   profile: {
+    id: string;
     username: string | null;
     full_name: string | null;
     avatar_url: string | null;
     cover_image_url: string | null;
     bio: string | null;
-  } | null; // O perfil pode ser nulo se não for encontrado
+    website_url?: string | null;
+    favorite_format?: string | null;
+    reputation_points?: number | null;
+    reputation_level?: number | null;
+    is_ambassador?: boolean | null;
+  } | null;
+  viewerId?: string | null;
+  initialFollowing?: boolean;
+  followerCount?: number;
+  followingCount?: number;
 };
 
-export default function ProfileHeader({ profile }: ProfileHeaderProps) {
+export default function ProfileHeader({
+  profile,
+  viewerId,
+  initialFollowing = false,
+  followerCount = 0,
+  followingCount = 0,
+}: ProfileHeaderProps) {
   // Lida com o caso de perfil não encontrado
   if (!profile) {
     return null;
@@ -25,7 +43,7 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
   return (
     <header>
       {/* Imagem de Capa */}
-      <div className="h-48 sm:h-64 bg-neutral-800 relative">
+      <div className="h-48 sm:h-64 bg-white/[0.04] relative">
         {profile.cover_image_url ? (
           <Image
             src={profile.cover_image_url}
@@ -54,10 +72,60 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
             </Avatar>
           </div>
 
-          <div className="pb-4">
-            <h1 className="text-3xl font-bold">{profile.full_name || 'Usuário'}</h1>
-            <p className="text-amber-500">@{profile.username || 'username'}</p>
-            {profile.bio && <p className="text-neutral-400 mt-2 text-sm max-w-xl">{profile.bio}</p>}
+          <div className="pb-4 flex-1">
+            <div className="flex flex-wrap items-start gap-3">
+              <div>
+                <h1 className="flex flex-wrap items-center gap-2 font-display text-4xl font-bold uppercase tracking-tight">
+                  {profile.full_name || 'Usuário'}
+                  {profile.is_ambassador && (
+                    <span className="text-xs font-semibold rounded-full bg-primary/15 text-primary px-2 py-0.5 border border-primary/40">
+                      Embaixador
+                    </span>
+                  )}
+                </h1>
+                <p className="text-primary">@{profile.username || 'username'}</p>
+              </div>
+              {viewerId && viewerId !== profile.id && (
+                <ProfileFollowButton
+                  targetUserId={profile.id}
+                  initialFollowing={initialFollowing}
+                  canInteract
+                />
+              )}
+            </div>
+            <div className="flex flex-wrap gap-4 mt-2 text-sm text-muted-foreground">
+              <span>
+                <strong className="text-foreground">{followerCount}</strong> seguidores
+              </span>
+              <span>
+                <strong className="text-foreground">{followingCount}</strong> a seguir
+              </span>
+              {typeof profile.reputation_points === 'number' && (
+                <span>
+                  Reputação: <strong className="text-primary">{profile.reputation_points}</strong> ·
+                  nv {profile.reputation_level ?? 1}
+                </span>
+              )}
+            </div>
+            {profile.favorite_format && (
+              <p className="text-muted-foreground text-sm mt-2">
+                Formato favorito: {profile.favorite_format}
+              </p>
+            )}
+            {profile.bio && <p className="text-muted-foreground mt-2 text-sm max-w-xl">{profile.bio}</p>}
+            {profile.website_url && (
+              <a
+                href={profile.website_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary text-sm mt-2 inline-block"
+              >
+                Website / link
+              </a>
+            )}
+            <div className="mt-4">
+              <DiscordCta variant="banner" />
+            </div>
           </div>
         </div>
       </div>

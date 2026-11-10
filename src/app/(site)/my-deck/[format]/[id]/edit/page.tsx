@@ -37,7 +37,7 @@ export default async function DeckEditPage(props: DeckEditPageProps) {
   const scryfallCards = await fetchCardsByNames(uniqueCardNames);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
+    <div className="min-h-screen  text-foreground py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-7xl">
         <header className="mb-10 flex flex-row gap-4">
           <Link href="/my-decks">
@@ -46,8 +46,10 @@ export default async function DeckEditPage(props: DeckEditPageProps) {
             </Button>
           </Link>
           <div className="title">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500">Editar Deck</h1>
-            <p className="text-lg text-neutral-300 mt-2">
+            <h1 className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl">
+              Editar Deck
+            </h1>
+            <p className="text-lg text-foreground/80 mt-2">
               Ajuste a sua estratégia e refina a sua lista.
             </p>
           </div>

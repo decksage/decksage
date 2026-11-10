@@ -1,7 +1,7 @@
 import { createClient } from '@/app/utils/supabase/server';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Metadata } from 'next';
 import FeedbackForm from './components/FeedbackForm';
+import PageHeader from '../components/page/PageHeader';
 
 export const metadata: Metadata = {
   title: 'Feedback - DeckSage',
@@ -18,35 +18,32 @@ export default async function FeedbackPage() {
   let userEmail = '';
 
   if (user) {
-    // Try to get name from metadata or profile
     userName = user.user_metadata?.full_name || user.user_metadata?.name || '';
     userEmail = user.email || '';
 
     if (!userName) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('name')
+        .select('full_name')
         .eq('id', user.id)
-        .single();
-      if (profile) userName = profile.name;
+        .maybeSingle();
+      if (profile?.full_name) userName = profile.full_name;
     }
   }
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-      <Card className="w-full max-w-md bg-neutral-900 border-neutral-800">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-amber-500">
-            Deixe seu Feedback
-          </CardTitle>
-          <CardDescription className="text-center text-neutral-400">
-            Sua opinião é fundamental para evoluirmos o DeckSage.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+    <>
+      <PageHeader
+        kicker="Produto"
+        title="Feedback"
+        description="Sugestão, elogio ou problema. Sua mensagem chega direto para a equipe."
+        className="border-b-0"
+      />
+      <div className="mx-auto max-w-xl px-6 pb-20">
+        <div className="frame p-6 [--cut:14px] sm:p-8">
           <FeedbackForm user={user} userName={userName} userEmail={userEmail} />
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </>
   );
 }

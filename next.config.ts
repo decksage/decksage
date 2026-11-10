@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
     // Configura um tempo de cache longo (31 dias) para reduzir reotimizações
     minimumCacheTTL: 2678400,
     // Limita as qualidades das imagens para reduzir transformações

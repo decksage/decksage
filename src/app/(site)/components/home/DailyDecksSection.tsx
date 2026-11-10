@@ -13,7 +13,7 @@ import { Swords, AlertTriangle } from 'lucide-react';
 // Este componente imita a aparência do DailyDeckItem enquanto os dados carregam.
 function DeckItemSkeleton() {
   return (
-    <Card className="bg-neutral-900 border-neutral-800 h-full flex flex-col animate-pulse">
+    <Card className="bg-card border-white/10 h-full flex flex-col animate-pulse">
       <div className="relative w-full aspect-[5/3] bg-neutral-700 rounded-t-lg" />
       <div className="p-4 flex flex-col flex-grow">
         <Skeleton className="h-6 w-3/4 bg-neutral-700 rounded" />
@@ -59,11 +59,11 @@ export default function DailyDecksSection() {
       <div className="container mx-auto px-4">
         {/* Cabeçalho Melhorado */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-amber-500 flex items-center justify-center gap-3">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-primary flex items-center justify-center gap-3">
             <i className="ms ms-shadow ms-2x" /> {/* Ícone de mana "shadow" */}
             Decks em Destaque do Dia
           </h2>
-          <p className="mt-3 text-lg text-neutral-400 max-w-2xl mx-auto">
+          <p className="mt-3 text-lg text-muted-foreground max-w-2xl mx-auto">
             Descubra novas estratégias e listas populares selecionadas pela nossa comunidade e
             equipa.
           </p>
@@ -83,19 +83,19 @@ export default function DailyDecksSection() {
             <div className="sm:col-span-2 lg:col-span-3 text-center py-10 px-6 border-2 border-dashed border-red-500/30 bg-red-500/5 rounded-lg">
               <AlertTriangle className="h-12 w-12 text-red-400 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-red-400">Ocorreu um Erro</h3>
-              <p className="text-neutral-400 mt-2">{error}</p>
+              <p className="text-muted-foreground mt-2">{error}</p>
             </div>
           ) : dailyDecks.length > 0 ? (
             // Exibe os decks quando os dados são carregados
             dailyDecks.map((deck) => <DailyDeckItem key={deck.id} deck={deck} />)
           ) : (
             // Exibe um estado de "vazio" estilizado
-            <div className="sm:col-span-2 lg:col-span-3 text-center py-10 px-6 border-2 border-dashed border-neutral-700 rounded-lg">
+            <div className="sm:col-span-2 lg:col-span-3 text-center py-10 px-6 border-2 border-dashed border-white/15 rounded-lg">
               <Swords className="h-12 w-12 text-neutral-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-neutral-300">
+              <h3 className="text-xl font-semibold text-foreground/80">
                 Nenhum deck em destaque hoje.
               </h3>
-              <p className="text-neutral-500 mt-2">
+              <p className="text-muted-foreground mt-2">
                 Por favor, volte mais tarde para ver novas listas!
               </p>
             </div>

@@ -1,153 +1,46 @@
-// src/app/(site)/card/cardId/[cardId]/page.tsx
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
-
+import { cache } from 'react';
+import type { Metadata } from 'next';
+import { SearchX } from 'lucide-react';
 import { fetchCardById } from '@/app/lib/scryfall';
-import { ScryfallCard } from '@/app/lib/types';
-import { translateCardText } from '@/app/actions/aiActions';
+import EmptyState from '@/app/(site)/components/page/EmptyState';
+import CardDetailView from '../../components/CardDetailView';
 
-import CardDetailPageLayout from '../../components/CardDetailPageLayout';
-import CardImageDisplay from '../../components/CardImageDisplay';
-import CardDetailsDisplay from '../../components/CardDetailsDisplay';
-import CardHeaderInfo from '../../components/CardHeaderInfo';
-import CardTypeLine from '../../components/CardTypeLine';
-import CardTextDisplay from '../../components/CardTextDisplay';
-import CardFlavorText from '../../components/CardFlavorText';
-import CardPowerToughness from '../../components/CardPowerToughness';
-import CardRaritySetInfo from '../../components/CardRaritySetInfo';
-import { Separator } from '@/components/ui/separator';
-
-// No Next.js 15+, params é uma Promise
 interface PageProps {
   params: Promise<{ cardId: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
-  const resolvedParams = await params;
-  const cardId = resolvedParams.cardId ?? '';
+const getCard = cache((id: string) => fetchCardById(id));
 
-  if (!cardId) return { title: 'Carta não especificada' };
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { cardId } = await params;
+  const card = cardId ? await getCard(cardId) : null;
+  if (!card) return { title: 'Carta não encontrada' };
 
-  try {
-    const card = await fetchCardById(cardId);
-
-    if (!card) {
-      return { title: 'Carta não encontrada' };
-    }
-
-    return {
-      title: `${card.name} | MTG Deck Builder`,
-      description: card.oracle_text || `Detalhes da carta ${card.name}.`,
-      openGraph: {
-        title: card.name,
-        images: [card.image_uris?.art_crop || card.image_uris?.normal || ''],
-      },
-    };
-  } catch (error) {
-    return { title: 'Erro ao carregar carta' };
-  }
+  const art = card.image_uris?.art_crop ?? card.card_faces?.[0]?.image_uris?.art_crop;
+  return {
+    title: `${card.name} | MTG Deck Builder`,
+    description:
+      card.oracle_text || card.card_faces?.[0]?.oracle_text || `Detalhes da carta ${card.name}.`,
+    openGraph: { title: card.name, images: art ? [art] : undefined },
+  };
 }
 
 export default async function CardByIdPage({ params }: PageProps) {
-  // Resolve a Promise do params para evitar erro de runtime no Next.js 15+
-  const resolvedParams = await params;
-  const cardId = resolvedParams.cardId ?? '';
+  const { cardId } = await params;
+  const card = cardId ? await getCard(cardId) : null;
 
-  let card: ScryfallCard | null = null;
-  let errorMsg: string | null = null;
-
-  try {
-    if (!cardId || cardId === 'undefined') {
-      errorMsg = 'ID da carta não fornecido.';
-    } else {
-      card = await fetchCardById(cardId);
-    }
-  } catch (error: any) {
-    console.error('Erro inesperado ao buscar carta por ID:', error);
-    errorMsg = 'Erro interno ao processar a requisição.';
-  }
-
-  // Tratamento de segurança caso a carta não exista no Scryfall
   if (!card) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-neutral-950 text-white p-6">
-        <h1 className="text-2xl font-bold text-red-500">Carta não encontrada</h1>
-        <p className="mt-4 text-neutral-400">
-          {errorMsg || `O ID ${cardId} não retornou resultados.`}
-        </p>
+      <div className="container mx-auto px-4 py-20">
+        <EmptyState
+          icon={SearchX}
+          title="Carta não encontrada"
+          description="Esse link não corresponde a nenhuma carta. Tente buscar pelo nome."
+          action={{ href: '/search', label: 'Buscar cartas' }}
+        />
       </div>
     );
   }
 
-  // Lógica para cartas de face dupla (Transform) - Verifica se as faces têm imagens de fato
-  const isDoubleFaced =
-    Array.isArray(card.card_faces) && card.card_faces.length > 0 && !!card.card_faces[0].image_uris;
-
-  const displayCard = isDoubleFaced ? card.card_faces?.[0] : card;
-  const backCard = isDoubleFaced ? card.card_faces?.[1] : null;
-
-  // Tradução com verificação automática de cache no banco de dados
-  let translatedOracleText = '';
-  if (displayCard?.oracle_text) {
-    const result = await translateCardText(card.id, displayCard.name, displayCard.oracle_text);
-    translatedOracleText = result.translatedText || displayCard.oracle_text;
-  }
-
-  let translatedBackOracleText = '';
-  if (backCard?.oracle_text) {
-    const result = await translateCardText(card.id, backCard.name, backCard.oracle_text);
-    translatedBackOracleText = result.translatedText || backCard.oracle_text;
-  }
-
-  return (
-    <CardDetailPageLayout>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-        <div className="lg:col-span-2">
-          <CardImageDisplay
-            imageUrl={displayCard?.image_uris?.normal}
-            altText={displayCard?.name || ''}
-            backImageUrl={backCard?.image_uris?.normal}
-            backAltText={backCard?.name}
-          />
-        </div>
-        <div className="lg:col-span-3">
-          <CardDetailsDisplay>
-            <CardHeaderInfo name={displayCard?.name || ''} manaCost={displayCard?.mana_cost} />
-            <CardTypeLine typeLine={displayCard?.type_line} />
-            <Separator className="bg-neutral-700 my-4" />
-
-            {/* Componente que alterna entre texto original e traduzido do cache */}
-            <CardTextDisplay
-              originalText={displayCard?.oracle_text}
-              translatedText={translatedOracleText}
-            />
-
-            <CardFlavorText flavorText={displayCard?.flavor_text} />
-            <CardPowerToughness power={displayCard?.power} toughness={displayCard?.toughness} />
-            <CardRaritySetInfo rarity={card.rarity} setName={card.set_name} />
-
-            {isDoubleFaced && backCard && (
-              <>
-                <Separator className="bg-amber-500/50 my-8" />
-                <CardHeaderInfo name={backCard.name} manaCost={backCard.mana_cost} />
-                <CardTypeLine typeLine={backCard.type_line} />
-                <Separator className="bg-neutral-700 my-4" />
-                <CardTextDisplay
-                  originalText={backCard.oracle_text}
-                  translatedText={translatedBackOracleText}
-                />
-                <CardFlavorText flavorText={backCard.flavor_text} />
-                <CardPowerToughness power={backCard.power} toughness={backCard.toughness} />
-                {/* As propriedades de raridade e edição são da carta, não da face */}
-                <CardRaritySetInfo rarity={card.rarity} setName={card.set_name} />
-              </>
-            )}
-          </CardDetailsDisplay>
-        </div>
-      </div>
-    </CardDetailPageLayout>
-  );
+  return <CardDetailView card={card} />;
 }

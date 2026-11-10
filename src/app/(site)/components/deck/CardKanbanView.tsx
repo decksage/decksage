@@ -49,12 +49,12 @@ export default function CardKanbanView({ cards }: CardKanbanViewProps) {
   const columns: ColumnKey[] = ['0', '1', '2', '3', '4', '5', '6+', 'Terrenos'];
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800 p-4">
+    <Card className="bg-card border-white/10 p-4">
       <CardContent className="p-0">
         <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
           {columns.map((columnKey) => (
             <div key={columnKey} className="min-w-[100px]">
-              <h3 className="text-lg font-semibold text-amber-500 mb-3 text-center border-b border-neutral-700 pb-1">
+              <h3 className="text-lg font-semibold text-primary mb-3 text-center border-b border-white/15 pb-1">
                 {columnKey === 'Terrenos' ? 'Terrenos' : `CMC ${columnKey}`}
               </h3>
               <div className="relative min-h-[400px] space-y-[-120px]">
@@ -70,7 +70,7 @@ export default function CardKanbanView({ cards }: CardKanbanViewProps) {
                       >
                         <div className="relative">
                           {card.count > 1 && (
-                            <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-amber-500 rounded-full text-black text-xs font-bold z-20 flex items-center justify-center p-0">
+                            <Badge className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full text-black text-xs font-bold z-20 flex items-center justify-center p-0">
                               {card.count}
                             </Badge>
                           )}
@@ -89,7 +89,7 @@ export default function CardKanbanView({ cards }: CardKanbanViewProps) {
                       </div>
                     ))
                 ) : (
-                  <p className="text-neutral-500 text-xs text-center pt-4">Nenhuma carta</p>
+                  <p className="text-muted-foreground text-xs text-center pt-4">Nenhuma carta</p>
                 )}
               </div>
             </div>

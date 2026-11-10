@@ -32,7 +32,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
     // AJUSTE: Envolvemos tudo com o TooltipProvider para otimizar
     <TooltipProvider delayDuration={200}>
       <Link href={`/my-deck/${deck.format}/${deck.id}`} className="block h-full">
-        <Card className="bg-neutral-900 py-0 border-neutral-800 h-full flex flex-col group transition-all duration-300 hover:border-amber-500 overflow-hidden">
+        <Card className="bg-card py-0 border-white/10 h-full flex flex-col group transition-all duration-300 hover:border-primary overflow-hidden">
           <div className="relative w-full aspect-[5/3]">
             <Image
               src={
@@ -50,14 +50,14 @@ export default function DeckCard({ deck }: DeckCardProps) {
             </div>
             <div className="absolute bottom-0 left-0 p-4 text-white w-full">
               <CardTitle className="text-xl truncate">{deck.name}</CardTitle>
-              <CardDescription className="capitalize text-neutral-300 mt-1">
+              <CardDescription className="capitalize text-foreground/80 mt-1">
                 {deck.format}
               </CardDescription>
               <div className="flex justify-between items-center mt-2">
-                <p className="text-xs text-neutral-400 flex items-center gap-1.5">
+                <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                   {/* <UserIcon size={12} /> Por @{creatorUsername || 'desconhecido'} */}
                 </p>
-                <div className="flex items-center gap-3 text-xs text-neutral-300">
+                <div className="flex items-center gap-3 text-xs text-foreground/80">
                   {/* AJUSTE: Ícone de Views com Tooltip */}
                   <Tooltip>
                     <TooltipTrigger asChild>

@@ -133,7 +133,7 @@ export default function InteractiveCard({
         >
           {CardImage}
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-60 bg-neutral-900 border-neutral-700 text-neutral-200">
+        <ContextMenuContent className="w-60 bg-card border-white/15 text-foreground">
           <ContextMenuItem onSelect={() => onViewDetails(card)} className="cursor-pointer">
             <BookOpen className="mr-2 h-4 w-4" /> Ver Detalhes / Traduzir
           </ContextMenuItem>
@@ -145,7 +145,7 @@ export default function InteractiveCard({
                 <>
                   <ContextMenuItem
                     onSelect={() => actions.returnCommanderToZone(card.instanceId)}
-                    className="cursor-pointer text-amber-400 focus:text-amber-400"
+                    className="cursor-pointer text-primary focus:text-primary"
                   >
                     <Crown className="mr-2 h-4 w-4" /> Voltar p/ Zona de Comando
                   </ContextMenuItem>

@@ -62,18 +62,18 @@ export default function DeckHeader({
             <ArrowLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </Button>
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-amber-500 break-words mb-2">
+            <h1 className="text-3xl sm:text-4xl font-bold text-primary break-words mb-2">
               {deck.name}
             </h1>
-            <div className="flex flex-wrap items-center gap-2 text-base sm:text-lg text-neutral-400 capitalize">
-              <span className="bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full text-sm font-semibold border border-amber-500/20">
+            <div className="flex flex-wrap items-center gap-2 text-base sm:text-lg text-muted-foreground capitalize">
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold border border-amber-500/20">
                 {deck.format}
               </span>
-              <span className="bg-neutral-800 text-neutral-300 px-3 py-1 rounded-full text-sm font-medium border border-neutral-700">
+              <span className="bg-white/[0.04] text-foreground/80 px-3 py-1 rounded-full text-sm font-medium border border-white/15">
                 {mainCount} Main
               </span>
               {sideCount > 0 && (
-                <span className="bg-neutral-800 text-neutral-400 px-3 py-1 rounded-full text-sm font-medium border border-neutral-700">
+                <span className="bg-white/[0.04] text-muted-foreground px-3 py-1 rounded-full text-sm font-medium border border-white/15">
                   {sideCount} Side
                 </span>
               )}
@@ -84,7 +84,7 @@ export default function DeckHeader({
                     por{' '}
                     <Link
                       href={`/profile/${creatorProfile.username || creatorProfile.id}`}
-                      className="hover:text-amber-400 transition-colors font-medium border-b border-transparent hover:border-amber-400"
+                      className="hover:text-primary transition-colors font-medium border-b border-transparent hover:border-amber-400"
                     >
                       {creatorProfile.full_name || creatorProfile.username}
                     </Link>
@@ -122,7 +122,7 @@ export default function DeckHeader({
                 <Pencil className="mr-0 sm:mr-2 h-5 w-5" />
                 <span className="hidden sm:inline">Editar</span>
               </Button>
-              <Card className="bg-neutral-800 p-2 flex items-center justify-center">
+              <Card className="bg-white/[0.04] p-2 flex items-center justify-center">
                 <DeckPrivacyToggle deckId={deck.id} initialIsPublic={deck.is_public} />
               </Card>
             </div>

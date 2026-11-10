@@ -1,42 +1,71 @@
 /* eslint-disable no-undef */
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-export default function GlobalSearch() {
+export default function GlobalSearch({
+  className,
+  onSubmitted,
+}: {
+  className?: string;
+  onSubmitted?: () => void;
+}) {
   const [query, setQuery] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleSearch = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      if (!inputRef.current?.offsetParent) return;
+      e.preventDefault();
+      inputRef.current.focus();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
-      setIsSubmitting(true);
-      await router.push(`/search?q=${encodeURIComponent(query)}`);
-      setQuery('');
-      setIsSubmitting(false);
-    }
+    const q = query.trim();
+    if (!q) return;
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+    setQuery('');
+    inputRef.current?.blur();
+    onSubmitted?.();
   };
 
   return (
-    <form onSubmit={handleSearch} className="relative flex gap-2 w-full max-w-sm sm:max-w-md">
-      <Input
-        type="text"
-        placeholder="Nome, tipo, texto..."
+    <form onSubmit={handleSearch} role="search" className={cn('group relative w-full', className)}>
+      <label htmlFor={inputId} className="sr-only">
+        Buscar cartas
+      </label>
+      <Search
+        aria-hidden
+        className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground transition-colors group-focus-within:text-primary"
+      />
+      <input
+        ref={inputRef}
+        id={inputId}
+        type="search"
+        autoComplete="off"
+        placeholder="Buscar cartas…"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="bg-neutral-800 border-neutral-700 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm"
+        className="h-10 w-full rounded-md border border-input bg-white/[0.03] pl-9 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-colors hover:border-white/20 focus:border-primary/70 focus:bg-white/[0.05] focus:outline-none"
       />
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-amber-500 hover:bg-amber-600 text-black px-3 py-2 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      <kbd
+        aria-hidden
+        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 rounded border border-white/10 px-1.5 font-display text-[11px] text-muted-foreground group-focus-within:opacity-0"
       >
-        {isSubmitting ? <span className="animate-spin">⏳</span> : <span>🔍</span>}
-      </Button>
+        /
+      </kbd>
     </form>
   );
 }

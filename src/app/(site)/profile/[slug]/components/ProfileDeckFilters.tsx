@@ -19,7 +19,7 @@ export default function ProfileDeckFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-8">
-      <h3 className="text-sm font-semibold text-neutral-400 mr-2">Filtrar por formato:</h3>
+      <h3 className="text-sm font-semibold text-muted-foreground mr-2">Filtrar por formato:</h3>
 
       <Link href={`/profile/${slug}`}>
         <Button variant={!activeFormat ? 'default' : 'outline'} size="sm" className="rounded-full">

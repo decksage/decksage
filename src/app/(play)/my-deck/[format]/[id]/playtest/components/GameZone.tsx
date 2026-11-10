@@ -25,13 +25,13 @@ export default function GameZone({ zoneId, title, count, Icon, children }: GameZ
     <div ref={setNodeRef}>
       <Card
         className={cn(
-          'bg-neutral-800/50 border-neutral-700 text-center transition-all duration-200',
+          'bg-white/[0.04] border-white/15 text-center transition-all duration-200',
           // Adiciona um brilho quando uma carta está sobre a zona
           isOver && 'border-amber-400 shadow-lg shadow-amber-500/20',
         )}
       >
         <CardHeader className="p-2">
-          <CardTitle className="text-sm font-medium text-amber-400 flex items-center justify-center gap-2">
+          <CardTitle className="text-sm font-medium text-primary flex items-center justify-center gap-2">
             <Icon size={16} />
             {title}
           </CardTitle>

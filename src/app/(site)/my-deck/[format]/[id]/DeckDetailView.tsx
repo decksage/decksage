@@ -244,7 +244,7 @@ export default function DeckDetailView({
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 p-4 sm:p-8">
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-8">
       <div className="max-w-screen-xl mx-auto">
         {!isOwner && <CreatorHeader profile={creatorProfile} />}
         <DeckHeader
@@ -287,8 +287,8 @@ export default function DeckDetailView({
               <PriceDisplay priceData={selectedCardPrice} isLoading={isPriceLoading} />
             </div>
             <div className="flex justify-end items-center gap-4">
-              <span className="text-sm text-neutral-400">Visualizar como:</span>
-              <div className="flex gap-1 bg-neutral-800 p-1 rounded-md">
+              <span className="text-sm text-muted-foreground">Visualizar como:</span>
+              <div className="flex gap-1 bg-white/[0.04] p-1 rounded-md">
                 {currentUser && userPhysicalCollection.size > 0 && (
                   <Button
                     variant={showPhysicalCards ? 'secondary' : 'ghost'}

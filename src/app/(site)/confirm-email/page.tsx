@@ -1,51 +1,33 @@
-// app/confirm-email/page.tsx
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
 import { MailCheck } from 'lucide-react';
+
+export const metadata = { title: 'Confirme seu e-mail | DeckSage' };
 
 export default function ConfirmEmailPage() {
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center p-4 bg-neutral-950"
-      style={{
-        backgroundImage: `radial-gradient(circle at top right, rgba(217, 119, 6, 0.08), transparent 50%),
-                          radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.08), transparent 60%)`,
-      }}
-    >
-      <div className="w-full max-w-lg p-8 text-center bg-neutral-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-neutral-700/60">
-        <div className="flex justify-center mb-6">
-          <div className="p-4 bg-green-500/10 rounded-full border border-green-500/30">
-            <MailCheck className="h-12 w-12 text-green-400" />
-          </div>
-        </div>
-
-        <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-amber-500">Verifique o seu e-mail</h1>
-          <p className="text-neutral-300 mt-3 text-lg">
-            Enviámos um link de confirmação para a sua caixa de entrada.
-          </p>
-        </header>
-
-        <div className="text-neutral-400 space-y-4">
-          <p>
-            Por favor, clique no link nesse e-mail para ativar a sua conta. Se não o encontrar,
-            verifique a sua pasta de spam.
-          </p>
-          <p className="text-sm">
-            Depois de confirmar, poderá fazer login e aceder a todas as funcionalidades.
-          </p>
-        </div>
-
-        <div className="mt-8">
-          <Link href="/login">
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto text-amber-500 border-amber-400 hover:bg-amber-400 hover:text-black px-8 py-6 text-base"
-            >
-              Voltar para o Login
-            </Button>
-          </Link>
-        </div>
+    <div className="relative isolate flex min-h-[70vh] items-center justify-center px-4 py-16">
+      <div
+        aria-hidden
+        className="absolute left-1/2 top-0 -z-10 h-[28rem] w-[46rem] -translate-x-1/2 bg-[radial-gradient(closest-side,color-mix(in_oklch,var(--primary)_14%,transparent),transparent)]"
+      />
+      <div className="frame w-full max-w-lg p-8 text-center sm:p-10">
+        <span className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300">
+          <MailCheck className="h-8 w-8" />
+        </span>
+        <p className="kicker mt-6 justify-center">Quase lá</p>
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight">
+          Verifique seu e-mail
+        </h1>
+        <p className="mt-4 text-muted-foreground">
+          Enviamos um link de confirmação. Clique nele para ativar a conta. Se não encontrar, olhe a
+          pasta de spam.
+        </p>
+        <Link
+          href="/login"
+          className="mt-8 inline-flex h-11 items-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+        >
+          Ir para o login
+        </Link>
       </div>
     </div>
   );

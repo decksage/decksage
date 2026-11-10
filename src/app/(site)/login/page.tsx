@@ -3,7 +3,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,9 @@ import { createClient } from '@/app/utils/supabase/client';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextPath = searchParams.get('next');
+  const destination = nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//') ? nextPath : '/';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -33,8 +36,6 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      console.log('Login com email/senha bem-sucedido');
-
       // Pequeno delay para garantir que o cookie da sessão seja propagado
       await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -42,7 +43,7 @@ export default function LoginPage() {
       router.refresh();
 
       // Redireciona para a Home ou Dashboard
-      router.replace('/');
+      router.replace(destination);
     } catch (error: any) {
       console.error('Login Error:', error);
       if (error.message === 'Invalid login credentials') {
@@ -65,8 +66,6 @@ export default function LoginPage() {
         },
       });
       if (error) throw error;
-
-      console.log('Iniciando login com Google');
     } catch (error: any) {
       console.error('Google Login Error:', error);
       setError(error.message || 'Erro ao fazer login com Google.');
@@ -75,36 +74,35 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex items-center justify-center p-4 bg-neutral-950"
+      className="min-h-screen w-full flex items-center justify-center p-4"
       style={{
         backgroundImage: `radial-gradient(circle at top right, rgba(217, 119, 6, 0.1), transparent 40%),
                           radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 50%)`,
       }}
     >
-      <div className="w-full max-w-md p-8 space-y-8 bg-neutral-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-neutral-700/60">
+      <div className="w-full max-w-md p-8 space-y-8 bg-card/80 backdrop-blur-sm rounded-xl shadow-2xl border border-white/15">
         <header className="text-center">
-          <h1 className="text-4xl font-extrabold text-amber-500">Bem-vindo de volta!</h1>
-          <p className="text-neutral-300 mt-2">Faça login para continuar a sua jornada.</p>
+          <p className="kicker justify-center">Entrar</p>
+          <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight">
+            Bem-vindo de volta
+          </h1>
+          <p className="text-foreground/80 mt-2">Faça login para continuar a sua jornada.</p>
         </header>
 
-        <Button
-          onClick={handleLoginWithGoogle}
-          variant="outline"
-          className="w-full text-lg py-6 bg-white text-amber-500 hover:bg-neutral-200 flex items-center gap-3 transition-transform hover:scale-105"
-        >
+        <Button onClick={handleLoginWithGoogle} variant="outline" className="h-12 w-full">
           <Chrome size={22} />
           Continuar com Google
         </Button>
 
         <div className="flex items-center">
-          <div className="flex-grow border-t border-neutral-700"></div>
-          <span className="flex-shrink mx-4 text-neutral-500 text-xs uppercase">OU</span>
-          <div className="flex-grow border-t border-neutral-700"></div>
+          <div className="flex-grow border-t border-white/15"></div>
+          <span className="flex-shrink mx-4 text-muted-foreground text-xs uppercase">OU</span>
+          <div className="flex-grow border-t border-white/15"></div>
         </div>
 
         <form onSubmit={handleSignIn} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-neutral-400">
+            <Label htmlFor="email" className="text-muted-foreground">
               Email
             </Label>
             <Input
@@ -113,18 +111,18 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-neutral-800 border-neutral-700 focus:ring-amber-500 focus:border-amber-500"
+              className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               placeholder="seu.email@exemplo.com"
             />
           </div>
           <div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-neutral-400">
+              <Label htmlFor="password" className="text-muted-foreground">
                 Senha
               </Label>
               <Link
                 href="/forgot-password"
-                className="text-xs font-medium text-amber-500 hover:underline"
+                className="text-xs font-medium text-primary hover:underline"
               >
                 Esqueceu a senha?
               </Link>
@@ -135,7 +133,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-2 bg-neutral-800 border-neutral-700 focus:ring-amber-500 focus:border-amber-500"
+              className="mt-2 bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               placeholder="••••••••"
             />
           </div>
@@ -148,19 +146,15 @@ export default function LoginPage() {
             </Alert>
           )}
 
-          <Button
-            type="submit"
-            className="w-full text-lg py-6 bg-amber-500 text-black hover:bg-amber-600"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full text-lg py-6" disabled={isSubmitting}>
             {isSubmitting ? 'Entrando...' : 'Entrar com Email'}
           </Button>
         </form>
 
         <div className="mt-6 text-center text-sm">
-          <p className="text-neutral-400">
+          <p className="text-muted-foreground">
             Não tem uma conta?{' '}
-            <Link href="/signup" className="font-medium text-amber-500 hover:underline">
+            <Link href="/signup" className="font-medium text-primary hover:underline">
               Registre-se
             </Link>
           </p>

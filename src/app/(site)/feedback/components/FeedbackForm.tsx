@@ -51,7 +51,7 @@ export default function FeedbackForm({ user, userName, userEmail }: FeedbackForm
               id="user_name"
               name="user_name"
               placeholder="Seu nome"
-              className="bg-neutral-800 border-neutral-700"
+              className="bg-white/[0.04] border-white/15"
             />
           </div>
 
@@ -62,18 +62,18 @@ export default function FeedbackForm({ user, userName, userEmail }: FeedbackForm
               name="user_email"
               type="email"
               placeholder="seu@email.com"
-              className="bg-neutral-800 border-neutral-700"
+              className="bg-white/[0.04] border-white/15"
             />
           </div>
         </>
       )}
 
       {user && (
-        <div className="p-4 bg-neutral-800/50 rounded-lg border border-neutral-700 text-sm text-neutral-300">
+        <div className="p-4 bg-white/[0.04] rounded-lg border border-white/15 text-sm text-foreground/80">
           <p>
             Logado como <strong>{userName || 'Usuário'}</strong>
           </p>
-          <p className="text-neutral-500">{userEmail}</p>
+          <p className="text-muted-foreground">{userEmail}</p>
           {/* We don't need hidden inputs for user_name/email if logged in, the server action gets it from session */}
         </div>
       )}
@@ -81,10 +81,10 @@ export default function FeedbackForm({ user, userName, userEmail }: FeedbackForm
       <div className="space-y-2">
         <Label htmlFor="feedback_type">Tipo de Feedback</Label>
         <Select name="feedback_type" required>
-          <SelectTrigger className="bg-neutral-800 border-neutral-700">
+          <SelectTrigger className="bg-white/[0.04] border-white/15">
             <SelectValue placeholder="Selecione um tipo" />
           </SelectTrigger>
-          <SelectContent className="bg-neutral-800 border-neutral-700">
+          <SelectContent className="bg-white/[0.04] border-white/15">
             <SelectItem value="Sugestão">💡 Sugestão</SelectItem>
             <SelectItem value="Elogio">❤️ Elogio</SelectItem>
             <SelectItem value="Problema">🐛 Problema / Bug</SelectItem>
@@ -99,17 +99,13 @@ export default function FeedbackForm({ user, userName, userEmail }: FeedbackForm
           id="content"
           name="content"
           placeholder="Conte-nos o que você está pensando..."
-          className="bg-neutral-800 border-neutral-700 min-h-[120px]"
+          className="bg-white/[0.04] border-white/15 min-h-[120px]"
           required
           minLength={10}
         />
       </div>
 
-      <Button
-        type="submit"
-        disabled={isPending}
-        className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-2"
-      >
+      <Button type="submit" disabled={isPending} className="w-full w-full">
         {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
         {isPending ? 'Enviando...' : 'Enviar Feedback'}
       </Button>

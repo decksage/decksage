@@ -1,12 +1,10 @@
+/* eslint-disable no-unused-vars */
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useDeferredValue, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Calendar, Layers, X, FilterX } from 'lucide-react';
+import { Search, X, FilterX, SearchX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -14,136 +12,118 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import EmptyState from '@/app/(site)/components/page/EmptyState';
 import type { ScryfallSet } from '@/app/lib/scryfall';
 
-interface CollectionsViewProps {
-  sets: ScryfallSet[];
-}
+const PAGE_SIZE = 30;
 
-export default function CollectionsView({ sets }: CollectionsViewProps) {
+const SET_TYPE_LABELS: Record<string, string> = {
+  expansion: 'Expansão',
+  core: 'Série principal',
+  masters: 'Masters',
+  commander: 'Commander',
+  planechase: 'Planechase',
+  archenemy: 'Archenemy',
+  vanguard: 'Vanguard',
+  funny: 'Humor',
+  starter: 'Starter',
+  box: 'Box set',
+  promo: 'Promocional',
+  token: 'Tokens',
+  memorabilia: 'Memorabilia',
+};
+
+const getSetTypeLabel = (type: string) =>
+  SET_TYPE_LABELS[type] || type.charAt(0).toUpperCase() + type.slice(1).replace(/_/g, ' ');
+
+const normalizeText = (text: string) =>
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+const TRIGGER = 'h-11 border-white/10 bg-white/[0.03] focus-visible:border-primary/60';
+
+export default function CollectionsView({ sets }: { sets: ScryfallSet[] }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState<string>('all');
-  const [yearFilter, setYearFilter] = useState<string>('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20;
-
-  // Normaliza o texto para remover acentos na busca
-  const normalizeText = (text: string) => {
-    return text
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
-  };
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [yearFilter, setYearFilter] = useState('all');
+  const [visible, setVisible] = useState(PAGE_SIZE);
+  const deferredQuery = useDeferredValue(searchQuery);
 
   const filteredSets = useMemo(() => {
-    const query = normalizeText(searchQuery);
+    const query = normalizeText(deferredQuery.trim());
     return sets.filter((set) => {
       const matchesSearch =
-        normalizeText(set.name).includes(query) || normalizeText(set.code).includes(query);
-
+        !query || normalizeText(set.name).includes(query) || set.code.toLowerCase().includes(query);
       const matchesType = typeFilter === 'all' || set.set_type === typeFilter;
-
-      const setYear = set.released_at?.split('-')[0];
-      const matchesYear = yearFilter === 'all' || setYear === yearFilter;
-
+      const matchesYear = yearFilter === 'all' || set.released_at?.startsWith(yearFilter);
       return matchesSearch && matchesType && matchesYear;
     });
-  }, [sets, searchQuery, typeFilter, yearFilter]);
+  }, [sets, deferredQuery, typeFilter, yearFilter]);
 
-  // Reset page when filters change
-  useMemo(() => {
-    setCurrentPage(1);
-  }, [searchQuery, typeFilter, yearFilter]);
+  const setTypes = useMemo(() => Array.from(new Set(sets.map((s) => s.set_type))).sort(), [sets]);
+  const years = useMemo(
+    () =>
+      Array.from(
+        new Set(sets.map((s) => s.released_at?.slice(0, 4)).filter(Boolean) as string[]),
+      ).sort((a, b) => Number(b) - Number(a)),
+    [sets],
+  );
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredSets.length / itemsPerPage);
-  const paginatedSets = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredSets.slice(startIndex, startIndex + itemsPerPage);
-  }, [filteredSets, currentPage]);
+  const hasFilters = !!searchQuery || typeFilter !== 'all' || yearFilter !== 'all';
+  const shown = filteredSets.slice(0, visible);
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Extract unique set types for filter
-  const setTypes = useMemo(() => {
-    const types = new Set(sets.map((s) => s.set_type));
-    return Array.from(types).sort();
-  }, [sets]);
-
-  // Extract unique years for filter
-  const years = useMemo(() => {
-    const uniqueYears = new Set(sets.map((s) => s.released_at?.split('-')[0]).filter(Boolean));
-    return Array.from(uniqueYears).sort((a, b) => Number(b) - Number(a)); // Descendente
-  }, [sets]);
-
-  const getSetTypeLabel = (type: string) => {
-    const labels: Record<string, string> = {
-      expansion: 'Expansão',
-      core: 'Série Principal',
-      masters: 'Masters',
-      commander: 'Commander',
-      planechase: 'Planechase',
-      archenemy: 'Archenemy',
-      vanguard: 'Vanguard',
-      funny: 'Humor',
-      starter: 'Starter',
-      box: 'Box Set',
-      promo: 'Promocional',
-      token: 'Tokens',
-      memorabilia: 'Memorabilia',
+  const withReset =
+    <T,>(setter: (value: T) => void) =>
+    (value: T) => {
+      setter(value);
+      setVisible(PAGE_SIZE);
     };
-    return labels[type] || type.charAt(0).toUpperCase() + type.slice(1);
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setTypeFilter('all');
+    setYearFilter('all');
+    setVisible(PAGE_SIZE);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-8">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-bold text-amber-500 mb-2">Coleções de Magic</h1>
-          <p className="text-neutral-400 max-w-2xl">
-            Explore todas as edições lançadas. Filtre por nome, código ou tipo de conjunto.
-          </p>
-        </div>
+    <div className="mx-auto max-w-7xl px-6 pb-20">
+      <div className="sticky-below-header z-30 -mx-6 border-b border-white/5 bg-background/85 px-6 py-4 backdrop-blur-xl">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <label htmlFor="collections-search" className="sr-only">
+              Buscar coleção
+            </label>
+            <input
+              id="collections-search"
+              type="search"
+              placeholder="Nome ou sigla — ex.: Bloomburrow, BLB"
+              value={searchQuery}
+              onChange={(e) => withReset(setSearchQuery)(e.target.value)}
+              className="h-11 w-full rounded-md border border-white/10 bg-white/[0.03] pl-10 pr-10 text-sm outline-none transition placeholder:text-muted-foreground/70 focus:border-primary/60 focus:bg-white/[0.05] [&::-webkit-search-cancel-button]:hidden"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                aria-label="Limpar busca"
+                onClick={() => withReset(setSearchQuery)('')}
+                className="absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-full text-muted-foreground hover:bg-white/10 hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
 
-        <div className="text-right text-sm text-neutral-500">
-          <Badge variant="outline" className="text-amber-500 border-amber-500/20">
-            {filteredSets.length} coleções encontradas
-          </Badge>
-        </div>
-      </div>
-
-      {/* Controls Section */}
-      <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 p-6 rounded-2xl flex flex-col xl:flex-row gap-6 sticky top-4 z-30 shadow-2xl shadow-black/50 transition-all duration-300">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 h-5 w-5 transition-colors group-focus-within:text-amber-500" />
-          <Input
-            placeholder="Buscar coleção por nome ou sigla (ex: Bloomburrow, BLB)..."
-            className="pl-12 pr-10 h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/50 transition-all text-base rounded-xl placeholder:text-neutral-600"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 p-1 hover:bg-neutral-800 rounded-full transition-all"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 w-full xl:w-auto">
-          <div className="w-full sm:w-48">
-            <Select value={yearFilter} onValueChange={setYearFilter}>
-              <SelectTrigger className="h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/50 rounded-xl">
+          <div className="flex gap-3">
+            <Select value={yearFilter} onValueChange={withReset(setYearFilter)}>
+              <SelectTrigger aria-label="Ano" className={`${TRIGGER} w-full sm:w-36`}>
                 <SelectValue placeholder="Ano" />
               </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-100 max-h-[300px]">
-                <SelectItem value="all">Todos os Anos</SelectItem>
+              <SelectContent className="max-h-[300px]">
+                <SelectItem value="all">Todos os anos</SelectItem>
                 {years.map((year) => (
                   <SelectItem key={year} value={year}>
                     {year}
@@ -151,15 +131,13 @@ export default function CollectionsView({ sets }: CollectionsViewProps) {
                 ))}
               </SelectContent>
             </Select>
-          </div>
 
-          <div className="w-full sm:w-64">
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/50 rounded-xl">
-                <SelectValue placeholder="Filtrar por tipo" />
+            <Select value={typeFilter} onValueChange={withReset(setTypeFilter)}>
+              <SelectTrigger aria-label="Tipo de coleção" className={`${TRIGGER} w-full sm:w-52`}>
+                <SelectValue placeholder="Tipo" />
               </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-100">
-                <SelectItem value="all">Todos os Tipos</SelectItem>
+              <SelectContent className="max-h-[320px]">
+                <SelectItem value="all">Todos os tipos</SelectItem>
                 {setTypes.map((type) => (
                   <SelectItem key={type} value={type}>
                     {getSetTypeLabel(type)}
@@ -167,135 +145,90 @@ export default function CollectionsView({ sets }: CollectionsViewProps) {
                 ))}
               </SelectContent>
             </Select>
-          </div>
 
-          {(searchQuery || typeFilter !== 'all' || yearFilter !== 'all') && (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setSearchQuery('');
-                setTypeFilter('all');
-                setYearFilter('all');
-              }}
-              className="h-12 px-4 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 rounded-xl transition-all"
-            >
-              <FilterX className="mr-2 h-4 w-4" />
-              Limpar
-            </Button>
-          )}
+            {hasFilters && (
+              <Button
+                variant="ghost"
+                onClick={clearFilters}
+                className="h-11 shrink-0 px-3 text-muted-foreground"
+              >
+                <FilterX className="h-4 w-4" />
+                <span className="hidden sm:inline">Limpar</span>
+              </Button>
+            )}
+          </div>
         </div>
+        <p className="mt-3 text-xs text-muted-foreground" aria-live="polite">
+          <span className="font-semibold text-foreground tabular-nums">{filteredSets.length}</span>{' '}
+          {filteredSets.length === 1 ? 'coleção' : 'coleções'}
+        </p>
       </div>
 
-      {/* Sets Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-        {paginatedSets.map((set) => (
-          <Link key={set.id} href={`/collections/${set.code}`} className="group">
-            <Card className="h-full bg-neutral-900/40 border-neutral-800 hover:border-amber-500/50 hover:bg-neutral-900/80 transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-xl group-hover:shadow-amber-500/10 overflow-hidden relative">
-              <CardContent className="p-4 flex flex-col items-center justify-between h-full gap-4">
-                {/* Decorative background glow */}
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                <div className="relative z-10 w-full flex-1 flex items-center justify-center p-4">
-                  {/* SVG Icon with invert filter for visibility on dark bg */}
+      {filteredSets.length === 0 ? (
+        <EmptyState
+          icon={SearchX}
+          title="Nenhuma coleção encontrada"
+          description="Tente outro nome, sigla ou remova os filtros."
+          action={
+            <Button variant="outline" onClick={clearFilters}>
+              Limpar filtros
+            </Button>
+          }
+          className="mt-10"
+        />
+      ) : (
+        <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {shown.map((set) => (
+            <li key={set.id}>
+              <Link
+                href={`/collections/${set.code}`}
+                className="frame group flex h-full flex-col p-4 hover:-translate-y-0.5 hover:[--frame-border:color-mix(in_oklch,var(--primary)_70%,transparent)]"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span className="rounded border border-white/10 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {set.code}
+                  </span>
+                  <span className="text-xs tabular-nums text-muted-foreground">
+                    {set.released_at?.slice(0, 4) || '—'}
+                  </span>
+                </div>
+                <div className="grid flex-1 place-items-center py-6">
                   <img
                     src={set.icon_svg_uri}
-                    alt={set.name}
-                    className="w-16 h-16 opacity-70 group-hover:opacity-100 transition-all duration-300 filter invert brightness-0 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                    alt=""
+                    width={56}
+                    height={56}
                     loading="lazy"
+                    decoding="async"
+                    className="h-14 w-14 opacity-60 brightness-0 invert transition duration-300 group-hover:scale-110 group-hover:opacity-100"
                   />
                 </div>
-
-                <div className="relative z-10 w-full text-center space-y-1">
-                  <h3 className="font-semibold text-neutral-200 group-hover:text-amber-400 transition-colors line-clamp-2 leading-tight min-h-[2.5em]">
-                    {set.name}
-                  </h3>
-
-                  <div className="flex items-center justify-center gap-3 text-xs text-neutral-500 group-hover:text-neutral-400">
-                    <span className="flex items-center gap-1 bg-neutral-950/50 px-2 py-0.5 rounded-full font-mono border border-neutral-800">
-                      {set.code.toUpperCase()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3 w-3" />
-                      {set.released_at?.split('-')[0] || 'N/A'}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Layers className="h-3 w-3" />
-                      {set.card_count}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-
-        {filteredSets.length === 0 && (
-          <div className="col-span-full py-12 text-center text-neutral-500 bg-neutral-900/20 rounded-xl border border-neutral-800 border-dashed">
-            <Search className="h-12 w-12 mx-auto mb-4 opacity-20" />
-            <p className="text-lg">Nenhuma coleção encontrada.</p>
-            <p className="text-sm">Tente buscar por outro termo.</p>
-          </div>
-        )}
-      </div>
-
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-8">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className="bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:text-amber-500"
-          >
-            Anterior
-          </Button>
-
-          <div className="flex items-center gap-2 mx-2">
-            {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-              // Logic to show a window of pages around current page
-              let pageNum = i + 1;
-              if (totalPages > 5) {
-                if (currentPage <= 3) {
-                  pageNum = i + 1;
-                } else if (currentPage >= totalPages - 2) {
-                  pageNum = totalPages - 4 + i;
-                } else {
-                  pageNum = currentPage - 2 + i;
-                }
-              }
-
-              return (
-                <Button
-                  key={pageNum}
-                  variant={currentPage === pageNum ? 'secondary' : 'ghost'}
-                  size="sm"
-                  onClick={() => handlePageChange(pageNum)}
-                  className={`w-8 h-8 p-0 ${currentPage === pageNum ? 'bg-amber-500 text-black hover:bg-amber-600' : 'text-neutral-400 hover:text-neutral-200'}`}
-                >
-                  {pageNum}
-                </Button>
-              );
-            })}
-          </div>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className="bg-neutral-900 border-neutral-800 hover:bg-neutral-800 hover:text-amber-500"
-          >
-            Próximo
-          </Button>
-        </div>
+                <h3 className="line-clamp-2 min-h-[2.5em] text-sm font-semibold leading-tight group-hover:text-primary">
+                  {set.name}
+                </h3>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {getSetTypeLabel(set.set_type)} · {set.card_count} cartas
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
 
-      <div className="text-center text-xs text-neutral-600 pb-8">
-        Mostrando {(currentPage - 1) * itemsPerPage + 1}-
-        {Math.min(currentPage * itemsPerPage, filteredSets.length)} de {filteredSets.length}{' '}
-        coleções
-      </div>
+      {visible < filteredSets.length && (
+        <div className="mt-10 flex flex-col items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={() => setVisible((v) => v + PAGE_SIZE)}
+            className="h-11 px-6"
+          >
+            Mostrar mais coleções
+          </Button>
+          <p className="text-xs text-muted-foreground">
+            {shown.length} de {filteredSets.length}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,10 +1,12 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-console */
+/* eslint-disable no-unused-vars */
 'use client';
 
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Search, ArrowLeft, FilterX, Layers, Calendar } from 'lucide-react';
+import { ArrowLeft, Calendar, FilterX, Layers, Search, SearchX } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -12,8 +14,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { CardItem } from './components/CardItem';
-import { SkeletonCard } from './components/SkeletonCard';
+import CardTile, { CardTileSkeleton } from '@/app/(site)/components/page/CardTile';
+import EmptyState from '@/app/(site)/components/page/EmptyState';
+import { MetaChip } from '@/app/(site)/components/page/PageHeader';
 import StartSetCollectionButton from './components/StartSetCollectionButton';
 
 interface SetInfo {
@@ -21,273 +24,296 @@ interface SetInfo {
   released_at: string;
   card_count: number;
   icon_svg_uri: string;
-  uri?: string;
-  search_uri?: string;
 }
 
 interface CollectionDetailViewProps {
   setInfo: SetInfo;
   initialCards: any[];
+  initialNextPage: string | null;
   setCode: string;
   existingCollectionId?: string | null;
   isAuthenticated?: boolean;
 }
 
+const RARITIES = [
+  ['common', 'Comum'],
+  ['uncommon', 'Incomum'],
+  ['rare', 'Rara'],
+  ['mythic', 'Mítica'],
+] as const;
+const COLORS = [
+  ['w', 'Branco'],
+  ['u', 'Azul'],
+  ['b', 'Preto'],
+  ['r', 'Vermelho'],
+  ['g', 'Verde'],
+  ['m', 'Multicolor'],
+  ['c', 'Incolor'],
+] as const;
+const TYPES = [
+  ['creature', 'Criatura'],
+  ['instant', 'Instantânea'],
+  ['sorcery', 'Feitiço'],
+  ['enchantment', 'Encantamento'],
+  ['artifact', 'Artefato'],
+  ['land', 'Terreno'],
+  ['planeswalker', 'Planeswalker'],
+] as const;
+
+function buildUrl(setCode: string, search: string, rarity: string, color: string, type: string) {
+  let query = `e:${setCode}`;
+  if (search.trim()) query += ` ${search.trim()}`;
+  if (rarity !== 'all') query += ` r:${rarity}`;
+  if (color !== 'all') query += ` c:${color}`;
+  if (type !== 'all') query += ` t:${type}`;
+  return `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&order=set`;
+}
+
+const GRID = 'grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5';
+const TRIGGER = 'h-11 w-full border-white/10 bg-white/[0.03] lg:w-40';
+
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly (readonly [string, string])[];
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger aria-label={label} className={TRIGGER}>
+        <SelectValue placeholder={label} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="all">{label}: todas</SelectItem>
+        {options.map(([v, l]) => (
+          <SelectItem key={v} value={v}>
+            {l}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
+
 export default function CollectionDetailView({
   setInfo,
   initialCards,
+  initialNextPage,
   setCode,
   existingCollectionId = null,
   isAuthenticated = false,
 }: CollectionDetailViewProps) {
   const [cards, setCards] = useState<any[]>(initialCards);
-  const [nextPage, setNextPage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [nextPage, setNextPage] = useState<string | null>(initialNextPage);
+  const [loading, setLoading] = useState<'append' | 'replace' | null>(null);
 
-  // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [rarityFilter, setRarityFilter] = useState('all');
   const [colorFilter, setColorFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
 
-  const observer = useRef<IntersectionObserver | undefined>(undefined);
+  const requestId = useRef(0);
+  const lastUrl = useRef(buildUrl(setCode, '', 'all', 'all', 'all'));
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  // Initial fetch for pagination logic if needed, but we might want to rely on the search API for filtering
-  // Scryfall API allows filtering in the query string.
-  // Ideally, we should rebuild the query URL when filters change.
+  const hasFilters =
+    !!searchQuery || rarityFilter !== 'all' || colorFilter !== 'all' || typeFilter !== 'all';
 
-  const buildSearchUrl = useCallback(
-    (pageUrl?: string) => {
-      if (pageUrl) return pageUrl;
+  const load = async (url: string, append: boolean) => {
+    const id = ++requestId.current;
+    setLoading(append ? 'append' : 'replace');
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      if (id !== requestId.current) return;
+      const list = data.object === 'error' ? [] : (data.data ?? []);
+      setCards((prev) => (append ? [...prev, ...list] : list));
+      setNextPage(data.has_more ? data.next_page : null);
+    } catch (error) {
+      if (id === requestId.current) console.error('Erro ao buscar cartas:', error);
+    } finally {
+      if (id === requestId.current) setLoading(null);
+    }
+  };
 
-      let query = `e:${setCode}`;
-      if (searchQuery) query += ` ${searchQuery}`;
-      if (rarityFilter !== 'all') query += ` r:${rarityFilter}`;
-      if (colorFilter !== 'all') query += ` c:${colorFilter}`;
-      if (typeFilter !== 'all') query += ` t:${typeFilter}`;
-
-      return `https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}&order=set`;
-    },
-    [setCode, searchQuery, rarityFilter, colorFilter, typeFilter],
-  );
-
-  const fetchCards = useCallback(
-    async (isNewSearch = false) => {
-      if (loading) return;
-      setLoading(true);
-
-      try {
-        const url = isNewSearch ? buildSearchUrl() : nextPage;
-        if (!url) {
-          setLoading(false);
-          return;
-        }
-
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.code === 'not_found') {
-          setCards([]);
-          setHasMore(false);
-          setNextPage(null);
-        } else {
-          setCards((prev) => (isNewSearch ? data.data : [...prev, ...data.data]));
-          setNextPage(data.has_more ? data.next_page : null);
-          setHasMore(data.has_more);
-        }
-      } catch (error) {
-        console.error('Error fetching cards:', error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [buildSearchUrl, nextPage, loading],
-  );
-
-  // Effect to trigger search when filters change
   useEffect(() => {
-    // Debounce search query could be added here if needed, sticking to simple effect for now
-    const timer = setTimeout(() => {
-      fetchCards(true);
-    }, 300);
+    const url = buildUrl(setCode, searchQuery, rarityFilter, colorFilter, typeFilter);
+    if (url === lastUrl.current) return;
+    lastUrl.current = url;
+    const timer = setTimeout(() => load(url, false), searchQuery ? 300 : 0);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, rarityFilter, colorFilter, typeFilter]); // Re-run when filters change
+  }, [setCode, searchQuery, rarityFilter, colorFilter, typeFilter]);
 
-  const lastCardRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
+  useEffect(() => {
+    const node = sentinelRef.current;
+    if (!node || !nextPage || loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) load(nextPage, true);
+      },
+      { rootMargin: '600px' },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [nextPage, loading]);
 
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore && nextPage) {
-          fetchCards(false);
-        }
-      });
+  const clearFilters = () => {
+    setSearchQuery('');
+    setRarityFilter('all');
+    setColorFilter('all');
+    setTypeFilter('all');
+  };
 
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore, nextPage, fetchCards],
-  );
+  const year = setInfo.released_at?.slice(0, 4);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
-      {/* Header with Glassmorphism */}
-      <header className="relative bg-neutral-900 border-b border-neutral-800 pb-8 pt-8 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent pointer-events-none" />
-
-        <div className="container mx-auto max-w-7xl relative z-10">
+    <>
+      <header className="relative isolate overflow-hidden">
+        <div
+          aria-hidden
+          className="absolute -left-40 -top-56 -z-10 h-[28rem] w-[46rem] bg-[radial-gradient(closest-side,color-mix(in_oklch,var(--primary)_13%,transparent),transparent)]"
+        />
+        <div className="mx-auto max-w-7xl px-6 pb-8 pt-10 sm:pt-12">
           <Link
             href="/collections"
-            className="inline-flex items-center text-neutral-400 hover:text-amber-500 mb-6 transition-colors"
+            className="rise group mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" /> Voltar para Coleções
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
+            Todas as coleções
           </Link>
-
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="bg-neutral-800 p-4 rounded-2xl shadow-xl border border-neutral-700/50">
-              <img
-                src={setInfo.icon_svg_uri}
-                alt={setInfo.name}
-                className="w-16 h-16 md:w-20 md:h-20 filter invert brightness-0 opacity-90"
-              />
-            </div>
-
-            <div className="flex-1 text-center md:text-left space-y-2">
-              <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
-                {setInfo.name}
-              </h1>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-sm text-neutral-400">
-                <span className="flex items-center gap-1.5 bg-neutral-800/50 px-3 py-1 rounded-full border border-neutral-700/50">
-                  <Calendar className="h-4 w-4 text-amber-500" />
-                  {setInfo.released_at}
-                </span>
-                <span className="flex items-center gap-1.5 bg-neutral-800/50 px-3 py-1 rounded-full border border-neutral-700/50">
-                  <Layers className="h-4 w-4 text-amber-500" />
-                  {setInfo.card_count} cartas
-                </span>
-                <span className="flex items-center gap-1.5 bg-neutral-800/50 px-3 py-1 rounded-full border border-neutral-700/50 uppercase font-mono tracking-wider">
-                  {setCode}
-                </span>
-              </div>
-              <div className="pt-3 flex justify-center md:justify-start">
-                <StartSetCollectionButton
-                  setCode={setCode}
-                  existingCollectionId={existingCollectionId}
-                  isAuthenticated={isAuthenticated}
+          <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+            <div className="flex items-center gap-5 sm:gap-7">
+              <div className="frame rise grid h-20 w-20 shrink-0 place-items-center sm:h-28 sm:w-28">
+                <img
+                  src={setInfo.icon_svg_uri}
+                  alt=""
+                  width={64}
+                  height={64}
+                  className="h-11 w-11 brightness-0 invert sm:h-16 sm:w-16"
                 />
               </div>
+              <div className="min-w-0">
+                <p className="rise kicker flex items-center gap-3 [--delay:40ms]">
+                  <span className="mana-strip h-1 w-8" aria-hidden />
+                  {setCode.toUpperCase()}
+                  {year && ` · ${year}`}
+                </p>
+                <h1 className="rise mt-3 text-balance font-display text-3xl font-bold uppercase leading-[0.95] tracking-tight [--delay:80ms] sm:text-5xl lg:text-6xl">
+                  {setInfo.name}
+                </h1>
+                <div className="rise mt-4 flex flex-wrap gap-2 [--delay:120ms]">
+                  <MetaChip icon={Layers}>
+                    <span className="font-semibold text-foreground tabular-nums">
+                      {setInfo.card_count}
+                    </span>{' '}
+                    cartas
+                  </MetaChip>
+                  {setInfo.released_at && (
+                    <MetaChip icon={Calendar}>
+                      {new Date(`${setInfo.released_at}T12:00:00`).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </MetaChip>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="rise [--delay:160ms]">
+              <StartSetCollectionButton
+                setCode={setCode}
+                existingCollectionId={existingCollectionId}
+                isAuthenticated={isAuthenticated}
+              />
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto max-w-7xl p-4 md:p-8 space-y-8">
-        {/* Filters Bar */}
-        <div className="bg-neutral-900/80 backdrop-blur-md border border-neutral-800 p-4 md:p-6 rounded-2xl flex flex-col xl:flex-row gap-4 sticky top-4 z-30 shadow-2xl shadow-black/50 transition-all duration-300">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 h-5 w-5" />
-            <Input
-              placeholder="Buscar carta..."
-              className="pl-12 h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/50 rounded-xl"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full xl:w-auto">
-            <Select value={rarityFilter} onValueChange={setRarityFilter}>
-              <SelectTrigger className="h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 rounded-xl">
-                <SelectValue placeholder="Raridade" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-100">
-                <SelectItem value="all">Todas as Raridades</SelectItem>
-                <SelectItem value="common">Comum</SelectItem>
-                <SelectItem value="uncommon">Incomum</SelectItem>
-                <SelectItem value="rare">Rara</SelectItem>
-                <SelectItem value="mythic">Mítica</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={colorFilter} onValueChange={setColorFilter}>
-              <SelectTrigger className="h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 rounded-xl">
-                <SelectValue placeholder="Cor" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-100">
-                <SelectItem value="all">Todas as Cores</SelectItem>
-                <SelectItem value="w">Branco</SelectItem>
-                <SelectItem value="u">Azul</SelectItem>
-                <SelectItem value="b">Preto</SelectItem>
-                <SelectItem value="r">Vermelho</SelectItem>
-                <SelectItem value="g">Verde</SelectItem>
-                <SelectItem value="m">Multicolor</SelectItem>
-                <SelectItem value="c">Incolor</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger className="h-12 bg-neutral-950/50 border-neutral-800 text-neutral-100 rounded-xl">
-                <SelectValue placeholder="Tipo" />
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-neutral-800 text-neutral-100">
-                <SelectItem value="all">Todos os Tipos</SelectItem>
-                <SelectItem value="creature">Criatura</SelectItem>
-                <SelectItem value="instant">Instantânea</SelectItem>
-                <SelectItem value="sorcery">Feitiço</SelectItem>
-                <SelectItem value="enchantment">Encantamento</SelectItem>
-                <SelectItem value="artifact">Artefato</SelectItem>
-                <SelectItem value="land">Terreno</SelectItem>
-                <SelectItem value="planeswalker">Planeswalker</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {(searchQuery ||
-              rarityFilter !== 'all' ||
-              colorFilter !== 'all' ||
-              typeFilter !== 'all') && (
+      <div className="mx-auto max-w-7xl px-6 pb-20">
+        <div className="sticky-below-header z-30 -mx-6 border-y border-white/5 bg-background/85 px-6 py-4 backdrop-blur-xl">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+            <div className="relative flex-1">
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <label htmlFor="set-card-search" className="sr-only">
+                Buscar carta nesta coleção
+              </label>
+              <input
+                id="set-card-search"
+                type="search"
+                placeholder="Buscar carta nesta coleção"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-11 w-full rounded-md border border-white/10 bg-white/[0.03] pl-10 pr-3 text-sm outline-none transition placeholder:text-muted-foreground/70 focus:border-primary/60 focus:bg-white/[0.05]"
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-3 lg:flex">
+              <FilterSelect
+                label="Raridade"
+                value={rarityFilter}
+                onChange={setRarityFilter}
+                options={RARITIES}
+              />
+              <FilterSelect
+                label="Cor"
+                value={colorFilter}
+                onChange={setColorFilter}
+                options={COLORS}
+              />
+              <FilterSelect
+                label="Tipo"
+                value={typeFilter}
+                onChange={setTypeFilter}
+                options={TYPES}
+              />
+            </div>
+            {hasFilters && (
               <Button
                 variant="ghost"
-                onClick={() => {
-                  setSearchQuery('');
-                  setRarityFilter('all');
-                  setColorFilter('all');
-                  setTypeFilter('all');
-                }}
-                className="h-12 text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 rounded-xl"
+                onClick={clearFilters}
+                className="h-11 shrink-0 text-muted-foreground"
               >
-                <FilterX className="h-4 w-4 mr-2" /> Limpar
+                <FilterX className="h-4 w-4" />
+                Limpar
               </Button>
             )}
           </div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
-          {cards.map((card, index) => {
-            const isLast = index === cards.length - 1;
-            return (
-              <div
-                ref={isLast ? lastCardRef : null}
-                key={card.id}
-                className="transform transition-transform duration-300 hover:scale-[1.03] hover:z-10"
-              >
-                <CardItem card={card} />
-                {/* Optional: Add price or other info below card if desired */}
-              </div>
-            );
-          })}
-          {loading && Array.from({ length: 10 }).map((_, i) => <SkeletonCard key={i} />)}
-        </div>
-
-        {!loading && cards.length === 0 && (
-          <div className="text-center py-20 text-neutral-500">
-            <Search className="h-16 w-16 mx-auto mb-4 opacity-20" />
-            <p className="text-xl font-medium">Nenhuma carta encontrada</p>
-            <p className="text-sm">Tente ajustar seus filtros de busca</p>
+        {!loading && cards.length === 0 ? (
+          <EmptyState
+            icon={SearchX}
+            title="Nenhuma carta encontrada"
+            description="Ajuste os filtros ou busque por outro nome."
+            action={
+              hasFilters ? (
+                <Button variant="outline" onClick={clearFilters}>
+                  Limpar filtros
+                </Button>
+              ) : undefined
+            }
+            className="mt-10"
+          />
+        ) : (
+          <div
+            className={`mt-8 ${GRID} transition-opacity duration-200 ${loading === 'replace' ? 'opacity-40' : ''}`}
+            aria-busy={!!loading}
+          >
+            {cards.map((card, i) => (
+              <CardTile key={card.id} card={card} eager={i < 5} />
+            ))}
+            {loading === 'append' &&
+              Array.from({ length: 10 }, (_, i) => <CardTileSkeleton key={`s-${i}`} />)}
           </div>
         )}
+        <div ref={sentinelRef} aria-hidden className="h-px" />
       </div>
-    </div>
+    </>
   );
 }

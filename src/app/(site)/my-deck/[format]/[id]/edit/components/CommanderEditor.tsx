@@ -122,7 +122,7 @@ export default function CommanderEditor({
   };
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
+    <Card className="bg-card border-white/10">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Crown /> Comandante
@@ -131,7 +131,7 @@ export default function CommanderEditor({
       <CardContent>
         {commanderCard ? (
           <div
-            className="flex flex-col gap-2 p-2 rounded-md bg-neutral-800"
+            className="flex flex-col gap-2 p-2 rounded-md bg-white/[0.04]"
             onMouseEnter={(e) => onCardHover(e, commanderCard.image_uris?.normal || null)}
             onMouseLeave={onCardLeave}
           >

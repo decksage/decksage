@@ -1,87 +1,99 @@
-/* eslint-disable no-console */
 /* eslint-disable no-undef */
-import { createClient } from '@/app/utils/supabase/server';
+/* eslint-disable no-console */
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { FileText } from 'lucide-react';
+import { createClient } from '@/app/utils/supabase/server';
 import PostCard from '@/app/(site)/components/blog/PostCard';
-import PaginationControls from '@/app/(site)/components/blog/PaginationControls';
+import BlogSidebar from '@/app/(site)/components/blog/BlogSidebar';
+import PageHeader, { MetaChip } from '@/app/(site)/components/page/PageHeader';
+import Pagination from '@/app/(site)/components/page/Pagination';
+import EmptyState from '@/app/(site)/components/page/EmptyState';
 
-// O tipo das props para referência interna
 interface PageProps {
-  params: {
-    slug: string;
-  };
-  searchParams?: {
-    page?: string;
-  };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
-// AJUSTE: Recebemos as props como 'any' e as convertemos para o tipo correto
-// para resolver o erro de build do Next.js, seguindo o modelo que funcionou.
-export default async function CategoryPage(props: any) {
-  // Garante que estamos a usar os parâmetros da forma correta
-  const { params, searchParams } = props as PageProps;
+const POSTS_PER_PAGE = 9;
 
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
   const supabase = createClient();
-  const currentPage = Number(searchParams?.page) || 1;
-  const POSTS_PER_PAGE = 9;
+  const { data } = await supabase.from('categories').select('name').eq('slug', slug).maybeSingle();
+  return { title: data ? `${data.name} | Hub de Conteúdo` : 'Categoria não encontrada' };
+}
 
-  const offset = (currentPage - 1) * POSTS_PER_PAGE;
+export default async function CategoryPage({ params, searchParams }: PageProps) {
+  const [{ slug }, { page }] = await Promise.all([params, searchParams]);
+  const currentPage = Math.max(1, Number(page) || 1);
+  const supabase = createClient();
 
-  // 1. Busca os dados da categoria para usar no título da página
-  const { data: category, error: categoryError } = await supabase
-    .from('categories')
-    .select('name')
-    .eq('slug', params.slug)
-    .single();
+  const [
+    { data: category },
+    { data: posts, error: postsError },
+    { data: totalPosts, error: countError },
+  ] = await Promise.all([
+    supabase.from('categories').select('name').eq('slug', slug).maybeSingle(),
+    supabase.rpc('get_posts_by_category_slug_paginated', {
+      category_slug: slug,
+      page_size: POSTS_PER_PAGE,
+      page_offset: (currentPage - 1) * POSTS_PER_PAGE,
+    }),
+    supabase.rpc('count_posts_in_category', { category_slug: slug }),
+  ]);
 
-  if (categoryError || !category) {
-    notFound(); // Se a categoria não existe, mostra página 404
-  }
-
-  // 2. Busca os posts e o total de posts da categoria em paralelo
-  const [{ data: posts, error: postsError }, { data: totalPosts, error: countError }] =
-    await Promise.all([
-      supabase.rpc('get_posts_by_category_slug_paginated', {
-        category_slug: params.slug,
-        page_size: POSTS_PER_PAGE,
-        page_offset: offset,
-      }),
-      supabase.rpc('count_posts_in_category', {
-        category_slug: params.slug,
-      }),
-    ]);
-
+  if (!category) notFound();
   if (postsError || countError) {
     console.error('Erro ao buscar posts da categoria:', postsError || countError);
   }
 
-  const totalPages = Math.ceil((totalPosts || 0) / POSTS_PER_PAGE);
+  const total = Number(totalPosts) || 0;
+  const totalPages = Math.ceil(total / POSTS_PER_PAGE);
 
   return (
-    <div>
-      <header className="mb-12 border-b border-neutral-800 pb-6">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-neutral-200 tracking-tight">
-          Categoria: <span className="text-amber-500">{category.name}</span>
-        </h1>
-        <p className="text-lg text-neutral-400 mt-2">
-          Explorando todos os artigos sobre {category.name}.
-        </p>
-      </header>
-
-      {posts && posts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post: any) => (
-            <PostCard key={post.id} post={post} />
-          ))}
+    <>
+      <PageHeader
+        kicker="Categoria"
+        title={category.name}
+        back={{ href: '/blog', label: 'Todos os artigos' }}
+        meta={
+          <MetaChip icon={FileText}>
+            <span className="font-semibold text-foreground tabular-nums">{total}</span>{' '}
+            {total === 1 ? 'artigo' : 'artigos'}
+          </MetaChip>
+        }
+        className="border-b-0"
+      />
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 pb-20 lg:grid-cols-[1fr_18rem] lg:gap-14">
+        <div className="min-w-0">
+          {posts && posts.length > 0 ? (
+            <>
+              <ul className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {posts.map((post: any) => (
+                  <li key={post.id}>
+                    <PostCard post={post} />
+                  </li>
+                ))}
+              </ul>
+              <Pagination
+                basePath={`/blog/category/${slug}`}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                className="mt-12"
+              />
+            </>
+          ) : (
+            <EmptyState
+              icon={FileText}
+              title="Nenhum artigo nesta categoria"
+              description="Ainda não publicamos nada aqui. Que tal explorar as outras?"
+              action={{ href: '/blog', label: 'Ver todos os artigos' }}
+            />
+          )}
         </div>
-      ) : (
-        <p className="text-center text-neutral-500 py-10">
-          Nenhum artigo encontrado nesta categoria.
-        </p>
-      )}
-
-      {/* Renderiza os controles de paginação */}
-      <PaginationControls totalPages={totalPages} currentPage={currentPage} />
-    </div>
+        <BlogSidebar activeCategory={slug} />
+      </div>
+    </>
   );
 }

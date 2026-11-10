@@ -176,15 +176,15 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
   };
 
   return (
-    <div className="w-full bg-neutral-950 text-neutral-100 sm:p-8">
-      <Card className="bg-neutral-900 border-neutral-800 w-full">
+    <div className="w-full bg-background text-foreground sm:p-8">
+      <Card className="bg-card border-white/10 w-full">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-amber-500">
+          <CardTitle className="flex items-center gap-2 text-primary">
             <BarChart className="h-5 w-5" /> Estatísticas de Mana
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="text-sm text-neutral-400">
+          <div className="text-sm text-muted-foreground">
             <p>
               Terrenos: {manaStats.landCount} ({manaStats.landPercentage}% do deck)
             </p>
@@ -203,35 +203,35 @@ export default function DeckMana({ decklist, scryfallCardMap, deck }: DeckManaPr
                     fontSize="40px"
                     className="w-[160px] justify-center h-[160px] mx-auto mb-2 p-0 m-0"
                   />
-                  <div className="text-neutral-300 font-medium">
+                  <div className="text-foreground/80 font-medium">
                     {totalPercentage}% ({manaStats.manaSymbols[symbol]} símbolos)
                   </div>
                   <div className="w-full bg-neutral-700 h-2 rounded-full overflow-hidden mt-1">
                     <div
-                      className="h-full bg-amber-500"
+                      className="h-full bg-primary"
                       style={{ width: `${totalPercentage}%` }}
                     ></div>
                   </div>
-                  <div className="text-xs text-neutral-500 mt-1">Terrenos: {landPercentage}%</div>
+                  <div className="text-xs text-muted-foreground mt-1">Terrenos: {landPercentage}%</div>
                 </div>
               );
             })}
           </div>
 
-          <div className="text-sm text-neutral-300">
+          <div className="text-sm text-foreground/80">
             <p>{manaStats.recommendationText}</p>
           </div>
 
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-muted-foreground">
             * Percentagens podem não somar 100% se houver cartas multicoloridas.
           </p>
         </CardContent>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 w-full">
-        <Card className="bg-neutral-900 border-neutral-800">
+        <Card className="bg-card border-white/10">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-500">
+            <CardTitle className="flex items-center gap-2 text-primary">
               <BarChart className="h-5 w-5" /> Curva de Mana
             </CardTitle>
           </CardHeader>

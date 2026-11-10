@@ -8,6 +8,10 @@ import DeckDetailView from './DeckDetailView';
 import type { DeckFromDB, CreatorProfile } from '@/app/lib/types';
 // Importa a nova função para buscar a coleção física
 import { fetchUserPhysicalCollection } from '@/app/actions/deckActions';
+import DeckCommentsSection from '@/app/(site)/decksage/components/DeckCommentsSection';
+import DeckLikeButton from '@/app/(site)/decksage/components/DeckLikeButton';
+import ReportDialog from '@/app/(site)/components/ReportDialog';
+import DiscordCta from '@/app/(site)/components/DiscordCta';
 
 interface PageProps {
   params: Promise<{
@@ -96,15 +100,49 @@ export default async function DeckDetailPage(props: PageProps) {
     ? await fetchUserPhysicalCollection()
     : new Map<string, number>();
 
+  const { count: likeCount } = await supabase
+    .from('deck_likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('deck_id', deckData.id);
+
+  let userLiked = false;
+  if (user) {
+    const { data: likeRow } = await supabase
+      .from('deck_likes')
+      .select('deck_id')
+      .eq('user_id', user.id)
+      .eq('deck_id', deckData.id)
+      .maybeSingle();
+    userLiked = !!likeRow;
+  }
+
   return (
-    <DeckDetailView
-      initialDeck={deckData}
-      initialScryfallMapArray={scryfallCardMapArray}
-      currentUser={user}
-      creatorProfile={creatorProfile}
-      isInitiallySaved={isSavedByCurrentUser}
-      // NOVO: Passa a coleção física para o componente
-      userPhysicalCollection={userPhysicalCollection}
-    />
+    <div className="min-h-screen  text-foreground">
+      {deckData.is_public && (
+        <div className="container mx-auto px-4 pt-6 space-y-3 max-w-6xl">
+          <DiscordCta variant="banner" />
+          <div className="flex flex-wrap items-center gap-3">
+            <DeckLikeButton
+              deckId={deckData.id}
+              initialCount={likeCount ?? 0}
+              initialLiked={userLiked}
+              canInteract={!!user}
+            />
+            <ReportDialog entityType="deck" entityId={deckData.id} />
+          </div>
+        </div>
+      )}
+      <DeckDetailView
+        initialDeck={deckData}
+        initialScryfallMapArray={scryfallCardMapArray}
+        currentUser={user}
+        creatorProfile={creatorProfile}
+        isInitiallySaved={isSavedByCurrentUser}
+        userPhysicalCollection={userPhysicalCollection}
+      />
+      <div className="container mx-auto px-4 pb-12 max-w-6xl">
+        <DeckCommentsSection deckId={deckData.id} isPublic={!!deckData.is_public} />
+      </div>
+    </div>
   );
 }

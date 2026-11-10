@@ -28,10 +28,18 @@ export async function middleware(request: NextRequest) {
     '/profile',
     '/my-decks',
     '/my-deck/create',
+    '/my-collection/new',
     '/favorites',
     '/ai-deck-builder',
+    '/notifications',
+    '/feed',
+    '/community/new',
   ];
   if (!user && protectedRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  // Lista de coleções do usuário exige login; detalhe público permanece acessível
+  if (!user && pathname === '/my-collection') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

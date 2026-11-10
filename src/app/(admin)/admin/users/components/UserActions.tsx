@@ -12,6 +12,7 @@ import {
 import { MoreHorizontal, User, Shield, ShieldOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { updateUserStatus } from '@/app/actions/adminActions';
+import { setAmbassadorFlag } from '@/app/actions/communityActions';
 import { toast } from 'sonner';
 
 type UserActionsProps = {
@@ -19,6 +20,7 @@ type UserActionsProps = {
     id: string;
     username: string | null;
     status: string;
+    is_ambassador?: boolean | null;
   };
 };
 
@@ -33,6 +35,17 @@ export default function UserActions({ user }: UserActionsProps) {
         toast.success(result.message);
       } else {
         toast.error(result.message);
+      }
+    });
+  };
+
+  const handleAmbassador = () => {
+    startTransition(async () => {
+      try {
+        await setAmbassadorFlag(user.id, !user.is_ambassador);
+        toast.success(user.is_ambassador ? 'Embaixador removido.' : 'Marcado como embaixador.');
+      } catch {
+        toast.error('Não foi possível atualizar.');
       }
     });
   };
@@ -59,6 +72,11 @@ export default function UserActions({ user }: UserActionsProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator className="bg-neutral-700" />
+
+        <DropdownMenuItem onSelect={() => handleAmbassador()} className="cursor-pointer focus:bg-neutral-800">
+          <Shield className="mr-2 h-4 w-4" />
+          {user.is_ambassador ? 'Remover embaixador' : 'Marcar embaixador'}
+        </DropdownMenuItem>
 
         {/* AJUSTE: Corrigido de <ContextMenuItem> para <DropdownMenuItem> */}
         <DropdownMenuItem

@@ -100,13 +100,13 @@ export default function CameraScanner({ isOpen, onOpenChange }: CameraScannerPro
   // AJUSTE: O componente agora é apenas o Dialog, sem o Trigger
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-black/80 backdrop-blur-md border-neutral-800 p-0 max-w-[90vw] md:max-w-2xl h-[80vh] flex flex-col">
-        <DialogHeader className="p-4 border-b border-neutral-800">
+      <DialogContent className="bg-black/80 backdrop-blur-md border-white/10 p-0 max-w-[90vw] md:max-w-2xl h-[80vh] flex flex-col">
+        <DialogHeader className="p-4 border-b border-white/10">
           <DialogTitle className="text-white">Aponte para a carta</DialogTitle>
         </DialogHeader>
 
         <div className="flex-1 relative flex items-center justify-center overflow-hidden">
-          {isLoading && <Loader2 className="h-12 w-12 text-amber-500 animate-spin" />}
+          {isLoading && <Loader2 className="h-12 w-12 text-primary animate-spin" />}
           {error && (
             <div className="text-center text-red-400 p-4">
               <VideoOff className="h-12 w-12 mx-auto mb-2" />
@@ -127,10 +127,10 @@ export default function CameraScanner({ isOpen, onOpenChange }: CameraScannerPro
           )}
         </div>
 
-        <DialogFooter className="p-4 border-t border-neutral-800">
+        <DialogFooter className="p-4 border-t border-white/10">
           <Button
             size="lg"
-            className="w-full bg-amber-500 text-black hover:bg-amber-400"
+            className="w-full bg-primary text-black hover:bg-amber-400"
             disabled={isLoading || !!error || isAnalyzing}
             onClick={handleCaptureAndAnalyze}
           >

@@ -26,7 +26,7 @@ function SubmitButton() {
     <Button
       size="lg"
       type="submit"
-      className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600"
+      className="w-full sm:w-auto "
       disabled={pending}
     >
       {pending ? (
@@ -62,7 +62,7 @@ export default function DeckActions({ deckId, deckName, onNameChange }: DeckActi
       <Input
         value={deckName}
         onChange={(e) => onNameChange(e.target.value)}
-        className="text-2xl font-bold max-w-lg h-12 bg-transparent border-neutral-700 focus:border-amber-500"
+        className="text-2xl font-bold max-w-lg h-12 bg-transparent border-white/15 focus:border-amber-500"
         placeholder="Nome do Deck"
       />
       <div className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export default function DeckActions({ deckId, deckName, onNameChange }: DeckActi
               Excluir
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="bg-neutral-900 border-neutral-700">
+          <AlertDialogContent className="bg-card border-white/15">
             <AlertDialogHeader>
               <AlertDialogTitle>Tem a certeza absoluta?</AlertDialogTitle>
               <AlertDialogDescription>

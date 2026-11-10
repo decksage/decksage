@@ -1,49 +1,32 @@
-// app/auth/auth-code-error/page.tsx
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { XCircle } from 'lucide-react';
+
+export const metadata = { title: 'Link inválido | DeckSage' };
 
 export default function AuthCodeErrorPage() {
   return (
-    <div
-      className="min-h-screen w-full flex items-center justify-center p-4 bg-neutral-950"
-      style={{
-        backgroundImage: `radial-gradient(circle at top right, rgba(239, 68, 68, 0.1), transparent 50%),
-                          radial-gradient(circle at bottom left, rgba(59, 130, 246, 0.1), transparent 60%)`,
-      }}
-    >
-      <div className="w-full max-w-lg p-8 text-center bg-neutral-900/80 backdrop-blur-sm rounded-xl shadow-2xl border border-neutral-700/60">
-        <div className="flex justify-center mb-6">
-          <div className="p-4 bg-red-500/10 rounded-full border border-red-500/30">
-            <XCircle className="h-12 w-12 text-red-400" />
-          </div>
-        </div>
-
-        <header className="mb-6">
-          <h1 className="text-4xl font-extrabold text-red-400">Ocorreu um Erro</h1>
-          <p className="text-neutral-300 mt-3 text-lg">Não foi possível verificar a sua conta.</p>
-        </header>
-
-        <div className="text-neutral-400 mb-8">
-          <p>
-            O link de confirmação pode ter expirado ou ser inválido. Por favor, tente fazer login ou
-            registar-se novamente.
-          </p>
-        </div>
-
-        <div className="mt-8 flex justify-center gap-4">
-          <Link href="/login">
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto text-amber-500 border-amber-400 hover:bg-amber-400 hover:text-black px-8 py-6 text-base"
-            >
-              Ir para o Login
-            </Button>
+    <div className="relative isolate flex min-h-screen items-center justify-center bg-background px-4">
+      <div
+        aria-hidden
+        className="absolute left-1/2 top-0 -z-10 h-[28rem] w-[46rem] -translate-x-1/2 bg-[radial-gradient(closest-side,color-mix(in_oklch,var(--destructive)_18%,transparent),transparent)]"
+      />
+      <div className="w-full max-w-lg rounded-xl border border-white/10 bg-card/80 p-8 text-center shadow-2xl backdrop-blur-sm sm:p-10">
+        <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-red-300">Link inválido</p>
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight">Não foi possível confirmar</h1>
+        <p className="mt-4 text-muted-foreground">
+          Esse link expirou ou já foi usado. Entre na sua conta ou crie uma nova.
+        </p>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link
+            href="/login"
+            className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Ir para o login
           </Link>
-          <Link href="/">
-            <Button className="w-full sm:w-auto bg-amber-500 text-black hover:bg-amber-600 px-8 py-6 text-base">
-              Página Inicial
-            </Button>
+          <Link
+            href="/"
+            className="inline-flex h-11 items-center justify-center rounded-md border border-white/15 px-6 text-sm font-semibold hover:border-primary/60"
+          >
+            Página inicial
           </Link>
         </div>
       </div>

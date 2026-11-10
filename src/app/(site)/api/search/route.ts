@@ -8,7 +8,11 @@ export async function GET(request: NextRequest) {
   let query = searchParams.get('q') || '';
   const page = parseInt(searchParams.get('page') || '1', 10);
 
-  if (!query || query.trim() === '') {
+  const hasAnyFilterParam = ['types', 'colors', 'rarity', 'formats', 'set', 'cmc', 'artist'].some(
+    (key) => searchParams.get(key),
+  );
+
+  if ((!query || query.trim() === '') && !hasAnyFilterParam) {
     return NextResponse.json({ error: 'Query é obrigatória' }, { status: 400 });
   }
 
@@ -26,29 +30,30 @@ export async function GET(request: NextRequest) {
   // Traduzir o termo de busca para o inglês
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://seu-projeto.vercel.app';
   let translatedQuery = query;
-  try {
-    const translateResponse = await fetch(`${baseUrl}/api/translate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ text: query, type: 'query' }),
-    });
-
-    if (!translateResponse.ok) {
-      console.error('Erro na tradução:', {
-        status: translateResponse.status,
-        statusText: translateResponse.statusText,
+  if (query)
+    try {
+      const translateResponse = await fetch(`${baseUrl}/api/translate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text: query, type: 'query' }),
       });
-    } else {
-      const { translation } = await translateResponse.json();
-      translatedQuery = translation || query;
+
+      if (!translateResponse.ok) {
+        console.error('Erro na tradução:', {
+          status: translateResponse.status,
+          statusText: translateResponse.statusText,
+        });
+      } else {
+        const { translation } = await translateResponse.json();
+        translatedQuery = translation || query;
+      }
+    } catch (e: unknown) {
+      console.error('Erro ao chamar API de tradução:', {
+        error: e instanceof Error ? e.message : 'Unknown error',
+      });
     }
-  } catch (e: unknown) {
-    console.error('Erro ao chamar API de tradução:', {
-      error: e instanceof Error ? e.message : 'Unknown error',
-    });
-  }
 
   // Obter filtros
   const types = searchParams.get('types')?.split(',').filter(Boolean) || [];

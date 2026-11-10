@@ -16,7 +16,7 @@ export default function ReferralLink({ referralCode }: ReferralLinkProps) {
   const [copied, setCopied] = useState(false);
 
   if (!referralCode) {
-    return <p className="text-sm text-neutral-400">Código de convite indisponível.</p>;
+    return <p className="text-sm text-muted-foreground">Código de convite indisponível.</p>;
   }
 
   // Monta a URL completa do convite
@@ -41,7 +41,7 @@ export default function ReferralLink({ referralCode }: ReferralLinkProps) {
       <Input
         value={link}
         readOnly
-        className="bg-neutral-800 border-neutral-700 font-mono text-sm"
+        className="bg-white/[0.04] border-white/15 font-mono text-sm"
       />
       <Button size="icon" onClick={handleCopy} variant="secondary">
         {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}

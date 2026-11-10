@@ -20,7 +20,7 @@ export default function UserPointsDisplay({
         {/* Formata o número para ter separador de milhar, ex: 1.250 */}
         {points?.toLocaleString('pt-BR') || 0}
       </span>
-      <span className={`${textSize} text-neutral-400`}>Pontos</span>
+      <span className={`${textSize} text-muted-foreground`}>Pontos</span>
     </div>
   );
 }

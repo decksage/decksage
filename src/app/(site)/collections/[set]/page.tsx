@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { createClient } from '@/app/utils/supabase/server';
 import { fetchScryfallSetByCode, scryfallFetch } from '@/app/lib/scryfall';
 import { getMyCollectionForSet } from '@/app/actions/setCollectionActions';
@@ -8,26 +9,37 @@ interface PageProps {
   params: Promise<{ set: string }>;
 }
 
-export default async function SetPage({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { set } = await params;
-  const setCode = set.trim().toLowerCase();
+  const setInfo = await fetchScryfallSetByCode(set.trim().toLowerCase());
+  return setInfo
+    ? { title: `${setInfo.name} (${setInfo.code.toUpperCase()}) | Coleções` }
+    : { title: 'Coleção não encontrada' };
+}
 
-  const setInfo = await fetchScryfallSetByCode(setCode);
-  if (!setInfo) {
-    notFound();
-  }
-
-  const cardsRes = await scryfallFetch(
+async function fetchFirstPage(setCode: string) {
+  const res = await scryfallFetch(
     `https://api.scryfall.com/cards/search?q=${encodeURIComponent(`e:${setCode}`)}&order=set`,
     { next: { revalidate: 3600 } },
   );
-  const cardsData = cardsRes.ok ? await cardsRes.json() : { data: [] };
+  if (!res.ok) return { data: [], next_page: null };
+  const json = await res.json();
+  return { data: json.data ?? [], next_page: json.has_more ? (json.next_page as string) : null };
+}
 
+export default async function SetPage({ params }: PageProps) {
+  const { set } = await params;
+  const setCode = set.trim().toLowerCase();
   const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  const { collectionId } = await getMyCollectionForSet(setCode);
+
+  const [setInfo, firstPage, auth, mine] = await Promise.all([
+    fetchScryfallSetByCode(setCode),
+    fetchFirstPage(setCode),
+    supabase.auth.getUser(),
+    getMyCollectionForSet(setCode),
+  ]);
+
+  if (!setInfo) notFound();
 
   return (
     <CollectionDetailView
@@ -36,13 +48,12 @@ export default async function SetPage({ params }: PageProps) {
         released_at: setInfo.released_at,
         card_count: setInfo.card_count ?? 0,
         icon_svg_uri: setInfo.icon_svg_uri,
-        uri: setInfo.uri,
-        search_uri: setInfo.search_uri,
       }}
-      initialCards={cardsData.data || []}
+      initialCards={firstPage.data}
+      initialNextPage={firstPage.next_page}
       setCode={setCode}
-      existingCollectionId={collectionId}
-      isAuthenticated={!!user}
+      existingCollectionId={mine.collectionId}
+      isAuthenticated={!!auth.data.user}
     />
   );
 }

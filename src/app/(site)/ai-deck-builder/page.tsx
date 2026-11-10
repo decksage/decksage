@@ -145,29 +145,29 @@ export default function AiDeckBuilderPage() {
     (state.deck?.decklist?.sideboard?.reduce((s, c) => s + c.count, 0) || 0);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
+    <div className="min-h-screen  text-foreground py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-4xl">
         <header className="mb-10 text-center">
-          <Wand2 className="h-12 w-12 mx-auto text-amber-400" />
-          <h1 className="text-4xl md:text-5xl font-extrabold text-amber-400 mt-4 mb-2">
+          <Wand2 className="h-12 w-12 mx-auto text-primary" />
+          <h1 className="mt-4 mb-2 font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl">
             Construtor de Decks com IA
           </h1>
-          <p className="text-lg text-neutral-300">
+          <p className="text-lg text-foreground/80">
             Dê uma ideia, um comandante ou algumas cartas e deixe a nossa IA construir o deck
             completo para você.
           </p>
         </header>
 
         {state.success && state.deck ? (
-          <Card className="bg-neutral-900 border-primary/20 animate-in fade-in">
+          <Card className="bg-card border-primary/20 animate-in fade-in">
             <CardHeader>
-              <CardTitle className="text-2xl text-amber-400">{state.deck.name}</CardTitle>
+              <CardTitle className="text-2xl text-primary">{state.deck.name}</CardTitle>
               <CardDescription>{state.deck.description}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <h3 className="font-semibold">Decklist Gerada ({totalGeneratedCards} cartas):</h3>
-                <pre className="text-sm bg-neutral-800 p-4 rounded-md max-h-80 overflow-auto whitespace-pre-wrap font-mono">
+                <pre className="text-sm bg-white/[0.04] p-4 rounded-md max-h-80 overflow-auto whitespace-pre-wrap font-mono">
                   {state.deck.decklist.mainboard.map((c) => `${c.count} ${c.name}`).join('\n')}
                   {state.deck.decklist.sideboard &&
                     state.deck.decklist.sideboard.length > 0 &&
@@ -201,7 +201,7 @@ export default function AiDeckBuilderPage() {
             <input type="hidden" name="commander" value={commander?.name || ''} />
             <input type="hidden" name="user_prompt" value={userPrompt} />
 
-            <Card className="bg-neutral-900 border-neutral-800">
+            <Card className="bg-card border-white/10">
               <CardHeader>
                 <CardTitle>1. Defina as Bases do Deck</CardTitle>
                 <CardDescription>Escolha o formato e dê uma direção para a IA.</CardDescription>
@@ -240,7 +240,7 @@ export default function AiDeckBuilderPage() {
                     name="user_prompt"
                     placeholder="Ex: Um deck de anjos tribal, agressivo e de baixo custo."
                     rows={3}
-                    className="bg-neutral-800 border-neutral-700"
+                    className="bg-white/[0.04] border-white/15"
                     value={userPrompt}
                     onChange={(e) => setUserPrompt(e.target.value)}
                   />
@@ -248,7 +248,7 @@ export default function AiDeckBuilderPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-neutral-900 border-neutral-800">
+            <Card className="bg-card border-white/10">
               <CardHeader>
                 <CardTitle>2. Adicione Cartas (Opcional se der instruções)</CardTitle>
                 <CardDescription>Inclua cartas que você quer que estejam no deck.</CardDescription>
@@ -278,21 +278,19 @@ export default function AiDeckBuilderPage() {
                   </Button>
                 </div>
                 {(commander || cards.length > 0) && (
-                  <h3 className="font-semibold pt-4 border-t border-neutral-800">
+                  <h3 className="font-semibold pt-4 border-t border-white/10">
                     Núcleo do Deck ({commander ? totalCards + 1 : totalCards} cartas)
                   </h3>
                 )}
                 {commander && (
-                  <p className="font-semibold text-amber-400 text-sm">
-                    Comandante: {commander.name}
-                  </p>
+                  <p className="font-semibold text-primary text-sm">Comandante: {commander.name}</p>
                 )}
                 {cards.length > 0 && (
                   <ul className="space-y-1 text-sm mt-2">
                     {cards.map((card) => (
                       <li
                         key={card.name}
-                        className="flex justify-between items-center p-1 hover:bg-neutral-800/50 rounded"
+                        className="flex justify-between items-center p-1 hover:bg-white/[0.04] rounded"
                       >
                         <span>
                           {card.count}x {card.name}
@@ -313,12 +311,12 @@ export default function AiDeckBuilderPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-neutral-900 border-neutral-800">
+            <Card className="bg-card border-white/10">
               <CardHeader>
                 <CardTitle>3. Construir com IA</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-neutral-400 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Você precisa fornecer um formato e pelo menos uma instrução ou algumas cartas para
                   a IA começar.
                 </p>

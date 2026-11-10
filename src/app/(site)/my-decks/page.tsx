@@ -164,19 +164,21 @@ export default function MyDecksPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-950">
-        <Loader2 className="h-12 w-12 animate-spin text-amber-500" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
+    <div className="min-h-screen  text-foreground py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-7xl">
         <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
           <div>
-            <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500 mb-2">Meus Decks</h1>
-            <p className="text-lg text-neutral-300">
+            <h1 className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl mb-2">
+              Meus Decks
+            </h1>
+            <p className="text-lg text-foreground/80">
               Crie, compartilha e analise seus decks com a DeckSage IA
             </p>
           </div>
@@ -192,17 +194,17 @@ export default function MyDecksPage() {
           <DynamicAdSlot adConfig={adConfig} />
         </div>
 
-        <h2 className="text-3xl font-bold text-primary mb-6 border-b border-neutral-700 pb-2 flex items-center gap-2">
+        <h2 className="text-3xl font-bold text-primary mb-6 border-b border-white/15 pb-2 flex items-center gap-2">
           <Swords /> Seus Decks
         </h2>
         {/* AJUSTE: Removida a condição de myDecks.length > 0 para sempre mostrar o grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {/* AJUSTE: Card de "Criar Novo Deck" adicionado como primeiro item */}
+          {/* AJUSTE: Card de"Criar Novo Deck" adicionado como primeiro item */}
           <Link href="/my-deck/create" passHref>
-            <Card className="bg-neutral-900 border-2 border-dashed border-neutral-700 h-full flex flex-col group transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800 cursor-pointer">
+            <Card className="bg-card border-2 border-dashed border-white/15 h-full flex flex-col group transition-all duration-300 hover:border-primary hover:bg-white/[0.04] cursor-pointer">
               <CardContent className="p-4 flex flex-col flex-grow items-center justify-center text-center">
-                <PlusCircle className="h-12 w-12 text-neutral-600 group-hover:text-amber-500 transition-colors" />
-                <p className="mt-4 font-semibold text-lg text-neutral-400 group-hover:text-amber-400 transition-colors">
+                <PlusCircle className="h-12 w-12 text-neutral-600 group-hover:text-primary transition-colors" />
+                <p className="mt-4 font-semibold text-lg text-muted-foreground group-hover:text-primary transition-colors">
                   Criar Novo Deck
                 </p>
               </CardContent>
@@ -217,7 +219,7 @@ export default function MyDecksPage() {
 
         {/* Secção Decks Guardados (sem alterações) */}
         <div className="mt-16">
-          <h2 className="text-3xl font-bold text-primary mb-6 border-b border-neutral-700 pb-2 flex items-center gap-2">
+          <h2 className="text-3xl font-bold text-primary mb-6 border-b border-white/15 pb-2 flex items-center gap-2">
             <Bookmark /> Decks da Comunidade
           </h2>
           {savedDecks.length > 0 ? (
@@ -235,7 +237,7 @@ export default function MyDecksPage() {
               })}
             </div>
           ) : (
-            <p className="text-neutral-500 mt-2">
+            <p className="text-muted-foreground mt-2">
               Quando guardar decks de outros criadores, eles aparecerão aqui.
             </p>
           )}

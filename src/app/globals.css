@@ -1,12 +1,13 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-body-face), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display-face), var(--font-body-face), ui-sans-serif, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -36,10 +37,16 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-mana-w: var(--mana-w);
+  --color-mana-u: var(--mana-u);
+  --color-mana-b: var(--mana-b);
+  --color-mana-r: var(--mana-r);
+  --color-mana-g: var(--mana-g);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
@@ -75,67 +82,87 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+
+  --mana-w: oklch(0.93 0.05 95);
+  --mana-u: oklch(0.7 0.13 240);
+  --mana-b: oklch(0.55 0.03 300);
+  --mana-r: oklch(0.65 0.21 30);
+  --mana-g: oklch(0.68 0.15 150);
+  --mana-c: oklch(0.72 0.01 80);
+  --header-offset: 4.25rem;
 }
 
+/* Tinta quente próxima de neutral-950/900 para combinar com páginas que ainda usam neutral-* fixo. */
 .dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
+  --background: oklch(0.145 0.004 60);
+  --foreground: oklch(0.96 0.012 85);
+  --card: oklch(0.195 0.006 60);
+  --card-foreground: oklch(0.96 0.012 85);
+  --popover: oklch(0.195 0.006 60);
+  --popover-foreground: oklch(0.96 0.012 85);
+  --primary: oklch(0.78 0.165 65);
+  --primary-foreground: oklch(0.18 0.03 50);
+  --secondary: oklch(0.25 0.008 60);
+  --secondary-foreground: oklch(0.96 0.012 85);
+  --muted: oklch(0.25 0.008 60);
+  --muted-foreground: oklch(0.74 0.015 75);
+  --accent: oklch(0.27 0.01 60);
+  --accent-foreground: oklch(0.96 0.012 85);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
+  --border: oklch(1 0.01 80 / 10%);
+  --input: oklch(1 0.01 80 / 14%);
+  --ring: oklch(0.78 0.165 65);
+  --chart-1: oklch(0.78 0.165 65);
   --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-3: oklch(0.7 0.13 240);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  --sidebar: oklch(0.195 0.006 60);
+  --sidebar-foreground: oklch(0.96 0.012 85);
+  --sidebar-primary: oklch(0.78 0.165 65);
+  --sidebar-primary-foreground: oklch(0.18 0.03 50);
+  --sidebar-accent: oklch(0.27 0.01 60);
+  --sidebar-accent-foreground: oklch(0.96 0.012 85);
+  --sidebar-border: oklch(1 0.01 80 / 10%);
+  --sidebar-ring: oklch(0.78 0.165 65);
+}
+
+@property --frame-border {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
   body {
     @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 45%, transparent);
+    color: var(--foreground);
   }
   button,
   [role='button'] {
     @apply cursor-pointer;
   }
-  /* ✨ ATUALIZAÇÃO: Efeito de hover e transição para botões E links (a) ✨ */
+  a,
   button,
-  [role='button'],
-  a {
-    @apply cursor-pointer transition-all duration-200 ease-in-out;
+  [role='button'] {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 180ms;
+    transition-timing-function: ease-out;
   }
-
-  /* Aplica o efeito de sombra ao passar o rato */
-  button:hover,
-  [role='button']:hover {
-    @apply brightness-110; /* Mantém um brilho subtil no próprio elemento */
-    filter: drop-shadow(
-      0 0 8px var(--button-gradient--dark, #eb2c06)
-    ); /* Efeito de glow com a cor primária */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
   /* Remove z-index e posicionamento problemático dos símbolos mana para o modal não ser coberto */
   .ms {
@@ -152,53 +179,189 @@
   }
 }
 
-/* --- Animações customizadas --- */
+@layer components {
+  /* Moldura de cantos cortados (assinatura visual do logo). A borda vem de ::before e o preenchimento de ::after. */
+  .frame {
+    --cut: 14px;
+    --frame-border: var(--border);
+    --frame-fill: var(--card);
+    position: relative;
+    isolation: isolate;
+    transition: --frame-border 220ms ease-out, transform 220ms var(--ease-out-expo);
+  }
+  .frame::before,
+  .frame::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    clip-path: polygon(
+      var(--cut) 0,
+      100% 0,
+      100% calc(100% - var(--cut)),
+      calc(100% - var(--cut)) 100%,
+      0 100%,
+      0 var(--cut)
+    );
+  }
+  .frame::before {
+    inset: 0;
+    background: var(--frame-border);
+  }
+  .frame::after {
+    inset: 1px;
+    background: var(--frame-fill);
+  }
+
+  .mana-strip {
+    background: linear-gradient(
+      90deg,
+      var(--mana-w) 0 20%,
+      var(--mana-u) 20% 40%,
+      var(--mana-b) 40% 60%,
+      var(--mana-r) 60% 80%,
+      var(--mana-g) 80% 100%
+    );
+  }
+
+  .kicker {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--primary);
+  }
+
+  /* Proporção e cantos de uma carta física de Magic, com brilho "foil" no hover. */
+  .mtg-card {
+    position: relative;
+    aspect-ratio: 63 / 88;
+    border-radius: 4.75% / 3.4%;
+    overflow: hidden;
+    background: var(--secondary);
+    box-shadow: 0 10px 30px -12px oklch(0 0 0 / 0.7);
+    transition:
+      transform 300ms var(--ease-out-expo),
+      box-shadow 300ms ease-out;
+  }
+  .mtg-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      oklch(1 0 0 / 0.22) 45%,
+      oklch(0.9 0.1 200 / 0.18) 52%,
+      transparent 65%
+    );
+    background-size: 250% 100%;
+    background-position: 120% 0;
+    opacity: 0;
+    transition:
+      opacity 250ms ease-out,
+      background-position 700ms var(--ease-out-expo);
+  }
+  :is(a, button, .group):hover > .mtg-card,
+  .mtg-card:hover {
+    transform: translateY(-6px) rotate(-0.6deg);
+    box-shadow: 0 24px 40px -16px oklch(0 0 0 / 0.85);
+  }
+  :is(a, button, .group):hover > .mtg-card::after,
+  .mtg-card:hover::after {
+    opacity: 1;
+    background-position: -20% 0;
+  }
+
+  .sticky-below-header {
+    position: sticky;
+    top: var(--header-offset);
+  }
+
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.08;
+    pointer-events: none;
+  }
+}
+
 @layer utilities {
-  /* Animações de entrada que já tínhamos */
-  @keyframes fade-in-down {
-    0% {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  .chamfer-tl {
+    clip-path: polygon(var(--cut, 14px) 0, 100% 0, 100% 100%, 0 100%, 0 var(--cut, 14px));
   }
-  @keyframes fade-in-up {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cycle-prompts {
+  0%,
+  22% {
+    transform: translateY(0);
+  }
+  25%,
+  47% {
+    transform: translateY(-25%);
+  }
+  50%,
+  72% {
+    transform: translateY(-50%);
+  }
+  75%,
+  97% {
+    transform: translateY(-75%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 700ms var(--ease-out-expo) both;
+    animation-delay: var(--delay, 0ms);
   }
 
-  /* --- ADIÇÃO: Keyframes para a nova animação de brilho --- */
-  @keyframes gradient-shine {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+  .prompt-cycle {
+    animation: cycle-prompts 12s var(--ease-out-expo) infinite;
   }
 
-  /* Classes de utilitário que usaremos no nosso HTML */
-  .animate-fade-in-down {
-    animation: fade-in-down 0.6s ease-out forwards;
+  /* Revelação ao rolar sem JavaScript; navegadores sem suporte simplesmente mostram o conteúdo. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
+    }
   }
-  .animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out forwards;
-  }
+}
 
-  /* --- ADIÇÃO: Nova classe para aplicar a animação de brilho --- */
-  .animate-gradient-shine {
-    animation: gradient-shine 5s linear infinite;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .mtg-card,
+  .mtg-card::after {
+    transition: none;
   }
 }

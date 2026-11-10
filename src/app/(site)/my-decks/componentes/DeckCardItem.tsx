@@ -65,13 +65,13 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
   };
 
   const placeholderStyle = {
-    backgroundColor: '#171717', // bg-neutral-900
+    backgroundColor: '#171717', // bg-card
     backgroundImage: 'radial-gradient(rgba(234, 179, 8, 0.1) 1px, transparent 1px)',
     backgroundSize: '12px 12px',
   };
 
   return (
-    <Card className="bg-neutral-900 py-0 border-neutral-800 h-full flex flex-col group transition-all duration-300 hover:border-amber-500 overflow-hidden shadow-lg hover:shadow-amber-500/10">
+    <Card className="bg-card py-0 border-white/10 h-full flex flex-col group transition-all duration-300 hover:border-primary overflow-hidden shadow-lg hover:shadow-amber-500/10">
       {/* AJUSTE: O <CardHeader> foi removido. A imagem agora é filha direta do <Card> */}
       <Link href={`/my-deck/${deck.format}/${deck.id}`} className="block">
         <div className="relative w-full aspect-[5/3]">
@@ -97,10 +97,10 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
           </div>
 
           <div className="absolute top-2 left-2 flex flex-col gap-1 items-start">
-            <span className="bg-black/60 backdrop-blur-md text-amber-500 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-amber-500/30">
+            <span className="bg-black/60 backdrop-blur-md text-primary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider border border-primary/30">
               {deck.format}
             </span>
-            <span className="bg-black/60 backdrop-blur-md text-neutral-300 text-[10px] font-medium px-2 py-0.5 rounded-full border border-neutral-700">
+            <span className="bg-black/60 backdrop-blur-md text-foreground/80 text-[10px] font-medium px-2 py-0.5 rounded-full border border-white/15">
               {cardCount} Cartas
             </span>
           </div>
@@ -109,13 +109,13 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
 
       <CardContent className="p-4 flex flex-col flex-grow">
         <Link href={`/my-deck/${deck.format}/${deck.id}`}>
-          <CardTitle className="text-lg font-bold text-neutral-200 group-hover:text-amber-400 truncate transition-colors">
+          <CardTitle className="text-lg font-bold text-foreground group-hover:text-primary truncate transition-colors">
             {deck.name}
           </CardTitle>
         </Link>
         <div className="flex-grow"></div>
 
-        <div className="flex items-center gap-4 text-xs text-neutral-500 mt-3 font-medium">
+        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3 font-medium">
           <div className="flex items-center gap-1.5">
             <Eye size={14} />
             <span>{deck.view_count || 0}</span>
@@ -126,8 +126,8 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
           </div>
         </div>
 
-        <div className="flex justify-between items-center mt-3 pt-3 border-t border-neutral-800">
-          <p className="text-xs text-neutral-500 font-medium">
+        <div className="flex justify-between items-center mt-3 pt-3 border-t border-white/10">
+          <p className="text-xs text-muted-foreground font-medium">
             {new Date(deck.created_at).toLocaleDateString('pt-BR')}
           </p>
           <div className="flex gap-2">
@@ -135,7 +135,7 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-neutral-400 hover:text-amber-400 hover:bg-neutral-800"
+                className="h-8 w-8 text-muted-foreground hover:text-primary hover:bg-white/[0.06]"
               >
                 <Edit className="h-4 w-4" />
               </Button>
@@ -145,21 +145,21 @@ export default function DeckCardItem({ deck, onDelete }: DeckCardItemProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-neutral-400 hover:text-red-500 hover:bg-neutral-800"
+                  className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-white/[0.06]"
                   disabled={isDeleting}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="bg-neutral-900 border-neutral-800">
+              <AlertDialogContent className="bg-card border-white/10">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Excluir Deck?</AlertDialogTitle>
-                  <AlertDialogDescription className="text-neutral-400">
+                  <AlertDialogDescription className="text-muted-foreground">
                     Esta ação é irreversível. O deck será apagado permanentemente.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-transparent border-neutral-700 hover:bg-neutral-800 text-neutral-300">
+                  <AlertDialogCancel className="bg-transparent border-white/15 hover:bg-white/[0.06] text-foreground/80">
                     Cancelar
                   </AlertDialogCancel>
                   <AlertDialogAction

@@ -47,10 +47,10 @@ export default function DeckAIAnalysis({ deck, initialAnalysis }: DeckAIAnalysis
   // Se já houver uma análise, exibe os resultados e um botão para refazer
   if (analysis) {
     return (
-      <Card className="bg-neutral-900 border-neutral-800">
+      <Card className="bg-card border-white/10">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <CardTitle className="flex items-center gap-2 text-amber-400">
+            <CardTitle className="flex items-center gap-2 text-primary">
               <Sparkles /> Análise da IA
             </CardTitle>
             <Button onClick={handleAnalysis} disabled={isAnalyzing} variant="ghost" size="sm">
@@ -68,7 +68,7 @@ export default function DeckAIAnalysis({ deck, initialAnalysis }: DeckAIAnalysis
             <h4 className="font-semibold text-green-400 flex items-center gap-2 mb-1">
               <ShieldCheck size={16} /> Pontos Fortes
             </h4>
-            <ul className="list-disc list-inside text-neutral-300 space-y-1 pl-2">
+            <ul className="list-disc list-inside text-foreground/80 space-y-1 pl-2">
               {analysis.strengths.map((item, i) => (
                 <li key={`strength-${i}`}>{item}</li>
               ))}
@@ -78,7 +78,7 @@ export default function DeckAIAnalysis({ deck, initialAnalysis }: DeckAIAnalysis
             <h4 className="font-semibold text-red-400 flex items-center gap-2 mb-1">
               <ShieldAlert size={16} /> Pontos Fracos
             </h4>
-            <ul className="list-disc list-inside text-neutral-300 space-y-1 pl-2">
+            <ul className="list-disc list-inside text-foreground/80 space-y-1 pl-2">
               {analysis.weaknesses.map((item, i) => (
                 <li key={`weakness-${i}`}>{item}</li>
               ))}
@@ -88,7 +88,7 @@ export default function DeckAIAnalysis({ deck, initialAnalysis }: DeckAIAnalysis
             <h4 className="font-semibold text-blue-400 flex items-center gap-2 mb-1">
               <Wrench size={16} /> Sugestões
             </h4>
-            <ul className="list-disc list-inside text-neutral-300 space-y-1 pl-2">
+            <ul className="list-disc list-inside text-foreground/80 space-y-1 pl-2">
               {analysis.suggestions.map((item, i) => (
                 <li key={`suggestion-${i}`}>{item}</li>
               ))}
@@ -101,13 +101,13 @@ export default function DeckAIAnalysis({ deck, initialAnalysis }: DeckAIAnalysis
 
   // Se não houver análise, mostra o botão para iniciar
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
+    <Card className="bg-card border-white/10">
       <CardContent className="p-6 flex flex-col items-center justify-center text-center">
         <div className="p-3 bg-primary/10 rounded-full border border-primary/30 mb-4">
           <Bot className="h-10 w-10 text-primary" />
         </div>
-        <h3 className="text-lg font-semibold text-neutral-100">Análise com IA</h3>
-        <p className="text-sm text-neutral-400 mt-1 mb-4">
+        <h3 className="text-lg font-semibold text-foreground">Análise com IA</h3>
+        <p className="text-sm text-muted-foreground mt-1 mb-4">
           Receba sugestões e descubra os pontos fortes e fracos do seu deck.
         </p>
         <Button

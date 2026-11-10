@@ -97,7 +97,7 @@ export default function MoxfieldStyleDecklist({
         return (
           // Evita que um grupo seja quebrado entre duas colunas
           <div key={type} className="mb-6 break-inside-avoid">
-            <h3 className="font-bold text-lg mb-2 border-b border-neutral-700 pb-1 text-amber-400">
+            <h3 className="font-bold text-lg mb-2 border-b border-white/15 pb-1 text-primary">
               {TYPE_DISPLAY_NAMES[type]} ({count})
             </h3>
             <ul className="space-y-0.5">

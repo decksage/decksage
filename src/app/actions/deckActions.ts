@@ -15,6 +15,8 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { captureServer } from '@/lib/analytics/posthog-server';
+import { AnalyticsEvents } from '@/lib/analytics/events';
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
 // --- Tipos e Interfaces ---
@@ -186,6 +188,13 @@ export async function createDeck(prevState: FormState, formData: FormData): Prom
   if (error) {
     return { message: 'Erro na base de dados: não foi possível guardar o deck.' };
   }
+
+  captureServer(user.id, AnalyticsEvents.DECK_CREATED, {
+    format,
+    creation_mode: creationMode,
+    deck_id: newDeck.id,
+    is_public: isPublic,
+  });
 
   revalidatePath('/my-decks');
   if (creationMode === 'builder') {
@@ -557,6 +566,8 @@ export async function analyzeDeckWithAI(
 
     revalidatePath(`/my-deck/.*`, 'layout');
 
+    captureServer(user.id, AnalyticsEvents.AI_ANALYSIS_RUN, { deck_id: deckId, provider: aiProvider });
+
     return { analysis: analysisData };
   } catch (error) {
     console.error(`Erro na análise da IA com ${process.env.AI_PROVIDER}:`, error);
@@ -632,6 +643,12 @@ export async function cloneDeck(deckIdToClone: string) {
 
     // 4. Revalida o cache
     revalidatePath('/my-decks');
+
+    captureServer(user.id, AnalyticsEvents.DECK_IMPORTED, {
+      source_deck_id: deckIdToClone,
+      new_deck_id: newDeck.id,
+      format: newDeck.format,
+    });
 
     // AJUSTE CRÍTICO: Usa o formato e o id para construir a URL correta
     redirect(`/my-deck/${newDeck.format}/${newDeck.id}/edit`);

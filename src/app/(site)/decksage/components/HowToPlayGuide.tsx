@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Accordion,
   AccordionContent,
@@ -16,12 +15,12 @@ interface HowToPlayGuideProps {
 }
 
 const sectionIcons: Record<string, React.ReactElement> = {
-  'Visão Geral da Estratégia': <BookCopy className="h-5 w-5 text-amber-400" />,
-  'Postura de Mulligan': <Dices className="h-5 w-5 text-amber-400" />,
-  'Jogo Inicial (Turnos 1-3)': <Hourglass className="h-5 w-5 text-amber-400" />,
-  'Meio de Jogo (Turnos 4-6)': <Swords className="h-5 w-5 text-amber-400" />,
-  'Fim de Jogo (Turnos 7+)': <Gem className="h-5 w-5 text-amber-400" />,
-  'Dicas e Sinergias': <Sparkles className="h-5 w-5 text-amber-400" />,
+  'Visão Geral da Estratégia': <BookCopy className="h-5 w-5 text-primary" />,
+  'Postura de Mulligan': <Dices className="h-5 w-5 text-primary" />,
+  'Jogo Inicial (Turnos 1-3)': <Hourglass className="h-5 w-5 text-primary" />,
+  'Meio de Jogo (Turnos 4-6)': <Swords className="h-5 w-5 text-primary" />,
+  'Fim de Jogo (Turnos 7+)': <Gem className="h-5 w-5 text-primary" />,
+  'Dicas e Sinergias': <Sparkles className="h-5 w-5 text-primary" />,
 };
 
 const parseGuide = (text: string): { title: string; content: string }[] => {
@@ -45,35 +44,31 @@ export default function HowToPlayGuide({ guideText }: HowToPlayGuideProps) {
   const defaultValue = guideSections.length > 0 ? [guideSections[0].title] : [];
 
   return (
-    <Card className="bg-neutral-900 border-neutral-800">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <BrainCircuit size={20} /> Guia de Como Jogar
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Accordion type="multiple" defaultValue={defaultValue} className="w-full">
-          {guideSections.map((section, index) => (
-            <AccordionItem key={index} value={section.title}>
-              <AccordionTrigger className="text-left hover:no-underline">
-                <div className="flex items-center gap-3">
-                  {sectionIcons[section.title] || <BookCopy className="h-5 w-5 text-amber-400" />}
-                  <span className="font-semibold text-base text-neutral-100">{section.title}</span>
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                {/* AJUSTE: 
-                  - Removido 'prose-sm' para usar o tamanho de fonte base (16px).
-                  - Adicionado 'prose-p:leading-relaxed' para aumentar o espaçamento entre as linhas dos parágrafos.
-                */}
-                <div className="prose prose-base prose-invert max-w-none prose-headings:text-amber-400 prose-strong:text-white prose-p:text-neutral-300 prose-p:leading-relaxed prose-li:text-neutral-300">
-                  <ReactMarkdown>{section.content}</ReactMarkdown>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </CardContent>
-    </Card>
+    <section id="guide" className="scroll-mt-32">
+      <p className="kicker flex items-center gap-2">
+        <BrainCircuit className="h-4 w-4" />
+        Piloto
+      </p>
+      <h2 className="mt-2 font-display text-2xl font-bold uppercase tracking-tight">
+        Guia de como jogar
+      </h2>
+      <Accordion type="multiple" defaultValue={defaultValue} className="mt-4">
+        {guideSections.map((section) => (
+          <AccordionItem key={section.title} value={section.title} className="border-white/10">
+            <AccordionTrigger className="text-left hover:no-underline">
+              <span className="flex items-center gap-3">
+                {sectionIcons[section.title] || <BookCopy className="h-5 w-5 text-primary" />}
+                <span className="font-medium">{section.title}</span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="max-w-3xl text-sm leading-relaxed text-muted-foreground [&_li]:mt-1 [&_ol]:mt-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-3 [&_strong]:font-semibold [&_strong]:text-foreground [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:pl-5">
+                <ReactMarkdown>{section.content}</ReactMarkdown>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
   );
 }

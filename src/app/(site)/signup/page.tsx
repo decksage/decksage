@@ -81,11 +81,14 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full p-8 bg-neutral-900 rounded-lg shadow-lg border border-neutral-700">
+    <div className="min-h-screen  text-foreground flex items-center justify-center p-4">
+      <div className="max-w-md w-full p-8 bg-card rounded-lg shadow-lg border border-white/15">
         <header className="mb-8 text-center">
-          <h1 className="text-4xl font-extrabold text-amber-500">Criar Conta</h1>
-          <p className="text-neutral-300 mt-2">
+          <p className="kicker justify-center">Criar conta</p>
+          <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight">
+            Junte-se ao DeckSage
+          </h1>
+          <p className="text-foreground/80 mt-2">
             Junte-se à comunidade e comece a montar seus decks.
           </p>
         </header>
@@ -114,10 +117,10 @@ export default function SignupPage() {
 
         <div className="relative my-6">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-neutral-700" />
+            <span className="w-full border-t border-white/15" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-neutral-900 px-2 text-neutral-500">OU CONTINUE COM EMAIL</span>
+            <span className="bg-card px-2 text-muted-foreground">OU CONTINUE COM EMAIL</span>
           </div>
         </div>
 
@@ -130,7 +133,7 @@ export default function SignupPage() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
-              className="bg-neutral-800 border-neutral-600 focus:ring-amber-500"
+              className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               placeholder="Seu nome completo"
               disabled={isSubmitting}
             />
@@ -143,7 +146,7 @@ export default function SignupPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="bg-neutral-800 border-neutral-600 focus:ring-amber-500"
+              className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               placeholder="seu.email@exemplo.com"
               disabled={isSubmitting}
             />
@@ -157,11 +160,11 @@ export default function SignupPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="bg-neutral-800 border-neutral-600 focus:ring-amber-500"
+              className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               placeholder="••••••••"
               disabled={isSubmitting}
             />
-            <p className="text-xs text-neutral-500">Mínimo de 6 caracteres.</p>
+            <p className="text-xs text-muted-foreground">Mínimo de 6 caracteres.</p>
           </div>
 
           {error && (
@@ -172,11 +175,7 @@ export default function SignupPage() {
             </Alert>
           )}
 
-          <Button
-            type="submit"
-            className="w-full bg-amber-500 text-black hover:bg-amber-600"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -186,9 +185,9 @@ export default function SignupPage() {
         </form>
 
         <div className="mt-6 text-center text-sm">
-          <p className="text-neutral-400">
+          <p className="text-muted-foreground">
             Já tem uma conta?{' '}
-            <Link href="/login" className="font-medium text-amber-500 hover:underline">
+            <Link href="/login" className="font-medium text-primary hover:underline">
               Faça login
             </Link>
           </p>

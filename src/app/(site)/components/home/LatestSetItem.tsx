@@ -1,52 +1,40 @@
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
-'use client';
-
 import Link from 'next/link';
-import Image from 'next/image';
-import { Card } from '@/components/ui/card';
-import { cn } from '@/lib/utils';
 import type { SetData } from './LatestSetsSection';
 
-interface LatestSetItemProps {
-  set: SetData;
-}
-
-export default function LatestSetItem({ set }: LatestSetItemProps) {
-  console.log('LatestSetItem renderizando:', {
-    code: set.code,
-    name: set.name,
-    iconUrl: set.iconUrl,
-  });
-
+export default function LatestSetItem({ set, isNewest }: { set: SetData; isNewest?: boolean }) {
   return (
-    <Link href={`/collections/${set.code.toLowerCase()}`} className="group block h-full">
-      <Card
-        className={cn(
-          'bg-neutral-800 border-neutral-700 h-full flex flex-col items-center justify-center text-center',
-          'p-6 transition-all duration-300 hover:border-amber-500 hover:bg-neutral-800',
-        )}
-      >
+    <Link
+      href={`/collections/${set.code.toLowerCase()}`}
+      className="frame group flex h-full flex-col justify-between gap-8 p-6 [--cut:14px] hover:-translate-y-1 hover:[--frame-border:color-mix(in_oklch,var(--primary)_70%,transparent)]"
+    >
+      <div className="flex items-start justify-between">
         {set.iconUrl ? (
-          <div className="relative w-16 h-16 mb-4">
-            <Image
-              src={set.iconUrl}
-              alt={`${set.name} icon`}
-              fill
-              sizes="64px"
-              unoptimized
-              className="object-contain filter invert brightness-150"
-            />
-          </div>
+          <img
+            src={set.iconUrl}
+            alt=""
+            width={56}
+            height={56}
+            loading="lazy"
+            decoding="async"
+            className="h-14 w-14 object-contain invert transition-transform duration-500 ease-out group-hover:rotate-[-6deg] group-hover:scale-110"
+          />
         ) : (
-          <p className="text-neutral-500 text-xs">Sem ícone</p>
+          <span className="h-14 w-14" />
         )}
-
-        <h3 className="text-base md:text-lg font-semibold text-neutral-100 group-hover:text-amber-500 transition-colors">
+        {isNewest && (
+          <span className="rounded-full bg-primary/15 px-2.5 py-1 font-display text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+            Novo
+          </span>
+        )}
+      </div>
+      <div>
+        <p className="font-display text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          {set.code}
+        </p>
+        <h3 className="mt-1 text-balance font-display text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary">
           {set.name}
         </h3>
-        <p className="text-xs text-neutral-500 uppercase mt-1">{set.code}</p>
-      </Card>
+      </div>
     </Link>
   );
 }

@@ -17,7 +17,7 @@ export default function MagicTextRenderer({ text }: MagicTextRendererProps) {
   const paragraphs = text.split('\n');
 
   return (
-    <div className="space-y-2 font-serif text-neutral-200">
+    <div className="space-y-2 font-serif text-foreground">
       {paragraphs.map((paragraph, pIndex) => {
         // Encontra todos os símbolos de mana como {W}, {U}, {T}, {10}, etc.
         const parts = paragraph.split(/(\{[^}]+\})/g);

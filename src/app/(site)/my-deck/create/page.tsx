@@ -32,11 +32,7 @@ const initialState = {
 function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <Button
-      type="submit"
-      className="w-full bg-amber-500 text-black hover:bg-amber-600"
-      disabled={isSubmitting || pending}
-    >
+    <Button type="submit" className="w-full" disabled={isSubmitting || pending}>
       {isSubmitting || pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Criando deck...
@@ -80,17 +76,19 @@ export default function CreateDeckPage() {
   }, [state]);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 py-8 px-4 md:px-6">
+    <div className="min-h-screen  text-foreground py-8 px-4 md:px-6">
       <div className="container mx-auto max-w-2xl">
         <header className="mb-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-amber-500">Criar Novo Deck</h1>
-          <p className="text-lg text-neutral-300 mt-2">Dê vida às suas novas estratégias.</p>
+          <h1 className="font-display text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-5xl">
+            Criar Novo Deck
+          </h1>
+          <p className="text-lg text-foreground/80 mt-2">Dê vida às suas novas estratégias.</p>
         </header>
 
         <form
           action={formAction}
           onSubmit={() => setIsSubmitting(true)}
-          className="p-8 bg-neutral-900/60 backdrop-blur-md rounded-2xl border border-neutral-800/50 shadow-2xl space-y-8"
+          className="p-8 bg-card/60 backdrop-blur-md rounded-2xl border border-white/10/50 shadow-2xl space-y-8"
         >
           <fieldset
             disabled={isSubmitting}
@@ -105,7 +103,7 @@ export default function CreateDeckPage() {
                 name="name"
                 placeholder="Ex: Mono Black Control"
                 required
-                className="bg-neutral-800 border-neutral-700 focus:ring-amber-500"
+                className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               />
             </div>
 
@@ -120,10 +118,10 @@ export default function CreateDeckPage() {
                   onValueChange={setSelectedFormat}
                   value={selectedFormat}
                 >
-                  <SelectTrigger className="bg-neutral-800 border-neutral-700 focus:ring-amber-500">
+                  <SelectTrigger className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60">
                     <SelectValue placeholder="Selecione um formato" />
                   </SelectTrigger>
-                  <SelectContent className="bg-neutral-800 border-neutral-700 text-neutral-100">
+                  <SelectContent className="bg-white/[0.04] border-white/15 text-foreground">
                     <SelectItem value="commander">Commander</SelectItem>
                     <SelectItem value="modern">Modern</SelectItem>
                     <SelectItem value="pauper">Pauper</SelectItem>
@@ -136,7 +134,7 @@ export default function CreateDeckPage() {
               </div>
               <div className="space-y-2">
                 <Label className="text-lg font-semibold">Visibilidade</Label>
-                <div className="flex items-center space-x-3 p-3 bg-neutral-800 border border-neutral-700 rounded-md h-full">
+                <div className="flex items-center space-x-3 p-3 bg-white/[0.04] border border-white/15 rounded-md h-full">
                   <Switch
                     id="is_public"
                     name="is_public"
@@ -179,7 +177,7 @@ export default function CreateDeckPage() {
                 name="description"
                 placeholder="Descreva a estratégia principal, combos ou como o deck funciona."
                 rows={4}
-                className="bg-neutral-800 border-neutral-700 focus:ring-amber-500"
+                className="bg-white/[0.04] border-white/15 focus-visible:border-primary/60"
               />
             </div>
 
@@ -193,25 +191,25 @@ export default function CreateDeckPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Label
                     htmlFor="mode-list"
-                    className="flex flex-col items-start gap-2 p-4 rounded-lg border border-neutral-700 bg-neutral-800 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-950/50 cursor-pointer"
+                    className="flex flex-col items-start gap-2 p-4 rounded-lg border border-white/15 bg-white/[0.04] has-[:checked]:border-amber-500 has-[:checked]:bg-amber-950/50 cursor-pointer"
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="font-semibold text-base">Colar uma Lista</span>
                       <RadioGroupItem value="list" id="mode-list" />
                     </div>
-                    <p className="text-sm text-neutral-400">
+                    <p className="text-sm text-muted-foreground">
                       Crie o deck enviando uma lista de cartas já pronta.
                     </p>
                   </Label>
                   <Label
                     htmlFor="mode-builder"
-                    className="flex flex-col items-start gap-2 p-4 rounded-lg border border-neutral-700 bg-neutral-800 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-950/50 cursor-pointer"
+                    className="flex flex-col items-start gap-2 p-4 rounded-lg border border-white/15 bg-white/[0.04] has-[:checked]:border-amber-500 has-[:checked]:bg-amber-950/50 cursor-pointer"
                   >
                     <div className="flex items-center justify-between w-full">
                       <span className="font-semibold text-base">Adicionar Cartas Depois</span>
                       <RadioGroupItem value="builder" id="mode-builder" />
                     </div>
-                    <p className="text-sm text-neutral-400">
+                    <p className="text-sm text-muted-foreground">
                       Crie um deck vazio e adicione as cartas na página de edição.
                     </p>
                   </Label>
@@ -233,7 +231,7 @@ export default function CreateDeckPage() {
                   required={creationMode === 'list'}
                   placeholder={`Cole a sua lista aqui.\nFormato esperado:\n1 Sol Ring\n4 Swords to Plowshares\n\nSideboard\n1 Rest in Peace`}
                   rows={20}
-                  className="bg-neutral-800 border-neutral-700 font-mono text-sm focus:ring-amber-500"
+                  className="bg-white/[0.04] border-white/15 font-mono text-sm focus-visible:border-primary/60"
                   value={decklistText}
                   onChange={(e) => setDecklistText(e.target.value)}
                 />

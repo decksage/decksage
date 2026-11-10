@@ -157,14 +157,14 @@ export default function ExportMissingCards({ missingCards, deckName }: ExportMis
 
   return (
     <>
-      <Card className="bg-neutral-900 border-neutral-800">
+      <Card className="bg-card border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Download size={20} /> Exportar Cartas Faltantes
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm text-muted-foreground">
             {missingCards.length > 0
               ? `Você precisa de ${missingCards.length} tipo(s) de carta(s) para completar este deck.`
               : 'Parabéns! Você já tem todas as cartas necessárias.'}

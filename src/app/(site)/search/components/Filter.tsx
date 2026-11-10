@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -134,13 +133,16 @@ export default function SearchFilters({
       <SheetTrigger asChild>
         <Button
           variant="outline"
-          className="bg-neutral-800 border-neutral-700 text-neutral-100 hover:bg-neutral-700 transition"
+          className="h-10 border-white/15 bg-white/[0.03] font-display text-xs font-semibold uppercase tracking-[0.14em] hover:border-primary/60 hover:bg-white/[0.06]"
           aria-label={`Filtros (${totalFilters} ativos)`}
         >
           <Filter className="mr-2 h-4 w-4" />
           Filtros
           {totalFilters > 0 && (
-            <Badge variant="secondary" className="ml-2 bg-amber-500 text-black">
+            <Badge
+              variant="secondary"
+              className="ml-1 h-5 min-w-5 rounded-full bg-primary px-1.5 text-primary-foreground"
+            >
               {totalFilters}
             </Badge>
           )}
@@ -148,30 +150,27 @@ export default function SearchFilters({
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="bg-neutral-900 border-neutral-700 text-neutral-100 w-[320px] sm:w-[400px] overflow-y-auto"
+        className="w-[88vw] gap-0 overflow-y-auto border-white/10 bg-background/95 p-0 backdrop-blur-xl sm:w-[400px] sm:max-w-[400px]"
       >
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex flex-col h-full"
-        >
-          <div className="sticky top-0 bg-neutral-900 z-10 p-4 border-b border-neutral-700">
+        <div className="flex h-full flex-col">
+          <div className="sticky top-0 z-10 border-b border-white/10 bg-background/95 p-5 backdrop-blur">
             <DialogTitle asChild>
-              <h2 className="text-xl font-bold text-white">Filtros de Busca</h2>
+              <h2 className="font-display text-xl font-bold uppercase tracking-wide">
+                Filtros de busca
+              </h2>
             </DialogTitle>
-            <p className="text-sm text-neutral-400 mt-1">Refine sua busca por cartas</p>
+            <p className="text-sm text-muted-foreground mt-1">Refine sua busca por cartas</p>
           </div>
 
           <div className="flex-1 p-4 space-y-4">
             <Accordion type="multiple" className="w-full space-y-2">
               {/* Tipo */}
               <AccordionItem value="type" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Tipo
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4 space-y-2">
                       {types.map((type) => (
                         <div key={type} className="flex items-center space-x-2">
@@ -183,7 +182,7 @@ export default function SearchFilters({
                           />
                           <label
                             htmlFor={`type-${type}`}
-                            className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer"
+                            className="text-sm text-foreground hover:text-foreground cursor-pointer"
                           >
                             {type}
                           </label>
@@ -196,11 +195,11 @@ export default function SearchFilters({
 
               {/* Cor */}
               <AccordionItem value="color" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Cor
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4 space-y-2">
                       {colors.map((color) => (
                         <div key={color} className="flex items-center space-x-2">
@@ -212,7 +211,7 @@ export default function SearchFilters({
                           />
                           <label
                             htmlFor={`color-${color}`}
-                            className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer flex items-center space-x-2"
+                            className="text-sm text-foreground hover:text-foreground cursor-pointer flex items-center space-x-2"
                           >
                             <span
                               className={cn(
@@ -231,11 +230,11 @@ export default function SearchFilters({
 
               {/* Raridade */}
               <AccordionItem value="rarity" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Raridade
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4 space-y-2">
                       {rarities.map((rarity) => (
                         <div key={rarity} className="flex items-center space-x-2">
@@ -249,7 +248,7 @@ export default function SearchFilters({
                           />
                           <label
                             htmlFor={`rarity-${rarity}`}
-                            className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer flex items-center space-x-2"
+                            className="text-sm text-foreground hover:text-foreground cursor-pointer flex items-center space-x-2"
                           >
                             <span className={cn('w-3 h-3 rounded-full', rarityStyles[rarity])} />
                             <span>{rarity}</span>
@@ -263,11 +262,11 @@ export default function SearchFilters({
 
               {/* Formato */}
               <AccordionItem value="formats" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Formato
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4 space-y-2">
                       {formats.map((format) => (
                         <div key={format} className="flex items-center space-x-2">
@@ -281,7 +280,7 @@ export default function SearchFilters({
                           />
                           <label
                             htmlFor={`format-${format}`}
-                            className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer"
+                            className="text-sm text-foreground hover:text-foreground cursor-pointer"
                           >
                             {format}
                           </label>
@@ -294,11 +293,11 @@ export default function SearchFilters({
 
               {/* Coleção */}
               <AccordionItem value="set" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Coleção
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4">
                       <Popover open={openCombobox} onOpenChange={setOpenCombobox}>
                         <PopoverTrigger asChild>
@@ -306,7 +305,7 @@ export default function SearchFilters({
                             variant="outline"
                             role="combobox"
                             aria-expanded={openCombobox}
-                            className="w-full justify-between bg-neutral-800 border-neutral-700 text-neutral-100 hover:bg-neutral-700"
+                            className="w-full justify-between bg-white/[0.04] border-white/15 text-foreground hover:bg-neutral-700"
                           >
                             {selectedSet
                               ? sets.find((set) => set.code === selectedSet)?.name ||
@@ -315,14 +314,14 @@ export default function SearchFilters({
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-full p-0 bg-neutral-900 border-neutral-700">
-                          <Command className="bg-neutral-900">
+                        <PopoverContent className="w-full p-0 bg-card border-white/15">
+                          <Command className="bg-card">
                             <CommandInput
                               placeholder="Buscar coleção..."
-                              className="text-neutral-100"
+                              className="text-foreground"
                             />
                             <CommandList>
-                              <CommandEmpty className="text-neutral-400 p-4">
+                              <CommandEmpty className="text-muted-foreground p-4">
                                 Nenhuma coleção encontrada.
                               </CommandEmpty>
                               {setsLoading ? (
@@ -342,7 +341,7 @@ export default function SearchFilters({
                                         setSelectedSet(set.code === selectedSet ? '' : set.code);
                                         setOpenCombobox(false);
                                       }}
-                                      className="text-neutral-100 hover:bg-neutral-800"
+                                      className="text-foreground hover:bg-white/[0.06]"
                                     >
                                       <Check
                                         className={cn(
@@ -366,11 +365,11 @@ export default function SearchFilters({
 
               {/* Custo de Mana */}
               <AccordionItem value="cmc" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Custo de Mana
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4 space-y-2">
                       {cmcOptions.map((cmc) => (
                         <div key={cmc} className="flex items-center space-x-2">
@@ -382,7 +381,7 @@ export default function SearchFilters({
                           />
                           <label
                             htmlFor={`cmc-${cmc}`}
-                            className="text-sm text-neutral-200 hover:text-neutral-100 cursor-pointer"
+                            className="text-sm text-foreground hover:text-foreground cursor-pointer"
                           >
                             {cmc === '>5' ? 'Mais de 5' : cmc}
                           </label>
@@ -395,11 +394,11 @@ export default function SearchFilters({
 
               {/* Artista */}
               <AccordionItem value="artist" className="border-none">
-                <AccordionTrigger className="text-neutral-100 hover:text-amber-500 py-2">
+                <AccordionTrigger className="text-foreground hover:text-primary py-2">
                   Artista
                 </AccordionTrigger>
                 <AccordionContent>
-                  <Card className="bg-neutral-800 border-neutral-700">
+                  <Card className="bg-white/[0.04] border-white/15">
                     <CardContent className="p-4">
                       <Input
                         id="artist"
@@ -407,7 +406,7 @@ export default function SearchFilters({
                         value={selectedArtist}
                         onChange={(e) => setSelectedArtist(e.target.value)}
                         placeholder="Digite o nome do artista"
-                        className="bg-neutral-700 border-neutral-600 text-neutral-100"
+                        className="bg-neutral-700 border-neutral-600 text-foreground"
                       />
                     </CardContent>
                   </Card>
@@ -416,17 +415,17 @@ export default function SearchFilters({
             </Accordion>
           </div>
 
-          <div className="sticky bottom-0 bg-neutral-900 p-4 border-t border-neutral-700">
+          <div className="sticky bottom-0 bg-card p-4 border-t border-white/15">
             <div className="flex gap-2">
               <Button
-                className="flex-1 bg-amber-500 text-black hover:bg-amber-600"
+                className="flex-1 "
                 onClick={onApplyFilters}
               >
                 Aplicar Filtros
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 border-neutral-700 text-neutral-100 hover:bg-neutral-800"
+                className="flex-1 border-white/15 text-foreground hover:bg-white/[0.06]"
                 onClick={clearFilters}
                 disabled={totalFilters === 0}
               >
@@ -434,7 +433,7 @@ export default function SearchFilters({
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
       </SheetContent>
     </Sheet>
   );

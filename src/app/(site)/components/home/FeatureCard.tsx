@@ -10,15 +10,15 @@ interface FeatureCardProps {
 
 export default function FeatureCard({ icon, title, description }: FeatureCardProps) {
   return (
-    <Card className="bg-neutral-800 border-neutral-700 text-center p-6 hover:shadow-xl hover:border-amber-500 transition flex flex-col">
+    <Card className="bg-white/[0.04] border-white/15 text-center p-6 hover:shadow-xl hover:border-primary transition flex flex-col">
       <CardHeader className="items-center pb-4">
         <div className="p-3 rounded-full bg-neutral-700 mb-3 w-fit">{icon}</div>
-        <CardTitle className="text-xl text-amber-500">{title}</CardTitle>
+        <CardTitle className="text-xl text-primary">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
         {' '}
         {/* flex-grow para igualar altura se necessário */}
-        <CardDescription className="text-neutral-300">{description}</CardDescription>
+        <CardDescription className="text-foreground/80">{description}</CardDescription>
       </CardContent>
     </Card>
   );
